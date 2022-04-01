@@ -13,7 +13,7 @@ protected:
     char type;
     char hitPoint;
     char id;
-    shape sp;
+    Shape sp;
 
     void generate();
 
@@ -26,9 +26,9 @@ protected:
 public:
     bool isHit;
 
-    position pos;
+    Position pos;
 
-    Sprite(char type, char hitPoint, char id, const shape &sp, bool isHit, const position &pos) : type(type),
+    Sprite(char type, char hitPoint, char id, const Shape &sp, bool isHit, const Position &pos) : type(type),
                                                                                                   hitPoint(hitPoint),
                                                                                                   id(id), sp(sp),
                                                                                                   isHit(isHit),
@@ -42,11 +42,11 @@ public:
         Sprite::isHit = isHit;
     }
 
-    const position &getPos() const {
+    const Position &getPos() const {
         return pos;
     }
 
-    void setPos(const position &pos) {
+    void setPos(const Position &pos) {
         Sprite::pos = pos;
     }
 

@@ -6,20 +6,23 @@
 
 #include"common_data_structure.h"
 #include "bullet.h"
+#include "enemy_plane.h"
+#include "fuel_tank .h"
+#include "battleship.h"
 class Airplane{
 private:
     char type,fuel;
-    position pos;
+    Position pos;
     int scores;
     bool isCrash;
 public:
-    void fire(Bullet bullet){
+    void Fire(Bullet bullet){
         bullet.setPosition(pos);
     }
-    void move(int speed){
+    void Move(int speed){
         pos.x+=speed*0.01;
     }
-    bool isCrashed(){
+    bool isCrashed(BoundaryInRow boundary, EnemyPlane enemyPlanes[]){
         return isCrash;
     }
     void addScore(int score){
@@ -29,6 +32,9 @@ public:
         type=0;
         fuel=100;
         pos.x=300;
+        pos.y=300;
+        scores=0;
+        isCrash= false;
     }
 };
 

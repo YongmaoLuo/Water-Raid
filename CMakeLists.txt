@@ -7,4 +7,4 @@ include_directories(.)
 include_directories(software)
 
 add_executable(Water_Raid
-        software/game_senario.cpp software/main.cpp)
+        software/main.cpp)

@@ -13,26 +13,26 @@ class Bullet
 {
 private:
     char type;
-    shape sp;
+    Shape sp;
     bool isCrashed;
 
 
 public:
-    position pos;
+    Position pos;
 
-    const shape &getSp() const {
+    const Shape &getSp() const {
         return sp;
     }
 
-    void setSp(const shape &sp) {
+    void setSp(const Shape &sp) {
         Bullet::sp = sp;
     }
 
-    const position &getPosition() const {
+    const Position &getPosition() const {
         return pos;
     }
 
-    void setPosition(const position &pos) {
+    void setPosition(const Position &pos) {
         Bullet::pos = pos;
     }
 

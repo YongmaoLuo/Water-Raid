@@ -11,6 +11,7 @@ For a midium to large project, there may have tens of hundreds of commits. We do
 1. Always pull before editing, so you can synchronize the updates and do not need to resovle conflicts.
 2. Please never use force push. This command will remove all history records. I have added a rule for the main branch so if you do force push unintentionally, it will not cause a problem. If there is a conflict, resolve it before pushing it.
 3. Every time to push a request, remember to write the commit message, even only with subjects.
+4. If you find that you cannot push something, it may because the local version is not compatible with the remote version, which means that you need to merge first, then push.
 
 ## Requirement Analysis (Data Flow Diagram)
 
@@ -28,3 +29,8 @@ Objects:
 4. Boundaries of the background.
 5. Fuels of the plane.
 6. Scores of the game.
+
+## Naming Standard in this project
+
+1. All names of classes and structs are capitalized and use CamelCase.
+2. All names of variables and functions use CamelCase with non-capitalized first letter.
