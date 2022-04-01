@@ -6,8 +6,8 @@ private:
     position pos;
     int score;
     bool isCrash;
-    virtual void fire();
-    virtual void move();
-    virtual void ifCrash();
-    virtual void addScore();
+    void fire();
+    void move();
+    void ifCrash();
+    void addScore();
 };
