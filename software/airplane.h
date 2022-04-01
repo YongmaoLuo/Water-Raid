@@ -5,17 +5,31 @@
 #define WATER_RAID_AIRPLANE_H
 
 #include"common_data_structure.h"
-
+#include "bullet.h"
 class Airplane{
 private:
     char type,fuel;
     position pos;
-    int score;
+    int scores;
     bool isCrash;
-    void fire();
-    void move();
-    void ifCrash();
-    void addScore();
+public:
+    void fire(Bullet bullet){
+        bullet.setPosition(pos);
+    }
+    void move(int speed){
+        pos.x+=speed*0.01;
+    }
+    bool isCrashed(){
+        return isCrash;
+    }
+    void addScore(int score){
+        scores+=score;
+    }
+    Airplane(){
+        type=0;
+        fuel=100;
+        pos.x=300;
+    }
 };
 
 #endif
