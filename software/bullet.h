@@ -7,11 +7,14 @@
 
 #include "common_data_structure.h"
 
+#define MAX_BULLET_NUM
+
 class Bullet
 {
 private:
     char type;
     shape sp;
+    bool isCrashed;
 
 
 public:
@@ -33,7 +36,15 @@ public:
         Bullet::pos = pos;
     }
 
-    Bullet(char type, const shape &sp, const position &pos) : type(type), sp(sp), pos(pos) {}
+    void setCrash(){
+        isCrashed= true;
+    }
+
+    void clearCrash(){
+        isCrashed= false;
+    }
+
+
 
     void fly();
 

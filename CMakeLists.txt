@@ -9,4 +9,4 @@ include_directories(software)
 add_executable(Water_Raid
         software/airplane.h
         software/common_data_structure.h
-        software/game_senario.h)
+        software/game_senario.h software/game_senario.cpp software/airplane.cpp software/main.cpp)
