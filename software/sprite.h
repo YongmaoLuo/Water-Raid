@@ -17,7 +17,6 @@ protected:
     char type;
     char hitPoint;
     char id;
-    Shape sp;
 
     void generate(short boundary[]);
     void generate();
@@ -36,6 +35,8 @@ public:
 
     Position pos;
 
+    Shape sp;
+
     Sprite(char type, char hitPoint, char id, const Shape &sp, bool isHit, const Position &pos) : type(type),
                                                                                                   hitPoint(hitPoint),
                                                                                                   id(id), sp(sp),
@@ -50,9 +51,11 @@ public:
         Sprite::isHit = isHit;
     }
 
-    const Position &getPos() const {
+    Position getPos() {
         return pos;
     }
+
+public:
 
     void setPos(const Position &pos) {
         Sprite::pos = pos;
