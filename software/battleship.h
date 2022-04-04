@@ -11,6 +11,7 @@ class Battle : Sprite
 {
 private:
     char score;
+
 };
 
 #endif //WATER_RAID_BATTLESHIP_H

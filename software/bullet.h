@@ -37,13 +37,15 @@ public:
     }
 
     void setCrash(){
-        isCrashed= true;
+        isCrashed = true;
     }
 
+    bool getIsCrashed() const;
     void clearCrash(){
         isCrashed= false;
     }
 
+    Bullet(char type, const shape &sp, bool isCrashed, const position &pos);
 
 
     void fly();

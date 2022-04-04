@@ -6,6 +6,10 @@
 #define WATER_RAID_SPRITE_H
 
 #include "common_data_structure.h"
+#include "bullet.h"
+#include<vector>;
+
+using namespace std;
 
 class Sprite
 {
@@ -15,12 +19,16 @@ protected:
     char id;
     shape sp;
 
+    void generate(short boundary[]);
     void generate();
 
+    void disappear(char id, vector<Sprite> sprites);
     void disappear();
 
+    void move(short boundary[]);
     void move();
 
+    void checkIfHit(vector<Bullet> bullets);
     void checkIfHit();
 
 public:
@@ -49,8 +57,6 @@ public:
     void setPos(const position &pos) {
         Sprite::pos = pos;
     }
-
-
 };
 
 #endif //WATER_RAID_SPRITE_H
