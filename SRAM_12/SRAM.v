@@ -46,9 +46,9 @@ module SRAM (
 
 	input	[14:0]  address;
 	input	  clock;
-	input	[3:0]  data;
+	input	[11:0]  data;
 	input	  wren;
-	output	[3:0]  q;
+	output	[11:0]  q;
 `ifndef ALTERA_RESERVED_QIS
 // synopsys translate_off
 `endif
@@ -57,8 +57,8 @@ module SRAM (
 // synopsys translate_on
 `endif
 
-	wire [3:0] sub_wire0;
-	wire [3:0] q = sub_wire0[3:0];
+	wire [11:0] sub_wire0;
+	wire [11:0] q = sub_wire0[11:0];
 
 	altsyncram	altsyncram_component (
 				.address_a (address),
@@ -97,7 +97,7 @@ module SRAM (
 		altsyncram_component.power_up_uninitialized = "FALSE",
 		altsyncram_component.read_during_write_mode_port_a = "DONT_CARE",
 		altsyncram_component.widthad_a = 15,
-		altsyncram_component.width_a = 4,
+		altsyncram_component.width_a = 12,
 		altsyncram_component.width_byteena_a = 1;
 
 
@@ -137,7 +137,7 @@ endmodule
 // Retrieval info: PRIVATE: UseDQRAM NUMERIC "1"
 // Retrieval info: PRIVATE: WRCONTROL_ACLR_A NUMERIC "0"
 // Retrieval info: PRIVATE: WidthAddr NUMERIC "15"
-// Retrieval info: PRIVATE: WidthData NUMERIC "4"
+// Retrieval info: PRIVATE: WidthData NUMERIC "12"
 // Retrieval info: PRIVATE: rden NUMERIC "0"
 // Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
 // Retrieval info: CONSTANT: CLOCK_ENABLE_INPUT_A STRING "BYPASS"
@@ -152,22 +152,22 @@ endmodule
 // Retrieval info: CONSTANT: POWER_UP_UNINITIALIZED STRING "FALSE"
 // Retrieval info: CONSTANT: READ_DURING_WRITE_MODE_PORT_A STRING "DONT_CARE"
 // Retrieval info: CONSTANT: WIDTHAD_A NUMERIC "15"
-// Retrieval info: CONSTANT: WIDTH_A NUMERIC "4"
+// Retrieval info: CONSTANT: WIDTH_A NUMERIC "12"
 // Retrieval info: CONSTANT: WIDTH_BYTEENA_A NUMERIC "1"
 // Retrieval info: USED_PORT: address 0 0 15 0 INPUT NODEFVAL "address[14..0]"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT VCC "clock"
-// Retrieval info: USED_PORT: data 0 0 4 0 INPUT NODEFVAL "data[3..0]"
-// Retrieval info: USED_PORT: q 0 0 4 0 OUTPUT NODEFVAL "q[3..0]"
+// Retrieval info: USED_PORT: data 0 0 12 0 INPUT NODEFVAL "data[11..0]"
+// Retrieval info: USED_PORT: q 0 0 12 0 OUTPUT NODEFVAL "q[11..0]"
 // Retrieval info: USED_PORT: wren 0 0 0 0 INPUT NODEFVAL "wren"
 // Retrieval info: CONNECT: @address_a 0 0 15 0 address 0 0 15 0
 // Retrieval info: CONNECT: @clock0 0 0 0 0 clock 0 0 0 0
-// Retrieval info: CONNECT: @data_a 0 0 4 0 data 0 0 4 0
+// Retrieval info: CONNECT: @data_a 0 0 12 0 data 0 0 12 0
 // Retrieval info: CONNECT: @wren_a 0 0 0 0 wren 0 0 0 0
-// Retrieval info: CONNECT: q 0 0 4 0 @q_a 0 0 4 0
+// Retrieval info: CONNECT: q 0 0 12 0 @q_a 0 0 12 0
 // Retrieval info: GEN_FILE: TYPE_NORMAL SRAM.v TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL SRAM.inc FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL SRAM.cmp FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL SRAM.bsf FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL SRAM_inst.v FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL SRAM_bb.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL SRAM_bb.v TRUE
 // Retrieval info: LIB_FILE: altera_mf

@@ -6,21 +6,41 @@
 
 #include "string.h"
 #include "common_data_structure.h"
+#include "time.h"
+#include "stdlib.h"
 
-class Game_senario
+#define INCREASE_WIDTH 0
+#define DECREASE_WIDTH 1
+#define DOUBLE_RIVER 2
+#define SINGLE_RIVER 3
+
+class GameSenario
 {
 private:
-    void backgound_logic(){
-
-    }
     int minimumWidth;
 
 public:
-    /* background register */
-    // boundaries[i][0]
-    BoundaryInRow boundaries[240];
+    BoundaryInRow boundaries[240];/* background register */
     void move_forward(){
+        // 20s to change a setting
+        clock_t change=clock();
+        srand (time(NULL));
+        while(1){
+            BoundaryInRow newBoundaries;
+            if(clock()-change>=20){
+                clock_t execute=clock();
+                // a round is over, need to change the background
+                short temp=rand()%4;
+                while(clock()-execute<=5)
+                    switch (temp) {
+                        case INCREASE_WIDTH:
+                            if(boundaries[0].river2_left==0){
+                                newBoundaries.river1_left=boundaries[0].river1_left-1;
+                            }
+                    }
+            }
 
+        }
     }
 
     BoundaryInRow get_boundaries(){
@@ -32,7 +52,7 @@ public:
         return temp;
     }
 
-    Game_senario(){
+    GameSenario(){
         memset(boundaries,0,sizeof(BoundaryInRow)*240);
         minimumWidth=10;
     };

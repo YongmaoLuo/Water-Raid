@@ -7,10 +7,9 @@
 
 #include "sprite.h"
 
-class EnemyPlane: Sprite
+class EnemyPlane: public Sprite
 {
-private:
-    char score;
+private: char score;
 };
 
 #endif //WATER_RAID_ENEMY_PLANE_H
