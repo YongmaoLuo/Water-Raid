@@ -41,11 +41,8 @@ public:
     }
 
     bool getIsCrashed() const;
-    void clearCrash(){
-        isCrashed= false;
-    }
 
-    Bullet(char type, const shape &sp, bool isCrashed, const position &pos);
+    Bullet(char type, const Shape &sp, bool isCrashed, const Position &pos);
 
 
     void fly();

@@ -19,12 +19,14 @@ protected:
     char id;
     Shape sp;
 
+    void generate(BoundaryInRow boundary);
     void generate(short boundary[]);
     void generate();
 
     void disappear(char id, vector<Sprite> sprites);
     void disappear();
 
+    void move(BoundaryInRow boundary);
     void move(short boundary[]);
     void move();
 
@@ -32,20 +34,27 @@ protected:
     void checkIfHit();
 
 public:
+    bool isDestory;
     bool isHit;
 
     Position pos;
 
+    Sprite(char type, char hitPoint, char id, const Shape &sp, bool isDestory, const Position &pos) : type(type),
     Sprite(char type, char hitPoint, char id, const Shape &sp, bool isHit, const Position &pos) : type(type),
                                                                                                   hitPoint(hitPoint),
                                                                                                   id(id), sp(sp),
+                                                                                                  isDestory(isDestory),
                                                                                                   isHit(isHit),
                                                                                                   pos(pos) {}
 
+    bool getIsDestory() const {
+        return isDestory;
     bool getIsHit() const {
         return isHit;
     }
 
+    void setIsDestory(bool isDestory) {
+        Sprite::isDestory = isDestory;
     void setIsHit(bool isHit) {
         Sprite::isHit = isHit;
     }
