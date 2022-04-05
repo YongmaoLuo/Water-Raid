@@ -7,7 +7,7 @@
 #include"common_data_structure.h"
 #include "bullet.h"
 #include "enemy_plane.h"
-#include "fuel_tank .h"
+#include "fuel_tank.h"
 #include "battleship.h"
 #include "vector"
 class Airplane{
@@ -15,7 +15,7 @@ private:
     char type,fuel;
     Position pos;
     Shape shape;
-    int scores;
+    short scores;
     bool isCrash;
 public:
     void Fire(Bullet bullet){
@@ -57,8 +57,11 @@ public:
         }
         return isCrash;
     }
-    void addScore(int score){
-        scores+=score;
+    void addScore(short score){
+        this->scores += score;
+    }
+    void addFuel(char fuel){
+        this->fuel += fuel;
     }
     char getType(){
         return this->type;

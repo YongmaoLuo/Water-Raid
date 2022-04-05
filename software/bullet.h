@@ -38,6 +38,7 @@ public:
 
     void setCrash(){
         isCrashed = true;
+        this->pos.y |=~0x1
     }
 
     bool getIsCrashed() const;

@@ -7,7 +7,7 @@
 
 #include "sprite.h"
 
-class FuelTank : Sprite
+class FuelTank : public Sprite
 {
 
 private:

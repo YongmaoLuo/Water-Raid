@@ -7,7 +7,7 @@
 
 #include "sprite.h"
 
-class Battle : public Sprite
+class Battleship : public Sprite
 {
 private:
     char score;
