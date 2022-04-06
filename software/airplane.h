@@ -4,12 +4,13 @@
 #ifndef WATER_RAID_AIRPLANE_H
 #define WATER_RAID_AIRPLANE_H
 
-#include"common_data_structure.h"
+#include "common_data_structure.h"
 #include "bullet.h"
 #include "enemy_plane.h"
 #include "fuel_tank.h"
 #include "battleship.h"
-#include "vector"
+#include <vector>
+
 class Airplane{
 private:
     char type,fuel;
@@ -24,7 +25,7 @@ public:
     void Move(int speed){
         pos.x+=speed*0.01;
     }
-    bool isCrashed(BoundaryInRow boundary, std::vector<EnemyPlane> enemyPlanes, std::vector<Battle> battles){
+    bool isCrashed(BoundaryInRow boundary, std::vector<EnemyPlane> enemyPlanes, std::vector<Battleship> battles){
         // collide the boundary
         if(boundary.river2_left!=0)
             if(pos.x<=boundary.river1_left|| pos.x+shape.width>=boundary.river1_right&& this->pos.x<boundary.river2_left||

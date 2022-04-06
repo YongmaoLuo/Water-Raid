@@ -13,6 +13,8 @@ class FuelTank : public Sprite
 private:
     char fuelVolume;
 
+    void checkIfHit(vector<Bullet> bullets, Airplane airplane);
+
 };
 
 #endif //WATER_RAID_FUEL_TANK_H

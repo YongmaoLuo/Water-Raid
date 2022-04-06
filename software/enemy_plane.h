@@ -11,6 +11,8 @@ class EnemyPlane: public Sprite
 {
 private:
     char score;
+
+    void checkIfHit(vector<Bullet> bullets, Airplane airplane);
 };
 
 #endif //WATER_RAID_ENEMY_PLANE_H
