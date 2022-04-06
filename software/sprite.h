@@ -26,7 +26,7 @@ protected:
 
     void move(BoundaryInRow boundary);
 
-    void checkIfHit(vector<Bullet> bullets, Airplane airplane);
+    virtual void checkIfHit(vector<Bullet> bullets, Airplane airplane);
 
 public:
     bool isDestroy;

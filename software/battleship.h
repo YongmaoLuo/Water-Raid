@@ -12,6 +12,7 @@ class Battleship : public Sprite
 private:
     char score;
 
+    void checkIfHit(vector<Bullet> bullets, Airplane airplane);
 };
 
 #endif //WATER_RAID_BATTLESHIP_H
