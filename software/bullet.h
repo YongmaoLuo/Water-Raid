@@ -45,7 +45,6 @@ public:
 
     Bullet(char type, const Shape &sp, bool isCrashed, const Position &pos);
 
-
     void fly();
 
 };

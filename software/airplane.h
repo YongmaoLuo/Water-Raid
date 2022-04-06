@@ -70,6 +70,9 @@ public:
     char getFuel(){
         return this->fuel;
     }
+    char getScores(){
+        return this->scores;
+    }
     Airplane(){
         type=0;
         fuel=100;

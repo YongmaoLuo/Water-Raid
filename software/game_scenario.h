@@ -1,8 +1,8 @@
 //
 // Created by Yongmao Luo on 4/1/22.
 //
-#ifndef WATER_RAID_GAME_SENARIO_H
-#define WATER_RAID_GAME_SENARIO_H
+#ifndef WATER_RAID_GAME_SCENARIO_H
+#define WATER_RAID_GAME_SCENARIO_H
 
 #include "string.h"
 #include "common_data_structure.h"

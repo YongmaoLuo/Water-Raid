@@ -17,3 +17,6 @@ void FuelTank::checkIfHit(vector<Bullet> bullets, Airplane airplane) {
         }
     }
 }
+
+FuelTank::FuelTank(char type, char hitPoint, char id, const Shape &sp, bool isDestroy, const Position &pos,
+                   char fuelVolume) : Sprite(type, hitPoint, id, sp, isDestroy, pos), fuelVolume(fuelVolume) {}

@@ -20,3 +20,6 @@ void EnemyPlane::checkIfHit(vector<Bullet> bullets, Airplane airplane) {
     }
 }
 
+EnemyPlane::EnemyPlane(char type, char hitPoint, char id, const Shape &sp, bool isDestroy, const Position &pos,
+                       char score) : Sprite(type, hitPoint, id, sp, isDestroy, pos), score(score) {}
+
