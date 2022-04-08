@@ -1,8 +1,8 @@
 //
 // Created by Yongmao Luo on 4/1/22.
 //
-#ifndef WATER_RAID_GAME_SCENARIO_H
-#define WATER_RAID_GAME_SCENARIO_H
+#ifndef WATER_RAID_GAME_Scenario_H
+#define WATER_RAID_GAME_Scenario_H
 
 #include "string.h"
 #include "common_data_structure.h"
@@ -17,31 +17,14 @@
 class GameScenario
 {
 private:
-    int minimumWidth;
+    short minimumWidth;
+    short maximumWidth;
+    short frequency; // how many lines the plane flies over per second
 
 public:
     BoundaryInRow boundaries[240];/* background register */
-    void move_forward(){
-        // 20s to change a setting
-        clock_t change=clock();
-        srand (time(NULL));
-        while(1){
-            BoundaryInRow newBoundaries;
-            if(clock()-change>=20){
-                clock_t execute=clock();
-                // a round is over, need to change the background
-                short temp=rand()%4;
-                while(clock()-execute<=5)
-                    switch (temp) {
-                        case INCREASE_WIDTH:
-                            if(boundaries[0].river2_left==0){
-                                newBoundaries.river1_left=boundaries[0].river1_left-1;
-                            }
-                    }
-            }
-
-        }
-    }
+    void move_forward();
+    GameScenario(short minimumWidth, short maximumWidth);
 
     BoundaryInRow get_boundaries(){
         BoundaryInRow temp;
@@ -51,11 +34,6 @@ public:
         temp.river2_right=boundaries[0].river2_right;
         return temp;
     }
-
-    GameScenario(){
-        memset(boundaries,0,sizeof(BoundaryInRow)*240);
-        minimumWidth=10;
-    };
 
 };
 
