@@ -70,27 +70,7 @@ module vga_ball(input logic        clk,
 	if (reset) begin
 	   {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'h00, 8'h00}; //Black
         end 
-        else if(isSprite && current_color != 0) begin
-		case(current_color)
 
-			1: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'hff, 8'h00}; //Green
-			2: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'h00, 8'hff}; //Blue
-			3: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'h00, 8'h00}; //Red
-			4: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'h00}; //Yellow
-			5: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'hff, 8'hff}; //Cyan
-			6: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'h00, 8'hff}; //Magenta
-			7: {VGA_R, VGA_G, VGA_B} <= {8'h80, 8'h80, 8'h80}; //Gray
-			8: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'h00, 8'h00}; //Black
-			9: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'h00}; //White
-			10: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			11: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			12: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			13: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			14: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			15: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-
-		endcase
-	end
 	else begin
 		case(current_background)
 
@@ -117,46 +97,8 @@ module vga_ball(input logic        clk,
 
    always begin
 
-      if (sprite1_y[0]) begin
-	      if((hcount[10:1] - sprite1_x < 16) && (hcount[10:1] - sprite1_x > -16) && (vcount - sprite1_y[9:1] < 16) && (vcount - sprite1_y[9:1] > -16)) begin // check plane sprite
-			//pull its contents from memory
-			plane_address = 32 * (vcount - sprite1_y[9:1]) + hcount[10:1]-(sprite1_x-16);
-			current_color = plane_out;
-			isSprite = 1;					
-	      end
-	      else begin
-			isSprite = 0;
-	      end
-      end
-
-      if (boundary_3 == 0 && boundary_4 == 0) begin // 1 River
-         if  (hcount[10:1] < boundary_1) begin
-            current_background = 1; // green
-	 end
-         else if (hcount[10:1] < boundary_2) begin
-            current_background = 2; // blue
-         end
-	 else begin
-	    current_background = 1; // green
-	 end
-      end
-      else begin // 2 Rivers
-         if  (hcount[10:1] < boundary_1) begin
-            current_background = 1; // green
-	 end
-         else if (hcount[10:1] < boundary_2) begin
-            current_background = 2; // blue
-	 end
-         else if (hcount[10:1] < boundary_3) begin
-            current_background = 1; // green
-	 end
-         else if (hcount[10:1] < boundary_4) begin
-            current_background = 2; // blue
-	 end
-	 else begin
-	    current_background = 1; // green
-	 end
-      end
+      plane_address = 15;
+      current_background = plane_out;      
 
    end
 	       
