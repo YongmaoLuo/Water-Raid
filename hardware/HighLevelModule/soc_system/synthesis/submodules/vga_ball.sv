@@ -31,44 +31,10 @@ module vga_ball(input logic        clk,
 
    // last bit of y positions indicates whether sprite is onscreen
 
-   logic [9:0]	   plane_x;
-   logic [9:0]	   plane_y;
+   logic [9:0]	   sprite1_x;
+   logic [9:0]	   sprite1_y;
+   logic [4:0]	   sprite1_img; //which sprite is this?
 
-   logic [9:0]	   enemy_1_x;
-   logic [9:0]	   enemy_1_y;
-
-   logic [9:0]	   enemy_2_x;
-   logic [9:0]	   enemy_2_y;
-
-   logic [9:0]	   enemy_3_x;
-   logic [9:0]	   enemy_3_y;
-
-   logic [9:0]	   enemy_4_x;
-   logic [9:0]	   enemy_4_y;
-
-   logic [9:0]	   enemy_5_x;
-   logic [9:0]	   enemy_5_y;
-
-   logic [9:0]	   enemy_6_x;
-   logic [9:0]	   enemy_6_y;
-
-   logic [9:0]	   enemy_7_x;
-   logic [9:0]	   enemy_7_y;
-
-   logic [9:0]	   enemy_8_x;
-   logic [9:0]	   enemy_8_y;
-
-   logic [9:0]	   bullet_x;
-   logic [9:0]	   bullet_y;
-
-   logic [9:0]	   explosion_x;
-   logic [9:0]	   explosion_y;
-
-   logic [3:0]	   score_digit_1;
-   logic [3:0]	   score_digit_2;
-   logic [3:0]	   score_digit_3;
-   logic [3:0]	   score_digit_4;
-   logic [3:0]	   score_digit_5;
 
    logic	   isMusic;
    logic	   isSprite;
@@ -83,86 +49,19 @@ module vga_ball(input logic        clk,
    logic [3:0]     plane_out;
 
    plane_ROM plane_ROM(.address(plane_address), .clock(clk),.q(plane_out));
-/*
-   logic [9:0]	   enemy1_address;
-   logic [3:0]     enemy1_out;
-
-   ROM enemy1(.address(enemy1_address), .clock(clk),.q(enemy1_out));
-
-   logic [9:0]	   enemy2_address;
-   logic [3:0]     enemy2_out;
-
-   ROM enemy2(.address(enemy2_address), .clock(clk),.q(enemy2_out));
-
-   logic [9:0]	   enemy3_address;
-   logic [3:0]     enemy3_out;
-
-   ROM enemy3(.address(enemy3_address), .clock(clk),.q(enemy3_out));
-
-   logic [9:0]	   enemy4_address;
-   logic [3:0]     enemy4_out;
-
-   ROM enemy4(.address(enemy4_address), .clock(clk),.q(enemy4_out));
-
-   logic [9:0]	   enemy5_address;
-   logic [3:0]     enemy5_out;
-
-   ROM enemy5(.address(enemy5_address), .clock(clk),.q(enemy5_out));
-
-   logic [9:0]	   enemy6_address;
-   logic [3:0]     enemy6_out;
-
-   ROM enemy6(.address(enemy6_address), .clock(clk),.q(enemy6_out));
-
-   logic [9:0]	   enemy7_address;
-   logic [3:0]     enemy7_out;
-
-   ROM enemy7(.address(enemy7_address), .clock(clk),.q(enemy7_out));
-
-   logic [9:0]	   enemy8_address;
-   logic [3:0]     enemy8_out;
-
-   ROM enemy8(.address(enemy8_address), .clock(clk),.q(enemy8_out));
-*/
 	
 
    always_ff @(posedge clk) begin
      if (chipselect && write)
        case (address)
 
-	 6'h1 : boundary_1 <= writedata[9:0];
-	 6'h2 : boundary_2 <= writedata[9:0];
-	 6'h3 : boundary_3 <= writedata[9:0];
-	 6'h4 : boundary_4 <= writedata[9:0];
-	 6'h5 : plane_x <= writedata[9:0]; 
-	 6'h6 : plane_y <= writedata[9:0];
-   	 6'h7 : enemy_1_x <= writedata[9:0];
-   	 6'h8 : enemy_1_y <= writedata[9:0];
-         6'h9 : enemy_2_x <= writedata[9:0];
-         6'h10 : enemy_2_y <= writedata[9:0];
-         6'h11 : enemy_3_x <= writedata[9:0];
-         6'h12 : enemy_3_y <= writedata[9:0];
-         6'h13 : enemy_4_x <= writedata[9:0];
-         6'h14 : enemy_4_y <= writedata[9:0];
-         6'h15 : enemy_5_x <= writedata[9:0];
-         6'h16 : enemy_5_y <= writedata[9:0];
-         6'h17 : enemy_6_x <= writedata[9:0];
-         6'h18 : enemy_6_y <= writedata[9:0];
-         6'h19 : enemy_7_x <= writedata[9:0];
-         6'h20 : enemy_7_y <= writedata[9:0];
-         6'h21 : enemy_8_x <= writedata[9:0];
-         6'h22 : enemy_8_y <= writedata[9:0];
-         6'h23 : bullet_x <= writedata[9:0];
-         6'h24 : bullet_y <= writedata[9:0];
-         6'h25 : explosion_x <= writedata[9:0];
-         6'h26 : explosion_y <= writedata[9:0];
-         6'h27 : score_digit_1 <= writedata[3:0];
-         6'h28 : score_digit_2 <= writedata[3:0];
-         6'h29 : score_digit_3 <= writedata[3:0];
-         6'h30 : score_digit_4 <= writedata[3:0];
-         6'h31 : score_digit_5 <= writedata[3:0];
-         6'h32 : isMusic <= writedata[0];
-         6'h33 : whichClip <= writedata[1:0];
+	 6'h0 : boundary_1 <= writedata[9:0];
+	 6'h1 : boundary_2 <= writedata[9:0];
+	 6'h2 : boundary_3 <= writedata[9:0];
+	 6'h3 : boundary_4 <= writedata[9:0];
+	 6'h4 : sprite1_x <= writedata[9:0];
+	 6'h5 : sprite1_y <= writedata[9:0];
+	 6'h6 : sprite1_img <= writedata[4:0];
 
        endcase
    end
@@ -217,58 +116,20 @@ module vga_ball(input logic        clk,
    end
 
    always begin
-      if (plane_y[0]) begin
-	      if((hcount[10:1] - plane_x < 16) && (hcount[10:1] - plane_x > -16) && (vcount - plane_y[9:1] < 16) && (vcount - plane_y[9:1] > -16)) begin // check plane sprite
+
+      if (sprite1_y[0]) begin
+	      if((hcount[10:1] - sprite1_x < 16) && (hcount[10:1] - sprite1_x > -16) && (vcount - sprite1_y[9:1] < 16) && (vcount - sprite1_y[9:1] > -16)) begin // check plane sprite
 			//pull its contents from memory
-			plane_address = 32 * (vcount - plane_y[9:1]) + hcount[10:1]-(plane_x-16);
+			plane_address = 32 * (vcount - sprite1_y[9:1]) + hcount[10:1]-(sprite1_x-16);
 			current_color = plane_out;
 			isSprite = 1;					
 	      end
-      end
-/*
-      if (enemy_1_y[0]) begin
-	      else if((hcount[10:1] - enemy_1_x < 16) && (hcount[10:1] - enemy_1_x > 16) && (vcount[9:1] - enemy_1_y < 16) && (vcount - enemy_1_y[9:1] > 16)) begin // check enemy 1
-
+	      else begin
+			isSprite = 0;
 	      end
       end
-      if (enemy_2_y[0]) begin
-	      else if((hcount[10:1] - enemy_2_x < 16) && (hcount[10:1] - enemy_2_x > 16) && (vcount[9:1] - enemy_2_y < 16) && (vcount - enemy_2_y[9:1] > 16)) begin // check enemy 2
 
-	      end
-      end
-      if(enemy_3_y[0]) begin
-	      else if((hcount[10:1] - enemy_3_x < 16) && (hcount[10:1] - enemy_3_x > 16) && (vcount[9:1] - enemy_3_y < 16) && (vcount - enemy_3_y[9:1] > 16)) begin // check enemy 3
-
-	      end
-      end
-      if(enemy_4_y[0]) begin
-	      else if((hcount[10:1] - enemy_4_x < 16) && (hcount[10:1] - enemy_4_x > 16) && (vcount[9:1] - enemy_4_y < 16) && (vcount - enemy_4_y[9:1] > 16)) begin // check enemy 4
-
-	      end
-      end
-      if(enemy_5_y[0]) begin
-	      else if((hcount[10:1] - enemy_5_x < 16) && (hcount[10:1] - enemy_5_x > 16) && (vcount[9:1] - enemy_5_y < 16) && (vcount - enemy_5_y[9:1] > 16)) begin // check enemy 5
-
-	      end
-      end
-      if(enemy_6_y[0]) begin
-	      else if((hcount[10:1] - enemy_6_x < 16) && (hcount[10:1] - enemy_6_x > 16) && (vcount[9:1] - enemy_6_y < 16) && (vcount - enemy_6_y[9:1] > 16)) begin // check enemy 6
-
-	      end
-      end
-      if(enemy_7_y[0]) begin
-	      else if((hcount[10:1] - enemy_7_x < 16) && (hcount[10:1] - enemy_7_x > 16) && (vcount[9:1] - enemy_7_y < 16) && (vcount - enemy_7_y[9:1] > 16)) begin // check enemy 7
-
-	      end
-      end
-      if(enemy_8_y[0]) begin
-	      else if((hcount[10:1] - enemy_8_x < 16) && (hcount[10:1] - enemy_8_x > 16) && (vcount[9:1] - enemy_8_y < 16) && (vcount - enemy_8_y[9:1] > 16)) begin // check enemy 8
-
-	      end
-      end
-*/
       if (boundary_3 == 0 && boundary_4 == 0) begin // 1 River
-	 isSprite = 0;					
          if  (hcount[10:1] < boundary_1) begin
             current_background = 1; // green
 	 end
@@ -280,7 +141,6 @@ module vga_ball(input logic        clk,
 	 end
       end
       else begin // 2 Rivers
-	 isSprite = 0;					
          if  (hcount[10:1] < boundary_1) begin
             current_background = 1; // green
 	 end
