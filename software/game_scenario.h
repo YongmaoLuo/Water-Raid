@@ -20,11 +20,12 @@ private:
     short minimumWidth;
     short maximumWidth;
     short frequency; // how many lines the plane flies over per second
+    short screenHeader;
 
 public:
     BoundaryInRow boundaries[240];/* background register */
-    void move_forward();
-    GameScenario(short minimumWidth, short maximumWidth);
+    void updateBackground();
+    GameScenario(short minimumWidth, short maximumWidth, short frequency);
 
     BoundaryInRow get_boundaries(){
         BoundaryInRow temp;
