@@ -5,6 +5,8 @@
  * Columbia University
  */
 `include "../ROM/plane_ROM.v"
+`include "../ROM/chopper_ROM.v"
+
 
 module vga_ball(input logic        clk,
 	        input logic 	   reset,
@@ -35,6 +37,10 @@ module vga_ball(input logic        clk,
    logic [9:0]	   sprite1_y;
    logic [4:0]	   sprite1_img; //which sprite is this?
 
+   logic [9:0]	   sprite2_x;
+   logic [9:0]	   sprite2_y;
+   logic [4:0]	   sprite2_img; //which sprite is this?
+
 
    logic	   isMusic;
    logic	   isSprite;
@@ -45,11 +51,12 @@ module vga_ball(input logic        clk,
 	
    //ROM Wires
 
-   logic [9:0]	   plane_address;
+   logic [9:0]	   sprite_address;
    logic [3:0]     plane_out;
+   logic [3:0]     chopper_out;
 
-   plane_ROM plane_ROM(.address(plane_address), .clock(clk),.q(current_color));
-	
+   plane_ROM 	plane_ROM(.address(sprite_address), .clock(clk),.q(plane_out));
+   chopper_ROM 	chopper_ROM(.address(sprite_address),.clock(clk),.q(chopper_out));	
 
    always_ff @(posedge clk) begin
      if (chipselect && write)
@@ -62,6 +69,9 @@ module vga_ball(input logic        clk,
 	 6'h4 : sprite1_x <= writedata[9:0];
 	 6'h5 : sprite1_y <= writedata[9:0];
 	 6'h6 : sprite1_img <= writedata[4:0];
+	 6'h7 : sprite2_x <= writedata[9:0];
+	 6'h8 : sprite2_y <= writedata[9:0];
+	 6'h9 : sprite2_img <= writedata[4:0];
 
        endcase
    end
@@ -117,17 +127,34 @@ module vga_ball(input logic        clk,
    end
 
    always begin
-
-      if((hcount[10:1] < 116) && (hcount[10:1] > 86) && (vcount < 116) && (vcount  > 86)) begin // check plane sprite
-		//pull its contents from memory
-		plane_address = 32 * (vcount - (100-16)) + (hcount[10:1]-(100-16)); //check this - only first row of sprite prints
-		isSprite = 1;					
       
-      end
-      else begin
-		isSprite = 0;
+      isSprite = 0;
+      if(sprite1_y[0]) begin
+	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] > sprite1_x - 16) && (vcount < sprite1_y[9:1]+16) && (vcount  > sprite1_y[9:1]-16)) begin // check sprite1
+			//pull its contents from memory
+			sprite_address = 32 * (vcount - (sprite1_y[9:1]-16)) + (hcount[10:1]-(sprite1_x-16));
+			case(sprite1_img)
+				0: current_color = plane_out;
+				1: current_color = chopper_out;
+			endcase
+			isSprite = 1;					
+	      
+	      end
       end
 
+
+      if(sprite2_y[0]) begin
+	      if((hcount[10:1] < sprite2_x + 16) && (hcount[10:1] > sprite2_x - 16) && (vcount < sprite2_y[9:1]+16) && (vcount  > sprite2_y[9:1]-16)) begin // check sprite2
+			//pull its contents from memory
+			sprite_address = 32 * (vcount - (sprite2_y[9:1]-16)) + (hcount[10:1]-(sprite2_x-16));
+			case(sprite2_img)
+				0: current_color = plane_out;
+				1: current_color = chopper_out;
+			endcase
+			isSprite = 1;					
+	      
+	      end
+      end
 
       if (boundary_3 == 0 && boundary_4 == 0) begin // 1 River
          if  (hcount[10:1] < boundary_1) begin
