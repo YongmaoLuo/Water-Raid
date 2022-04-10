@@ -48,7 +48,7 @@ module vga_ball(input logic        clk,
    logic [9:0]	   plane_address;
    logic [3:0]     plane_out;
 
-   plane_ROM plane_ROM(.address(plane_address), .clock(clk),.q(plane_out));
+   plane_ROM plane_ROM(.address(plane_address), .clock(clk),.q(current_color));
 	
 
    always_ff @(posedge clk) begin
@@ -70,7 +70,28 @@ module vga_ball(input logic        clk,
 	if (reset) begin
 	   {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'h00, 8'h00}; //Black
         end 
+        else if(isSprite && current_color != 0) begin
+		case(current_color)
 
+			0: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
+			1: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'hff, 8'h00}; //Green
+			2: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'h00, 8'hff}; //Blue
+			3: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'h00, 8'h00}; //Red
+			4: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'h00}; //Yellow
+			5: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'hff, 8'hff}; //Cyan
+			6: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'h00, 8'hff}; //Magenta
+			7: {VGA_R, VGA_G, VGA_B} <= {8'h80, 8'h80, 8'h80}; //Gray
+			8: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'h00, 8'h00}; //Black
+			9: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'h00}; //White
+			10: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
+			11: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
+			12: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
+			13: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
+			14: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
+			15: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
+
+		endcase
+	end
 	else begin
 		case(current_background)
 
@@ -97,8 +118,45 @@ module vga_ball(input logic        clk,
 
    always begin
 
-      plane_address = 15;
-      current_background = plane_out;      
+      if((hcount[10:1] < 116) && (hcount[10:1] > 86) && (vcount < 116) && (vcount  > 86)) begin // check plane sprite
+		//pull its contents from memory
+		plane_address = 32 * (vcount - (100-16)) + (hcount[10:1]-(100-16)); //check this - only first row of sprite prints
+		isSprite = 1;					
+      
+      end
+      else begin
+		isSprite = 0;
+      end
+
+
+      if (boundary_3 == 0 && boundary_4 == 0) begin // 1 River
+         if  (hcount[10:1] < boundary_1) begin
+            current_background = 1; // green
+	 end
+         else if (hcount[10:1] < boundary_2) begin
+            current_background = 2; // blue
+         end
+	 else begin
+	    current_background = 1; // green
+	 end
+      end
+      else begin // 2 Rivers
+         if  (hcount[10:1] < boundary_1) begin
+            current_background = 1; // green
+	 end
+         else if (hcount[10:1] < boundary_2) begin
+            current_background = 2; // blue
+	 end
+         else if (hcount[10:1] < boundary_3) begin
+            current_background = 1; // green
+	 end
+         else if (hcount[10:1] < boundary_4) begin
+            current_background = 2; // blue
+	 end
+	 else begin
+	    current_background = 1; // green
+	 end
+      end
 
    end
 	       
