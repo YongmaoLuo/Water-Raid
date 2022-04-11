@@ -30,13 +30,13 @@ void Sprite::generate(BoundaryInRow boundary) {
     this->pos.y = 100;
 }
 
-void Sprite::move(BoundaryInRow boundary) {
+void Sprite::move(BoundaryInRow boundary short minimumWidth) {
 
     srand(time(0));
 
-    //Attention: the width of every branch of the river must greater than 20
-    short forward = this->pos.x + 20;
-    short backward = this->pos.x - 20;
+    //Attention: minimumWidth is the minimum width of every branch of the river
+    short forward = this->pos.x + minimumWidth;
+    short backward = this->pos.x - minimumWidth;
 
     if (boundary.river2_left == 0) {
         if (rand() % 2) {
@@ -56,7 +56,7 @@ void Sprite::move(BoundaryInRow boundary) {
                 if (forward <= boundary.river1_right)
                     this->pos.x = forward;
                 else
-                    this->pos.x = boundary.river2_left + 20;
+                    this->pos.x = boundary.river2_left + minimumWidth;
             } else {
                 if (backward >= boundary.river1_left)
                     this->pos.x = backward;
@@ -73,7 +73,7 @@ void Sprite::move(BoundaryInRow boundary) {
                 if (backward >= boundary.river2_left)
                     this->pos.x = backward;
                 else
-                    this->pos.x = boundary.river1_right - 20;
+                    this->pos.x = boundary.river1_right - minimumWidth;
             }
         }
     }

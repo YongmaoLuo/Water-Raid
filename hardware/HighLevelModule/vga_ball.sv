@@ -41,9 +41,8 @@ module vga_ball(input logic        clk,
    logic [9:0]	   sprite2_y;
    logic [4:0]	   sprite2_img; //which sprite is this?
 
-
-   logic	   isMusic;
    logic	   isSprite;
+   logic	   isMusic;
    logic [1:0]	   whichClip;
 
 	
@@ -51,12 +50,23 @@ module vga_ball(input logic        clk,
 	
    //ROM Wires
 
-   logic [9:0]	   sprite_address;
-   logic [3:0]     plane_out;
-   logic [3:0]     chopper_out;
+   logic [9:0]	   sprite1_address;
+   logic [9:0]	   sprite2_address;
+   logic	   isSprite1;
+   logic	   isSprite2;
 
-   plane_ROM 	plane_ROM(.address(sprite_address), .clock(clk),.q(plane_out));
-   chopper_ROM 	chopper_ROM(.address(sprite_address),.clock(clk),.q(chopper_out));	
+
+   logic [3:0]     plane_out;
+   logic [9:0]     plane_address;
+
+
+   logic [3:0]     chopper_out;
+   logic [9:0] 	   chopper_address;
+
+   plane_ROM 	plane_ROM(.address(plane_address), .clock(clk),.q(plane_out));
+   chopper_ROM 	chopper_ROM(.address(chopper_address),.clock(clk),.q(chopper_out));	
+
+   assign isSprite = isSprite1 || isSprite2;
 
    always_ff @(posedge clk) begin
      if (chipselect && write)
@@ -128,30 +138,33 @@ module vga_ball(input logic        clk,
 
    always begin
       
-      isSprite = 0;
+      isSprite1 = 0;
+      isSprite2 = 0;
+
+
       if(sprite1_y[0]) begin
-	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] > sprite1_x - 16) && (vcount < sprite1_y[9:1]+16) && (vcount  > sprite1_y[9:1]-16)) begin // check sprite1
+	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] >= sprite1_x - 16) && (vcount < sprite1_y[9:1]+16) && (vcount  >= sprite1_y[9:1]-16)) begin // check sprite1
 			//pull its contents from memory
-			sprite_address = 32 * (vcount - (sprite1_y[9:1]-16)) + (hcount[10:1]-(sprite1_x-16));
+			sprite1_address = 32 * (vcount - (sprite1_y[9:1]-16)) + (hcount[10:1]-(sprite1_x-16));
 			case(sprite1_img)
-				0: current_color = plane_out;
-				1: current_color = chopper_out;
+				0: plane_address = sprite1_address;
+				1: chopper_address = sprite1_address;
 			endcase
-			isSprite = 1;					
+			isSprite1 = 1;
+	
 	      
 	      end
       end
-
-
+      
       if(sprite2_y[0]) begin
-	      if((hcount[10:1] < sprite2_x + 16) && (hcount[10:1] > sprite2_x - 16) && (vcount < sprite2_y[9:1]+16) && (vcount  > sprite2_y[9:1]-16)) begin // check sprite2
+	      if((hcount[10:1] < sprite2_x + 16) && (hcount[10:1] >= sprite2_x - 16) && (vcount < sprite2_y[9:1]+16) && (vcount  >= sprite2_y[9:1]-16)) begin // check sprite2
 			//pull its contents from memory
-			sprite_address = 32 * (vcount - (sprite2_y[9:1]-16)) + (hcount[10:1]-(sprite2_x-16));
+			sprite2_address = 32 * (vcount - (sprite2_y[9:1]-16)) + (hcount[10:1]-(sprite2_x-16));
 			case(sprite2_img)
-				0: current_color = plane_out;
-				1: current_color = chopper_out;
+				0: plane_address = sprite2_address;
+				1: chopper_address = sprite2_address;
 			endcase
-			isSprite = 1;					
+			isSprite2 = 1;				
 	      
 	      end
       end
@@ -185,6 +198,16 @@ module vga_ball(input logic        clk,
 	 end
       end
 
+      //priority encoding of sprites
+      if (isSprite1 && plane_out != 0) begin
+		current_color = plane_out;
+      end
+      else if(isSprite2 && chopper_out != 0) begin
+		current_color = chopper_out;
+      end
+      else begin
+		current_color = 0;
+      end
    end
 	       
 endmodule
