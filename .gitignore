@@ -4,3 +4,5 @@
 
 #ignore cmake-build-debug
 cmake-build-debug/
+
+XboxDriver/.vscode/
