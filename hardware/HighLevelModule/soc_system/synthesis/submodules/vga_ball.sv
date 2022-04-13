@@ -6,7 +6,7 @@
  */
 `include "../ROM/plane_ROM.v"
 `include "../ROM/chopper_ROM.v"
-
+`include "../ROM/battleship_ROM.v"
 
 module vga_ball(input logic        clk,
 	        input logic 	   reset,
@@ -33,6 +33,7 @@ module vga_ball(input logic        clk,
 
    logic [3:0] 	   sprite1_color;
    logic [3:0]     sprite2_color;
+   logic [3:0]     sprite3_color;
 
    // last bit of y positions indicates whether sprite is onscreen
 
@@ -43,6 +44,10 @@ module vga_ball(input logic        clk,
    logic [9:0]	   sprite2_x;
    logic [9:0]	   sprite2_y;
    logic [4:0]	   sprite2_img; //which sprite is this?
+
+   logic [9:0]	   sprite3_x;
+   logic [9:0]	   sprite3_y;
+   logic [4:0]	   sprite3_img; //which sprite is this?
 
    logic	   isSprite;
    logic	   isMusic;
@@ -55,21 +60,25 @@ module vga_ball(input logic        clk,
 
    logic [9:0]	   sprite1_address;
    logic [9:0]	   sprite2_address;
+   logic [9:0]     sprite3_address;
    logic	   isSprite1;
    logic	   isSprite2;
-
+   logic 	   isSprite3;
 
    logic [3:0]     plane_out;
    logic [9:0]     plane_address;
 
-
    logic [3:0]     chopper_out;
    logic [9:0] 	   chopper_address;
 
+   logic [3:0]     battleship_out;
+   logic [9:0]     battleship_address;
+
    plane_ROM 	plane_ROM(.address(plane_address), .clock(clk),.q(plane_out));
    chopper_ROM 	chopper_ROM(.address(chopper_address),.clock(clk),.q(chopper_out));	
+   battleship_ROM batteship_ROM(.address(battleship_address), .clock(clk), .q(battleship_out));
 
-   assign isSprite = isSprite1 || isSprite2;
+   assign isSprite = isSprite1 || isSprite2 || isSprite3;
 
    always_ff @(posedge clk) begin
      if (chipselect && write)
@@ -85,7 +94,9 @@ module vga_ball(input logic        clk,
 	 6'h7 : sprite2_x <= writedata[9:0];
 	 6'h8 : sprite2_y <= writedata[9:0];
 	 6'h9 : sprite2_img <= writedata[4:0];
-
+	 6'h10 : sprite3_x <= writedata[9:0];
+	 6'h11 : sprite3_y <= writedata[9:0];
+	 6'h12 : sprite3_img <= writedata[4:0];
        endcase
    end
 
@@ -146,7 +157,7 @@ module vga_ball(input logic        clk,
 
 
       if(sprite1_y[0]) begin
-	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] > sprite1_x - 16) && (vcount < sprite1_y[9:1]+16) && (vcount  > sprite1_y[9:1]-16)) begin // check sprite1
+	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] > sprite1_x - 15) && (vcount < sprite1_y[9:1]+16) && (vcount  > sprite1_y[9:1]-15)) begin // check sprite1
 			//pull its contents from memory
 			sprite1_address = 32 * (vcount - (sprite1_y[9:1]-16)) + (hcount[10:1]-(sprite1_x-16));
 			case(sprite1_img)
@@ -158,6 +169,10 @@ module vga_ball(input logic        clk,
 					chopper_address = sprite1_address;
 					sprite1_color = chopper_out;
 				   end
+				2: begin
+					battleship_address = sprite1_address;
+					sprite1_color = battleship_out;
+			   	   end
 			endcase
 			isSprite1 = 1;
 	
@@ -166,7 +181,7 @@ module vga_ball(input logic        clk,
       end
       
       if(sprite2_y[0]) begin
-	      if((hcount[10:1] < sprite2_x + 16) && (hcount[10:1] > sprite2_x - 16) && (vcount < sprite2_y[9:1]+16) && (vcount  > sprite2_y[9:1]-16)) begin // check sprite2
+	      if((hcount[10:1] < sprite2_x + 16) && (hcount[10:1] > sprite2_x - 15) && (vcount < sprite2_y[9:1]+16) && (vcount  > sprite2_y[9:1]-15)) begin // check sprite2
 			//pull its contents from memory
 			sprite2_address = 32 * (vcount - (sprite2_y[9:1]-16)) + (hcount[10:1]-(sprite2_x-16));
 			case(sprite2_img)
@@ -178,8 +193,35 @@ module vga_ball(input logic        clk,
 					chopper_address = sprite2_address;
 					sprite2_color = chopper_out;
 				   end
+				2: begin
+					battleship_address = sprite2_address;
+					sprite2_color = battleship_out;
+				   end
 			endcase
 			isSprite2 = 1;				
+	      
+	      end
+      end
+
+      if(sprite3_y[0]) begin
+	      if((hcount[10:1] < sprite3_x + 16) && (hcount[10:1] > sprite3_x - 15) && (vcount < sprite3_y[9:1]+16) && (vcount  > sprite3_y[9:1]-15)) begin // check sprite2
+			//pull its contents from memory
+			sprite3_address = 32 * (vcount - (sprite3_y[9:1]-16)) + (hcount[10:1]-(sprite3_x-16));
+			case(sprite3_img)
+				0: begin 
+					plane_address = sprite3_address;
+					sprite3_color = plane_out;
+				   end
+				1: begin
+					chopper_address = sprite3_address;
+					sprite3_color = chopper_out;
+				   end
+				2: begin
+					battleship_address = sprite3_address;
+					sprite3_color = battleship_out;
+				   end
+			endcase
+			isSprite3 = 1;				
 	      
 	      end
       end
@@ -219,6 +261,9 @@ module vga_ball(input logic        clk,
       end
       else if(isSprite2 && sprite2_color != 0) begin
 		current_color = sprite2_color;
+      end
+      else if(isSprite3 && sprite3_color != 0) begin
+		current_color = sprite3_color;
       end
       else begin
 		current_color = 0;
