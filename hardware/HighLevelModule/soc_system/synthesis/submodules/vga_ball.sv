@@ -31,6 +31,9 @@ module vga_ball(input logic        clk,
    logic [3:0]	   current_color; //for sprites
    logic [3:0]	   current_background; //for background
 
+   logic [3:0] 	   sprite1_color;
+   logic [3:0]     sprite2_color;
+
    // last bit of y positions indicates whether sprite is onscreen
 
    logic [9:0]	   sprite1_x;
@@ -147,8 +150,14 @@ module vga_ball(input logic        clk,
 			//pull its contents from memory
 			sprite1_address = 32 * (vcount - (sprite1_y[9:1]-16)) + (hcount[10:1]-(sprite1_x-16));
 			case(sprite1_img)
-				0: plane_address = sprite1_address;
-				1: chopper_address = sprite1_address;
+				0: begin 
+					plane_address = sprite1_address;
+					sprite1_color = plane_out;
+				   end
+				1: begin
+					chopper_address = sprite1_address;
+					sprite1_color = chopper_out;
+				   end
 			endcase
 			isSprite1 = 1;
 	
@@ -161,8 +170,14 @@ module vga_ball(input logic        clk,
 			//pull its contents from memory
 			sprite2_address = 32 * (vcount - (sprite2_y[9:1]-16)) + (hcount[10:1]-(sprite2_x-16));
 			case(sprite2_img)
-				0: plane_address = sprite2_address;
-				1: chopper_address = sprite2_address;
+				0: begin 
+					plane_address = sprite2_address;
+					sprite2_color = plane_out;
+				   end
+				1: begin
+					chopper_address = sprite2_address;
+					sprite2_color = chopper_out;
+				   end
 			endcase
 			isSprite2 = 1;				
 	      
@@ -199,17 +214,11 @@ module vga_ball(input logic        clk,
       end
 
       //priority encoding of sprites
-      if (isSprite1) begin
-		case(sprite1_img) begin
-			0: if(plane_out != 0) current_color = plane_out;
-			1: if(chopper_out != 0) current_color = chopper_out;
-		endcase
+      if (isSprite1 && sprite1_color != 0) begin
+		current_color = sprite1_color;
       end
-      else if(isSprite2) begin
-		case(sprite2_img) begin
-			0: if(plane_out != 0) current_color = plane_out;
-			1: if(chopper_out != 0) current_color = chopper_out;
-		endcase
+      else if(isSprite2 && sprite2_color != 0) begin
+		current_color = sprite2_color;
       end
       else begin
 		current_color = 0;

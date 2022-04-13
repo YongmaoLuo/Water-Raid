@@ -8,7 +8,7 @@ module boundary_mem(
 	output		[39:0] dataout
 	);
 
-	logic 		[8:0] readbase;
+	logic 		[8:0] readbase;mak
 	logic 		[8:0] writebase;
 		
 	logic 		shift_prev;
