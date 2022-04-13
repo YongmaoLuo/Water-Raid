@@ -239,6 +239,9 @@ def main():
     currentSprite, filename = Battleship(filename, debug)  #get Plane
     writeToFile(debug, binarySize, hexSize, location + filename, currentSprite) #write plane to file
 	
+    currentSprite, filename = Invisible(filename, debug)  #get Plane
+    writeToFile(debug, binarySize, hexSize, location + filename, currentSprite) #write plane to file
+    
     
 if __name__ == '__main__':
     main()
