@@ -143,7 +143,7 @@ module vga_ball(input logic        clk,
 
 
       if(sprite1_y[0]) begin
-	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] >= sprite1_x - 16) && (vcount < sprite1_y[9:1]+16) && (vcount  >= sprite1_y[9:1]-16)) begin // check sprite1
+	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] > sprite1_x - 16) && (vcount < sprite1_y[9:1]+16) && (vcount  > sprite1_y[9:1]-16)) begin // check sprite1
 			//pull its contents from memory
 			sprite1_address = 32 * (vcount - (sprite1_y[9:1]-16)) + (hcount[10:1]-(sprite1_x-16));
 			case(sprite1_img)
@@ -157,7 +157,7 @@ module vga_ball(input logic        clk,
       end
       
       if(sprite2_y[0]) begin
-	      if((hcount[10:1] < sprite2_x + 16) && (hcount[10:1] >= sprite2_x - 16) && (vcount < sprite2_y[9:1]+16) && (vcount  >= sprite2_y[9:1]-16)) begin // check sprite2
+	      if((hcount[10:1] < sprite2_x + 16) && (hcount[10:1] > sprite2_x - 16) && (vcount < sprite2_y[9:1]+16) && (vcount  > sprite2_y[9:1]-16)) begin // check sprite2
 			//pull its contents from memory
 			sprite2_address = 32 * (vcount - (sprite2_y[9:1]-16)) + (hcount[10:1]-(sprite2_x-16));
 			case(sprite2_img)
@@ -199,11 +199,17 @@ module vga_ball(input logic        clk,
       end
 
       //priority encoding of sprites
-      if (isSprite1 && plane_out != 0) begin
-		current_color = plane_out;
+      if (isSprite1) begin
+		case(sprite1_img) begin
+			0: if(plane_out != 0) current_color = plane_out;
+			1: if(chopper_out != 0) current_color = chopper_out;
+		endcase
       end
-      else if(isSprite2 && chopper_out != 0) begin
-		current_color = chopper_out;
+      else if(isSprite2) begin
+		case(sprite2_img) begin
+			0: if(plane_out != 0) current_color = plane_out;
+			1: if(chopper_out != 0) current_color = chopper_out;
+		endcase
       end
       else begin
 		current_color = 0;
