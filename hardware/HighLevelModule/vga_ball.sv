@@ -154,7 +154,7 @@ module vga_ball(input logic        clk,
       
       isSprite1 = 0;
       isSprite2 = 0;
-
+      isSprite3 = 0;
 
       if(sprite1_y[0]) begin
 	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] > sprite1_x - 15) && (vcount < sprite1_y[9:1]+16) && (vcount  > sprite1_y[9:1]-15)) begin // check sprite1
@@ -204,7 +204,7 @@ module vga_ball(input logic        clk,
       end
 
       if(sprite3_y[0]) begin
-	      if((hcount[10:1] < sprite3_x + 16) && (hcount[10:1] > sprite3_x - 15) && (vcount < sprite3_y[9:1]+16) && (vcount  > sprite3_y[9:1]-15)) begin // check sprite2
+	      if((hcount[10:1] < sprite3_x + 16) && (hcount[10:1] > sprite3_x - 15) && (vcount < sprite3_y[9:1]+16) && (vcount  > sprite3_y[9:1]-15)) begin // check sprite3
 			//pull its contents from memory
 			sprite3_address = 32 * (vcount - (sprite3_y[9:1]-16)) + (hcount[10:1]-(sprite3_x-16));
 			case(sprite3_img)

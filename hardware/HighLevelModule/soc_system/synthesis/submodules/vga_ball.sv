@@ -154,7 +154,7 @@ module vga_ball(input logic        clk,
       
       isSprite1 = 0;
       isSprite2 = 0;
-
+      isSprite3 = 0;
 
       if(sprite1_y[0]) begin
 	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] > sprite1_x - 15) && (vcount < sprite1_y[9:1]+16) && (vcount  > sprite1_y[9:1]-15)) begin // check sprite1
