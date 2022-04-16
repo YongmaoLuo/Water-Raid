@@ -10,7 +10,7 @@
 
 module vga_ball(input logic        clk,
 	        input logic 	   reset,
-		input logic [15:0]  writedata,
+		input logic [15:0] writedata,
 		input logic 	   write,
 		input 		   chipselect,
 		input logic [5:0]  address,
@@ -23,19 +23,40 @@ module vga_ball(input logic        clk,
    logic [10:0]	   hcount;
    logic [9:0]     vcount;
    
+   logic [9:0]	   boundary_1_IN;
+   logic [9:0]	   boundary_2_IN;
+   logic [9:0]	   boundary_3_IN;
+   logic [9:0]	   boundary_4_IN;
+
    logic [9:0]	   boundary_1;
    logic [9:0]	   boundary_2;
    logic [9:0]	   boundary_3;
    logic [9:0]	   boundary_4;
 
+   logic [9:0]	   boundary_1_LATCHED;
+   logic [9:0]	   boundary_2_LATCHED;
+   logic [9:0]	   boundary_3_LATCHED;
+   logic [9:0]	   boundary_4_LATCHED;
+
+   logic [39:0]    boundary_out;
+
+   assign boundary_1 = boundary_out[0:9];
+   assign boundary_2 = boundary_out[10:19];
+   assign boundary_3 = boundary_out[20:29];
+   assign boundary_4 = boundary_out[30:39];
+
    logic [3:0]	   current_color; //for sprites
    logic [3:0]	   current_background; //for background
+
+   logic [3:0] 	   current_color_LATCHED;
+   logic [3:0]	   current_background_LATCHED;
 
    logic [3:0] 	   sprite1_color;
    logic [3:0]     sprite2_color;
    logic [3:0]     sprite3_color;
 
    // last bit of y positions indicates whether sprite is onscreen
+   logic	   shift;
 
    logic [9:0]	   sprite1_x;
    logic [9:0]	   sprite1_y;
@@ -53,6 +74,14 @@ module vga_ball(input logic        clk,
    logic	   isMusic;
    logic [1:0]	   whichClip;
 
+   boundary_mem boundary_mem(
+	.clk(clk), 
+	.shift(shift), 
+	.reset(reset), 
+	.readaddress(vcount), 
+	.datain({boundary_1_IN, boundary_2_IN, boundary_3_IN, boundary_4_IN}),
+	.dataout(boundary_out)	
+	); //CAN WE HOOK UP GLOBAL RESET?
 	
    vga_counters counters(.clk50(clk), .*);
 	
@@ -84,19 +113,21 @@ module vga_ball(input logic        clk,
      if (chipselect && write)
        case (address)
 
-	 6'h0 : boundary_1 <= writedata[9:0];
-	 6'h1 : boundary_2 <= writedata[9:0];
-	 6'h2 : boundary_3 <= writedata[9:0];
-	 6'h3 : boundary_4 <= writedata[9:0];
-	 6'h4 : sprite1_x <= writedata[9:0];
-	 6'h5 : sprite1_y <= writedata[9:0];
-	 6'h6 : sprite1_img <= writedata[4:0];
-	 6'h7 : sprite2_x <= writedata[9:0];
-	 6'h8 : sprite2_y <= writedata[9:0];
-	 6'h9 : sprite2_img <= writedata[4:0];
-	 6'h10 : sprite3_x <= writedata[9:0];
-	 6'h11 : sprite3_y <= writedata[9:0];
-	 6'h12 : sprite3_img <= writedata[4:0];
+	 6'h0 : boundary_1_IN <= writedata[9:0];
+	 6'h1 : boundary_2_IN <= writedata[9:0];
+	 6'h2 : boundary_3_IN <= writedata[9:0];
+	 6'h3 : boundary_4_IN <= writedata[9:0];
+	 6'h4 : shift <= writedata[0];
+	 6'h5 : sprite1_x <= writedata[9:0];
+	 6'h6 : sprite1_y <= writedata[9:0];
+	 6'h7 : sprite1_img <= writedata[4:0];
+	 6'h8 : sprite2_x <= writedata[9:0];
+	 6'h9 : sprite2_y <= writedata[9:0];
+	 6'h10 : sprite2_img <= writedata[4:0];
+	 6'h11 : sprite3_x <= writedata[9:0]; //Last three registers are inaccessible!
+	 6'h12 : sprite3_y <= writedata[9:0];
+	 6'h13 : sprite3_img <= writedata[4:0];
+
        endcase
    end
 
@@ -104,8 +135,8 @@ module vga_ball(input logic        clk,
 	if (reset) begin
 	   {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'h00, 8'h00}; //Black
         end 
-        else if(isSprite && current_color != 0) begin
-		case(current_color)
+        else if(isSprite && current_color_LATCHED != 0) begin
+		case(current_color_LATCHED)
 
 			0: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
 			1: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'hff, 8'h00}; //Green
@@ -127,7 +158,7 @@ module vga_ball(input logic        clk,
 		endcase
 	end
 	else begin
-		case(current_background)
+		case(current_background_LATCHED)
 
 			0: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
 			1: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'hff, 8'h00}; //Green
@@ -149,6 +180,15 @@ module vga_ball(input logic        clk,
 		endcase
 	end
    end
+   
+   always @(posedge clk) begin //latching of some values
+	current_color_LATCHED 		<= current_color;
+	current_background_LATCHED 	<= current_background;
+	boundary_1_LATCHED 		<= boundary_1;
+	boundary_2_LATCHED 		<= boundary_2;
+	boundary_3_LATCHED 		<= boundary_3;
+	boundary_4_LATCHED 		<= boundary_4;
+   end
 
    always begin
       
@@ -157,7 +197,7 @@ module vga_ball(input logic        clk,
       isSprite3 = 0;
 
       if(sprite1_y[0]) begin
-	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] > sprite1_x - 15) && (vcount < sprite1_y[9:1]+16) && (vcount  > sprite1_y[9:1]-15)) begin // check sprite1
+	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] >= sprite1_x - 16) && (vcount < sprite1_y[9:1]+16) && (vcount  >= sprite1_y[9:1]-16)) begin // check sprite1
 			//pull its contents from memory
 			sprite1_address = 32 * (vcount - (sprite1_y[9:1]-16)) + (hcount[10:1]-(sprite1_x-16));
 			case(sprite1_img)
@@ -176,12 +216,11 @@ module vga_ball(input logic        clk,
 			endcase
 			isSprite1 = 1;
 	
-	      
 	      end
       end
       
       if(sprite2_y[0]) begin
-	      if((hcount[10:1] < sprite2_x + 16) && (hcount[10:1] > sprite2_x - 15) && (vcount < sprite2_y[9:1]+16) && (vcount  > sprite2_y[9:1]-15)) begin // check sprite2
+	      if((hcount[10:1] < sprite2_x + 16) && (hcount[10:1] >= sprite2_x - 16) && (vcount < sprite2_y[9:1]+16) && (vcount  >= sprite2_y[9:1]-16)) begin // check sprite2
 			//pull its contents from memory
 			sprite2_address = 32 * (vcount - (sprite2_y[9:1]-16)) + (hcount[10:1]-(sprite2_x-16));
 			case(sprite2_img)
@@ -204,9 +243,9 @@ module vga_ball(input logic        clk,
       end
 
       if(sprite3_y[0]) begin
-	      if((hcount[10:1] < sprite3_x + 16) && (hcount[10:1] > sprite3_x - 15) && (vcount < sprite3_y[9:1]+16) && (vcount  > sprite3_y[9:1]-15)) begin // check sprite3
+	      if((hcount[10:1] < sprite3_x + 16) && (hcount[10:1] >= sprite3_x - 16) && (vcount < sprite3_y[9:1] + 16) && (vcount  >= sprite3_y[9:1] - 16)) begin // check sprite3
 			//pull its contents from memory
-			sprite3_address = 32 * (vcount - (sprite3_y[9:1]-16)) + (hcount[10:1]-(sprite3_x-16));
+			sprite3_address = 32 * (vcount - (sprite3_y[9:1]-16)) + (hcount[10:1] - (sprite3_x-16));
 			case(sprite3_img)
 				0: begin 
 					plane_address = sprite3_address;
@@ -226,11 +265,11 @@ module vga_ball(input logic        clk,
 	      end
       end
 
-      if (boundary_3 == 0 && boundary_4 == 0) begin // 1 River
-         if  (hcount[10:1] < boundary_1) begin
+      if (boundary_3_LATCHED == 0 && boundary_4_LATCHED == 0) begin // 1 River
+         if  (hcount[10:1] < boundary_1_LATCHED) begin
             current_background = 1; // green
 	 end
-         else if (hcount[10:1] < boundary_2) begin
+         else if (hcount[10:1] < boundary_2_LATCHED) begin
             current_background = 2; // blue
          end
 	 else begin
@@ -238,16 +277,16 @@ module vga_ball(input logic        clk,
 	 end
       end
       else begin // 2 Rivers
-         if  (hcount[10:1] < boundary_1) begin
+         if  (hcount[10:1] < boundary_1_LATCHED) begin
             current_background = 1; // green
 	 end
-         else if (hcount[10:1] < boundary_2) begin
+         else if (hcount[10:1] < boundary_2_LATCHED) begin
             current_background = 2; // blue
 	 end
-         else if (hcount[10:1] < boundary_3) begin
+         else if (hcount[10:1] < boundary_3_LATCHED) begin
             current_background = 1; // green
 	 end
-         else if (hcount[10:1] < boundary_4) begin
+         else if (hcount[10:1] < boundary_4_LATCHED) begin
             current_background = 2; // blue
 	 end
 	 else begin

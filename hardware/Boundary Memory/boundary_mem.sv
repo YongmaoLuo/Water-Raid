@@ -3,12 +3,13 @@
 module boundary_mem(
 	input 		clk,
 	input 		shift,
+	input		reset,
 	input 		[8:0] readaddress,
 	input		[39:0] datain,
 	output		[39:0] dataout
 	);
 
-	logic 		[8:0] readbase;mak
+	logic 		[8:0] readbase;
 	logic 		[8:0] writebase;
 		
 	logic 		shift_prev;
@@ -28,6 +29,10 @@ module boundary_mem(
 			);
 */
 	always_ff @(posedge clk) begin
+		if(reset) begin
+			shift_prev <= shift;
+			wren <= 0;
+		end
 		if (shift != shift_prev) begin
 			readbase <= (readbase+1)%480;
 			writebase <= (writebase+1)%480;	
