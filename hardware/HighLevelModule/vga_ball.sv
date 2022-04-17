@@ -7,6 +7,7 @@
 `include "../ROM/plane_ROM.v"
 `include "../ROM/chopper_ROM.v"
 `include "../ROM/battleship_ROM.v"
+`include "../BoundaryMemory/boundary_mem.sv"
 
 module vga_ball(input logic        clk,
 	        input logic 	   reset,
@@ -40,10 +41,10 @@ module vga_ball(input logic        clk,
 
    logic [39:0]    boundary_out;
 
-   assign boundary_1 = boundary_out[0:9];
-   assign boundary_2 = boundary_out[10:19];
-   assign boundary_3 = boundary_out[20:29];
-   assign boundary_4 = boundary_out[30:39];
+   assign boundary_1 = boundary_out[9:0];
+   assign boundary_2 = boundary_out[19:10];
+   assign boundary_3 = boundary_out[29:20];
+   assign boundary_4 = boundary_out[39:30];
 
    logic [3:0]	   current_color; //for sprites
    logic [3:0]	   current_background; //for background
@@ -113,20 +114,20 @@ module vga_ball(input logic        clk,
      if (chipselect && write)
        case (address)
 
-	 6'h0 : boundary_1_IN <= writedata[9:0];
-	 6'h1 : boundary_2_IN <= writedata[9:0];
-	 6'h2 : boundary_3_IN <= writedata[9:0];
-	 6'h3 : boundary_4_IN <= writedata[9:0];
-	 6'h4 : shift <= writedata[0];
-	 6'h5 : sprite1_x <= writedata[9:0];
-	 6'h6 : sprite1_y <= writedata[9:0];
-	 6'h7 : sprite1_img <= writedata[4:0];
-	 6'h8 : sprite2_x <= writedata[9:0];
-	 6'h9 : sprite2_y <= writedata[9:0];
-	 6'h10 : sprite2_img <= writedata[4:0];
-	 6'h11 : sprite3_x <= writedata[9:0]; //Last three registers are inaccessible!
-	 6'h12 : sprite3_y <= writedata[9:0];
-	 6'h13 : sprite3_img <= writedata[4:0];
+	 0 : boundary_1_IN <= writedata[9:0];
+	 1 : boundary_2_IN <= writedata[9:0];
+	 2 : boundary_3_IN <= writedata[9:0];
+	 3 : boundary_4_IN <= writedata[9:0];
+	 4 : shift <= writedata[0];
+	 5 : sprite1_x <= writedata[9:0];
+	 6 : sprite1_y <= writedata[9:0];
+	 7 : sprite1_img <= writedata[4:0];
+	 8 : sprite2_x <= writedata[9:0];
+	 9 : sprite2_y <= writedata[9:0];
+	 10 : sprite2_img <= writedata[4:0];
+	 11 : sprite3_x <= writedata[9:0]; //Last three registers are inaccessible!
+	 12 : sprite3_y <= writedata[9:0];
+	 13 : sprite3_img <= writedata[4:0];
 
        endcase
    end
