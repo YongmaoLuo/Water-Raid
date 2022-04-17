@@ -87,19 +87,20 @@ module vga_ball(input logic        clk,
      if (chipselect && write)
        case (address)
 
-	 6'h0 : boundary_1 <= writedata[9:0];
-	 6'h1 : boundary_2 <= writedata[9:0];
-	 6'h2 : boundary_3 <= writedata[9:0];
-	 6'h3 : boundary_4 <= writedata[9:0];
-	 6'h4 : sprite1_x <= writedata[9:0];
-	 6'h5 : sprite1_y <= writedata[9:0];
-	 6'h6 : sprite1_img <= writedata[4:0];
-	 6'h7 : sprite2_x <= writedata[9:0];
-	 6'h8 : sprite2_y <= writedata[9:0];
-	 6'h9 : sprite2_img <= writedata[4:0];
-	 6'h10 : sprite3_x <= writedata[9:0]; //Last three registers are inaccessible!
-	 6'h11 : sprite3_y <= writedata[9:0];
-	 6'h12 : sprite3_img <= writedata[4:0];
+	 0 : boundary_1 <= writedata[9:0];
+	 1 : boundary_2 <= writedata[9:0];
+	 2 : boundary_3 <= writedata[9:0];
+	 3 : boundary_4 <= writedata[9:0];
+	 4 : sprite1_x <= writedata[9:0];
+	 5 : sprite1_y <= writedata[9:0];
+	 6 : sprite1_img <= writedata[4:0];
+	 7 : sprite2_x <= writedata[9:0];
+	 8 : sprite2_y <= writedata[9:0];
+	 9 : sprite2_img <= writedata[4:0];
+	 10 : sprite3_x <= writedata[9:0]; 
+	 11 : sprite3_y <= writedata[9:0];
+	 12 : sprite3_img <= writedata[4:0];
+
        endcase
    end
 
@@ -164,7 +165,7 @@ module vga_ball(input logic        clk,
       isSprite2 = 0;
       isSprite3 = 0;
 
-      if(sprite1_y[0]) begin
+      if(sprite1_y[0]) begin //whether the sprite is onscreen
 	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] >= sprite1_x - 16) && (vcount < sprite1_y[9:1]+16) && (vcount  >= sprite1_y[9:1]-16)) begin // check sprite1
 			//pull its contents from memory
 			sprite1_address = 32 * (vcount - (sprite1_y[9:1]-16)) + (hcount[10:1]-(sprite1_x-16));
@@ -182,7 +183,7 @@ module vga_ball(input logic        clk,
 					sprite1_color = battleship_out;
 			   	   end
 			endcase
-			isSprite1 = 1;
+			isSprite1 = 1; // we are in range of sprite 1
 	
 	      end
       end
