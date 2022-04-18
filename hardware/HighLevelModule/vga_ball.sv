@@ -61,6 +61,9 @@ module vga_ball(input logic        clk,
 
    // last bit of y positions indicates whether sprite is onscreen
    logic	   shift;
+   // logic to determine whether or not to pull reset high
+   logic	   reset_mem;
+   logic	   reset_mem_prev;
 
    logic [9:0]	   sprite1_x;
    logic [9:0]	   sprite1_y;
@@ -81,11 +84,11 @@ module vga_ball(input logic        clk,
    boundary_mem boundary_mem(
 	.clk(clk), 
 	.shift(shift), 
-	.reset(reset), 
+	.reset(reset_mem), 
 	.readaddress(vcount), 
 	.datain({boundary_1_IN, boundary_2_IN, boundary_3_IN, boundary_4_IN}),
-	.dataout(boundary_out)	
-	); //CAN WE HOOK UP GLOBAL RESET?
+	.dataout(boundary_out)
+	);
 	
    vga_counters counters(.clk50(clk), .*);
 	
@@ -209,78 +212,90 @@ module vga_ball(input logic        clk,
    	isSprite3_LATCHED		<= isSprite3;
    end
 
+   always @(posedge clk) begin //pulse boundary mem reset once when board boots up
+	if (reset_mem_prev == 0) begin
+		reset_mem <= 1;
+		reset_mem_prev <= 1;
+	end
+	if (reset_mem == 1) begin
+		reset_mem <= 0;
+	end
+   end
+
    always begin
       
       isSprite1 = 0;
       isSprite2 = 0;
       isSprite3 = 0;
+			
+      sprite1_address = ((vcount - (sprite1_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite1_x-16));
+      sprite2_address = ((vcount - (sprite2_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite2_x-16));
+      sprite3_address = ((vcount - (sprite3_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite3_x-16));
+
+      //assuming none of the images will be the same
+      case(sprite1_img)
+		0: begin 
+			plane_address = sprite1_address;
+			sprite1_color = plane_out; //maybe latch the sprite colors
+		   end
+		1: begin
+			chopper_address = sprite1_address;
+			sprite1_color = chopper_out;
+		   end
+		2: begin
+			battleship_address = sprite1_address;
+			sprite1_color = battleship_out;
+   		   end
+      endcase
+
+      case(sprite2_img)
+		0: begin 
+			plane_address = sprite2_address;
+			sprite2_color = plane_out;
+		   end
+		1: begin
+			chopper_address = sprite2_address;
+			sprite2_color = chopper_out;
+		   end
+		2: begin
+			battleship_address = sprite2_address;
+			sprite2_color = battleship_out;
+		   end
+      endcase
+
+      case(sprite3_img)
+		0: begin 
+			plane_address = sprite3_address;
+			sprite3_color = plane_out;
+		   end
+			1: begin
+		chopper_address = sprite3_address;
+			sprite3_color = chopper_out;
+		   end
+		2: begin
+			battleship_address = sprite3_address;
+			sprite3_color = battleship_out;
+		   end
+      endcase
 
       if(sprite1_y[0]) begin
 	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] >= sprite1_x - 16) && (vcount < sprite1_y[9:1]+16) && (vcount  >= sprite1_y[9:1]-16)) begin // check sprite1
 			//pull its contents from memory
-			sprite1_address = ((vcount - (sprite1_y[9:1]-16)) << 5) + (hcount[10:1]-(sprite1_x-16)); //maybe consider changing the multiplication to a bit shift
-			case(sprite1_img)
-				0: begin 
-					plane_address = sprite1_address;
-					sprite1_color = plane_out; //maybe latch the sprite colors
-				   end
-				1: begin
-					chopper_address = sprite1_address;
-					sprite1_color = chopper_out;
-				   end
-				2: begin
-					battleship_address = sprite1_address;
-					sprite1_color = battleship_out;
-			   	   end
-			endcase
 			isSprite1 = 1;
-	
 	      end
       end
       
       if(sprite2_y[0]) begin
 	      if((hcount[10:1] < sprite2_x + 16) && (hcount[10:1] >= sprite2_x - 16) && (vcount < sprite2_y[9:1]+16) && (vcount  >= sprite2_y[9:1]-16)) begin // check sprite2
 			//pull its contents from memory
-			sprite2_address = ((vcount - (sprite2_y[9:1]-16)) << 5) + (hcount[10:1]-(sprite2_x-16));
-			case(sprite2_img)
-				0: begin 
-					plane_address = sprite2_address;
-					sprite2_color = plane_out;
-				   end
-				1: begin
-					chopper_address = sprite2_address;
-					sprite2_color = chopper_out;
-				   end
-				2: begin
-					battleship_address = sprite2_address;
-					sprite2_color = battleship_out;
-				   end
-			endcase
 			isSprite2 = 1;				
-	      
 	      end
       end
 
       if(sprite3_y[0]) begin
 	      if((hcount[10:1] < sprite3_x + 16) && (hcount[10:1] >= sprite3_x - 16) && (vcount < sprite3_y[9:1] + 16) && (vcount  >= sprite3_y[9:1] - 16)) begin // check sprite3
 			//pull its contents from memory
-			sprite3_address = ((vcount - (sprite3_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite3_x-16));
-			case(sprite3_img)
-				0: begin 
-					plane_address = sprite3_address;
-					sprite3_color = plane_out;
-				   end
-				1: begin
-					chopper_address = sprite3_address;
-					sprite3_color = chopper_out;
-				   end
-				2: begin
-					battleship_address = sprite3_address;
-					sprite3_color = battleship_out;
-				   end
-			endcase
-			isSprite3 = 1;				
-	      
+			isSprite3 = 1;		
 	      end
       end
 

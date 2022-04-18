@@ -11489,7 +11489,13 @@ dll_delayctrl[6] <= dll_wys_m.DELAYCTRLOUT6
 
 |soc_system_top|soc_system:soc_system0|vga_ball:vga_ball_0
 clk => clk.IN4
-reset => reset.IN1
+reset => vga_counters:counters.reset
+reset => VGA_R.OUTPUTSELECT
+reset => VGA_R.OUTPUTSELECT
+reset => VGA_G.OUTPUTSELECT
+reset => VGA_G.OUTPUTSELECT
+reset => VGA_B.OUTPUTSELECT
+reset => VGA_B.OUTPUTSELECT
 writedata[0] => sprite3_img.DATAB
 writedata[0] => sprite3_y.DATAB
 writedata[0] => sprite3_x.DATAB
