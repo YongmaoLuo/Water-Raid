@@ -54,13 +54,13 @@ preplace inst soc_system.clk_0 -pg 1 -lvl 1 -y 110
 preplace inst soc_system.hps_0.f2s_periph_ref_clk -pg 1
 preplace inst soc_system.hps_0.fpga_interfaces -pg 1
 preplace inst soc_system.hps_0.axi_sdram -pg 1
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)clk_0.clk_in_reset,(SLAVE)soc_system.reset) 1 0 1 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.hps_ddr3,(SLAVE)hps_0.memory) 1 0 2 NJ 180 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.clk,(SLAVE)clk_0.clk_in) 1 0 1 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)vga_ball_0.vga,(SLAVE)soc_system.vga) 1 0 3 NJ 250 NJ 250 NJ
-preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.reset,(SLAVE)clk_0.clk_in_reset) 1 0 1 NJ
 preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.hps,(SLAVE)hps_0.hps_io) 1 0 2 NJ 100 NJ
-preplace netloc POINT_TO_POINT<net_container>soc_system</net_container>(SLAVE)vga_ball_0.avalon_slave_0,(MASTER)hps_0.h2f_lw_axi_master) 1 2 1 620
-preplace netloc POINT_TO_POINT<net_container>soc_system</net_container>(SLAVE)vga_ball_0.reset,(MASTER)clk_0.clk_reset) 1 1 2 270 230 NJ
-preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)hps_0.f2h_axi_clock,(SLAVE)hps_0.h2f_axi_clock,(SLAVE)hps_0.h2f_lw_axi_clock,(SLAVE)vga_ball_0.clock,(MASTER)clk_0.clk) 1 1 2 310 210 NJ
+preplace netloc POINT_TO_POINT<net_container>soc_system</net_container>(MASTER)hps_0.h2f_lw_axi_master,(SLAVE)vga_ball_0.avalon_slave_0) 1 2 1 620
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)clk_0.clk_in,(SLAVE)soc_system.clk) 1 0 1 NJ
+preplace netloc POINT_TO_POINT<net_container>soc_system</net_container>(MASTER)clk_0.clk_reset,(SLAVE)vga_ball_0.reset) 1 1 2 NJ 230 N
+preplace netloc EXPORT<net_container>soc_system</net_container>(SLAVE)soc_system.vga,(SLAVE)vga_ball_0.vga) 1 0 3 NJ 250 NJ 250 NJ
+preplace netloc FAN_OUT<net_container>soc_system</net_container>(SLAVE)hps_0.f2h_axi_clock,(SLAVE)vga_ball_0.clock,(SLAVE)hps_0.h2f_lw_axi_clock,(SLAVE)hps_0.h2f_axi_clock,(MASTER)clk_0.clk) 1 1 2 310 210 N
 levelinfo -pg 1 0 60 780
 levelinfo -hier soc_system 70 100 430 650 770

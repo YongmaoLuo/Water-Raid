@@ -55,6 +55,9 @@ module vga_ball(input logic        clk,
    logic [3:0] 	   sprite1_color;
    logic [3:0]     sprite2_color;
    logic [3:0]     sprite3_color;
+   logic [3:0] 	   sprite1_color_LATCHED;
+   logic [3:0]     sprite2_color_LATCHED;
+   logic [3:0]     sprite3_color_LATCHED;
 
    // last bit of y positions indicates whether sprite is onscreen
    logic	   shift;
@@ -94,19 +97,25 @@ module vga_ball(input logic        clk,
    logic	   isSprite1;
    logic	   isSprite2;
    logic 	   isSprite3;
+   logic	   isSprite1_LATCHED;
+   logic	   isSprite2_LATCHED;
+   logic 	   isSprite3_LATCHED;
 
    logic [3:0]     plane_out;
    logic [9:0]     plane_address;
+   logic [9:0]	   plane_address_LATCHED;
 
    logic [3:0]     chopper_out;
    logic [9:0] 	   chopper_address;
+   logic [9:0]     chopper_address_LATCHED;
 
    logic [3:0]     battleship_out;
    logic [9:0]     battleship_address;
+   logic [9:0]     battleship_address_LATCHED;
 
-   plane_ROM 	plane_ROM(.address(plane_address), .clock(clk),.q(plane_out));
-   chopper_ROM 	chopper_ROM(.address(chopper_address),.clock(clk),.q(chopper_out));	
-   battleship_ROM batteship_ROM(.address(battleship_address), .clock(clk), .q(battleship_out));
+   plane_ROM 	plane_ROM(.address(plane_address_LATCHED), .clock(clk),.q(plane_out));
+   chopper_ROM 	chopper_ROM(.address(chopper_address_LATCHED),.clock(clk),.q(chopper_out));	
+   battleship_ROM batteship_ROM(.address(battleship_address_LATCHED), .clock(clk), .q(battleship_out));
 
    assign isSprite = isSprite1 || isSprite2 || isSprite3;
 
@@ -114,20 +123,20 @@ module vga_ball(input logic        clk,
      if (chipselect && write)
        case (address)
 
-	 6'h0 : boundary_1_IN <= writedata[9:0];
-	 6'h1 : boundary_2_IN <= writedata[9:0];
-	 6'h2 : boundary_3_IN <= writedata[9:0];
-	 6'h3 : boundary_4_IN <= writedata[9:0];
-	 6'h4 : shift <= writedata[0];
-	 6'h5 : sprite1_x <= writedata[9:0];
-	 6'h6 : sprite1_y <= writedata[9:0];
-	 6'h7 : sprite1_img <= writedata[4:0];
-	 6'h8 : sprite2_x <= writedata[9:0];
-	 6'h9 : sprite2_y <= writedata[9:0];
-	 6'h10 : sprite2_img <= writedata[4:0];
-	 6'h11 : sprite3_x <= writedata[9:0]; //Last three registers are inaccessible!
-	 6'h12 : sprite3_y <= writedata[9:0];
-	 6'h13 : sprite3_img <= writedata[4:0];
+	 0 : boundary_1_IN <= writedata[9:0];
+	 1 : boundary_2_IN <= writedata[9:0];
+	 2 : boundary_3_IN <= writedata[9:0];
+	 3 : boundary_4_IN <= writedata[9:0];
+	 4 : shift <= writedata[0];
+	 5 : sprite1_x <= writedata[9:0];
+	 6 : sprite1_y <= writedata[9:0];
+	 7 : sprite1_img <= writedata[4:0];
+	 8 : sprite2_x <= writedata[9:0];
+	 9 : sprite2_y <= writedata[9:0];
+	 10 : sprite2_img <= writedata[4:0];
+	 11 : sprite3_x <= writedata[9:0];
+	 12 : sprite3_y <= writedata[9:0];
+	 13 : sprite3_img <= writedata[4:0];
 
        endcase
    end
@@ -189,6 +198,15 @@ module vga_ball(input logic        clk,
 	boundary_2_LATCHED 		<= boundary_2;
 	boundary_3_LATCHED 		<= boundary_3;
 	boundary_4_LATCHED 		<= boundary_4;
+	plane_address_LATCHED		<= plane_address;
+	chopper_address_LATCHED		<= chopper_address;
+	battleship_address_LATCHED	<= battleship_address;
+   	sprite1_color_LATCHED		<= sprite1_color;
+   	sprite2_color_LATCHED		<= sprite2_color;
+     	sprite3_color_LATCHED		<= sprite3_color;
+   	isSprite1_LATCHED 		<= isSprite1;
+   	isSprite2_LATCHED		<= isSprite2;
+   	isSprite3_LATCHED		<= isSprite3;
    end
 
    always begin
@@ -200,11 +218,11 @@ module vga_ball(input logic        clk,
       if(sprite1_y[0]) begin
 	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] >= sprite1_x - 16) && (vcount < sprite1_y[9:1]+16) && (vcount  >= sprite1_y[9:1]-16)) begin // check sprite1
 			//pull its contents from memory
-			sprite1_address = 32 * (vcount - (sprite1_y[9:1]-16)) + (hcount[10:1]-(sprite1_x-16));
+			sprite1_address = ((vcount - (sprite1_y[9:1]-16)) << 5) + (hcount[10:1]-(sprite1_x-16)); //maybe consider changing the multiplication to a bit shift
 			case(sprite1_img)
 				0: begin 
 					plane_address = sprite1_address;
-					sprite1_color = plane_out;
+					sprite1_color = plane_out; //maybe latch the sprite colors
 				   end
 				1: begin
 					chopper_address = sprite1_address;
@@ -223,7 +241,7 @@ module vga_ball(input logic        clk,
       if(sprite2_y[0]) begin
 	      if((hcount[10:1] < sprite2_x + 16) && (hcount[10:1] >= sprite2_x - 16) && (vcount < sprite2_y[9:1]+16) && (vcount  >= sprite2_y[9:1]-16)) begin // check sprite2
 			//pull its contents from memory
-			sprite2_address = 32 * (vcount - (sprite2_y[9:1]-16)) + (hcount[10:1]-(sprite2_x-16));
+			sprite2_address = ((vcount - (sprite2_y[9:1]-16)) << 5) + (hcount[10:1]-(sprite2_x-16));
 			case(sprite2_img)
 				0: begin 
 					plane_address = sprite2_address;
@@ -246,7 +264,7 @@ module vga_ball(input logic        clk,
       if(sprite3_y[0]) begin
 	      if((hcount[10:1] < sprite3_x + 16) && (hcount[10:1] >= sprite3_x - 16) && (vcount < sprite3_y[9:1] + 16) && (vcount  >= sprite3_y[9:1] - 16)) begin // check sprite3
 			//pull its contents from memory
-			sprite3_address = 32 * (vcount - (sprite3_y[9:1]-16)) + (hcount[10:1] - (sprite3_x-16));
+			sprite3_address = ((vcount - (sprite3_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite3_x-16));
 			case(sprite3_img)
 				0: begin 
 					plane_address = sprite3_address;
@@ -296,14 +314,14 @@ module vga_ball(input logic        clk,
       end
 
       //priority encoding of sprites
-      if (isSprite1 && sprite1_color != 0) begin
-		current_color = sprite1_color;
+      if (isSprite1 && sprite1_color_LATCHED != 0) begin
+		current_color = sprite1_color_LATCHED;
       end
-      else if(isSprite2 && sprite2_color != 0) begin
-		current_color = sprite2_color;
+      else if(isSprite2 && sprite2_color_LATCHED != 0) begin
+		current_color = sprite2_color_LATCHED;
       end
-      else if(isSprite3 && sprite3_color != 0) begin
-		current_color = sprite3_color;
+      else if(isSprite3 && sprite3_color_LATCHED != 0) begin
+		current_color = sprite3_color_LATCHED;
       end
       else begin
 		current_color = 0;
