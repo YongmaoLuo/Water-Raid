@@ -8,6 +8,7 @@
 `include "../ROM/chopper_ROM.v"
 `include "../ROM/battleship_ROM.v"
 `include "../BoundaryMemory/boundary_mem.sv"
+//`include "../SRAM/SRAM_oneport.v"
 
 module vga_ball(input logic        clk,
 	        input logic 	   reset,
@@ -41,10 +42,10 @@ module vga_ball(input logic        clk,
 
    logic [39:0]    boundary_out;
 
-   assign boundary_1 = boundary_out[9:0];
-   assign boundary_2 = boundary_out[19:10];
-   assign boundary_3 = boundary_out[29:20];
-   assign boundary_4 = boundary_out[39:30];
+   assign boundary_1 = boundary_out[39:30];
+   assign boundary_2 = boundary_out[29:20];
+   assign boundary_3 = boundary_out[19:10];
+   assign boundary_4 = boundary_out[9:0];
 
    logic [3:0]	   current_color; //for sprites
    logic [3:0]	   current_background; //for background
@@ -62,8 +63,6 @@ module vga_ball(input logic        clk,
    // last bit of y positions indicates whether sprite is onscreen
    logic	   shift;
    // logic to determine whether or not to pull reset high
-   logic	   reset_mem;
-   logic	   reset_mem_prev;
 
    logic [9:0]	   sprite1_x;
    logic [9:0]	   sprite1_y;
@@ -81,15 +80,20 @@ module vga_ball(input logic        clk,
    logic	   isMusic;
    logic [1:0]	   whichClip;
 
+   logic 	   reset_mem;
+   logic	   reset_mem_prev;
+
    boundary_mem boundary_mem(
 	.clk(clk), 
 	.shift(shift), 
 	.reset(reset_mem), 
-	.readaddress(vcount), 
+	.readaddress(vcount[8:0]), 
 	.datain({boundary_1_IN, boundary_2_IN, boundary_3_IN, boundary_4_IN}),
 	.dataout(boundary_out)
 	);
 	
+//   SRAM_oneport SRAM_oneport(.address(vcount), .clock(clk), .data(40'b0), .wren(1'b0), .q(boundary_out));
+
    vga_counters counters(.clk50(clk), .*);
 	
    //ROM Wires
@@ -268,8 +272,8 @@ module vga_ball(input logic        clk,
 			plane_address = sprite3_address;
 			sprite3_color = plane_out;
 		   end
-			1: begin
-		chopper_address = sprite3_address;
+		1: begin
+			chopper_address = sprite3_address;
 			sprite3_color = chopper_out;
 		   end
 		2: begin
