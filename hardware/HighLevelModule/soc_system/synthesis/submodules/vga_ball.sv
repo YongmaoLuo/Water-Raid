@@ -80,17 +80,17 @@ module vga_ball(input logic        clk,
    logic	   isMusic;
    logic [1:0]	   whichClip;
 
-   logic 	   reset_mem;
-   logic	   reset_mem_prev;
+//   logic 	   reset_mem;
+//   logic	   reset_mem_prev;
 
    boundary_mem boundary_mem(
 	.clk(clk), 
 	.shift(shift), 
-	.reset(reset_mem), 
+	.reset(reset), 
 	.readaddress(vcount[8:0]), 
 	.datain({boundary_1_IN, boundary_2_IN, boundary_3_IN, boundary_4_IN}),
 	.dataout(boundary_out)
-	);
+   );
 	
 //   SRAM_oneport SRAM_oneport(.address(vcount), .clock(clk), .data(40'b0), .wren(1'b0), .q(boundary_out));
 
@@ -215,7 +215,7 @@ module vga_ball(input logic        clk,
    	isSprite2_LATCHED		<= isSprite2;
    	isSprite3_LATCHED		<= isSprite3;
    end
-
+/*
    always @(posedge clk) begin //pulse boundary mem reset once when board boots up
 	if (reset_mem_prev == 0) begin
 		reset_mem <= 1;
@@ -225,7 +225,7 @@ module vga_ball(input logic        clk,
 		reset_mem <= 0;
 	end
    end
-
+*/
    always begin
       
       isSprite1 = 0;
