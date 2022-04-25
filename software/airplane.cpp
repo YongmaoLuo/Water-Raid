@@ -3,6 +3,9 @@
 //
 
 #include "airplane.h"
+#include <pthread.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 bool Airplane::isCrashed(BoundaryInRow boundary, std::vector<EnemyPlane> enemyPlanes, std::vector<Battleship> battles){
     // collide the boundary
@@ -54,4 +57,32 @@ void Airplane::Fire(Bullet bullet){
     bullet.setPosition(pos);
 }
 
-Airplane::Airplane(char type, char fuel, Position pos, Shape shape, char scores, bool isCrash): type(type), fuel(fuel), pos(pos),shape(shape),scores(scores),isCrash(isCrash){}
+Airplane::Airplane(char type, char fuel, Position pos, Shape shape, char scores, bool isCrash): type(type), fuel(fuel), pos(pos),shape(shape),scores(scores),isCrash(isCrash){
+    mutexPos= PTHREAD_MUTEX_INITIALIZER;
+}
+
+Position Airplane::getPos() {
+    pthread_mutex_lock(&mutexPos);
+    Position result=pos;
+    pthread_mutex_unlock(&mutexPos);
+    return result;
+}
+
+void Airplane::setPos(Position change){
+    pthread_mutex_lock(&mutexPos);
+    pos=change;
+    pthread_mutex_unlock(&mutexPos);
+    return;
+}
+
+int Airplane::getControlSignals(const char filename[],inputEvent &output) {
+    int xbox_fd;
+    if ( (xbox_fd = open(filename, O_RDWR)) == -1) {
+        fprintf(stderr, "could not open %s\n", filename);
+        return -1;
+    }
+    inputEvent temp;
+    read(xbox_fd,&temp,24);
+    output=temp;
+    return 0;
+}
