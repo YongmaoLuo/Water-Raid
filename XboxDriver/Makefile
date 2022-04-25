@@ -1,16 +1,19 @@
-CFLAGS = -Wall
+# We are being compiled as a module: use the Kernel build system
+ifneq (${KERNELRELEASE},)
+	obj-m = xpad.o
+else
+	KERNEL_SOURCE := /usr/src/linux-headers-$(shell uname -r)
+		PWD := $(shell pwd)
 
-OBJECTS = xbox_test.o usbxbox.o
+default: module
 
-TARFILES = Makefile xbox_test.c \
-	usbxbox.h usbxbox.c
+xbox: xbox_test
 
-xbox : $(OBJECTS)
-	cc $(CFLAGS) -o xbox_test $(OBJECTS) -lusb-1.0 -pthread
-
-xbox_test.o : xbox_test.c usbxbox.h
-usbxbox.o : usbxbox.c usbxbox.h
+module:
+	${MAKE} -C ${KERNEL_SOURCE} SUBDIRS=${PWD} modules
 
 .PHONY : clean
 clean :
+	${MAKE} -C ${KERNEL_SOURCE} SUBDIRS=${PWD} clean
 	rm -rf *.o 
+endif

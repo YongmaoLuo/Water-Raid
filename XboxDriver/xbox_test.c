@@ -8,34 +8,42 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "usbxbox.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 struct libusb_device_handle *xbox;
-uint8_t endpoint_address;
+
+typedef struct {
+	struct timeval time;
+	unsigned short type;
+	unsigned short code;
+	unsigned int value;
+}inputEvent;
 
 int main()
 {
-  int err, col;
+  int xbox_fd;
 
-  struct USBXboxOnePacket packet;
   int transferred;
-  char keystate[12];
 
-  if ((err = fbopen()) != 0) {
-    fprintf(stderr, "Error: Could not open framebuffer: %d\n", err);
-    exit(1);
-  }
+  static const char filename[] = "/dev/input/event0";
 
-  /* Open the keyboard */
-  if ( (xbox = openXboxOne(&endpoint_address)) == NULL ) {
-    fprintf(stderr, "Did not find a Xbox One Controller\n");
-    exit(1);
+  if ( (xbox_fd = open(filename, O_RDWR)) == -1) {
+    fprintf(stderr, "could not open %s\n", filename);
+    return -1;
   }
+  //printf("endpoint: %x\n",endpoint_address);
+  int i=0;
+  inputEvent temp;
   while(1){
-    libusb_interrupt_transfer(xbox, endpoint_address,
-			      (unsigned char *) &packet, sizeof(packet),
-			      &transferred, 0);
-    printf("%d\n",packet[1]);
+    read(xbox_fd,&temp,24);
+    printf("code: %d",temp.code);
+    printf("value: %d",temp.value);
+    
+    printf("\n");
+    i++;
   }
   
   
