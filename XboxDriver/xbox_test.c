@@ -39,8 +39,9 @@ int main()
   inputEvent temp;
   while(1){
     read(xbox_fd,&temp,24);
-    printf("code: %d",temp.code);
-    printf("value: %d",temp.value);
+    printf("type: %d\n",temp.type);
+    printf("code: %d\n",temp.code);
+    printf("value: %d\n",temp.value);
     
     printf("\n");
     i++;

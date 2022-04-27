@@ -4,7 +4,7 @@
 
 #include "battleship.h"
 
-void Battleship::checkIfHit(vector<Bullet> bullets, Airplane airplane) {
+void Battleship::checkIfHit(vector<Bullet> bullets, short &score) {
     for (int i = 0; i < bullets.size(); i++) {
         if (bullets[i].getPosition().x >= this->getPos().x &&
             bullets[i].getPosition().x <= (this->getPos().x + this->sp.width) && bullets[i].getPosition().y ==
@@ -13,7 +13,7 @@ void Battleship::checkIfHit(vector<Bullet> bullets, Airplane airplane) {
             this->hitPoint--;
             if(this->hitPoint == 0){
                 this->setIsDestroy(true);
-                airplane.addScore(this->score);
+                score+=this->score;
 
             }
         }

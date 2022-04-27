@@ -7,6 +7,7 @@
 
 #include "common_data_structure.h"
 #include "sprite.h"
+#include "airplane.h"
 
 class WaterDriver{
 public:

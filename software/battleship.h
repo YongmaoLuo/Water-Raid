@@ -13,7 +13,7 @@ private:
     char score;
 
 public:
-    void checkIfHit(vector<Bullet> bullets, Airplane airplane);
+    void checkIfHit(vector<Bullet> bullets, short &);
 
     Battleship(char type, char hitPoint, char id, const Shape &sp, bool isDestroy, const Position &pos, char score);
 };

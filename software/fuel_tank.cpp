@@ -3,7 +3,7 @@
 //
 #include "fuel_tank.h"
 
-void FuelTank::checkIfHit(vector<Bullet> bullets, Airplane airplane) {
+void FuelTank::checkIfHit(vector<Bullet> bullets, short &fuel) {
     for (int i = 0; i < bullets.size(); i++) {
         if (bullets[i].getPosition().x >= this->getPos().x &&
             bullets[i].getPosition().x <= (this->getPos().x + this->sp.width) && bullets[i].getPosition().y ==

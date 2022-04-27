@@ -3,9 +3,10 @@
 //
 
 #include "enemy_plane.h"
+#include "bullet.h"
 
 
-void EnemyPlane::checkIfHit(vector<Bullet> bullets, Airplane airplane) {
+void EnemyPlane::checkIfHit(vector<Bullet> bullets, short &score) {
     for (int i = 0; i < bullets.size(); i++) {
         if (bullets[i].getPosition().x >= this->getPos().x &&
             bullets[i].getPosition().x <= (this->getPos().x + this->sp.width) && bullets[i].getPosition().y ==
@@ -14,7 +15,7 @@ void EnemyPlane::checkIfHit(vector<Bullet> bullets, Airplane airplane) {
             this->hitPoint--;
             if(this->hitPoint == 0){
                 this->setIsDestroy(true);
-                airplane.addScore(this->score);
+                score+=this->score;
             }
         }
     }

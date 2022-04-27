@@ -7,8 +7,6 @@
 
 #include "common_data_structure.h"
 
-#define MAX_BULLET_NUM
-
 class Bullet
 {
 private:

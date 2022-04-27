@@ -7,10 +7,9 @@
 
 #include "common_data_structure.h"
 #include "bullet.h"
-#include "airplane.h"
 #include<vector>
 
-//using namespace std;
+using namespace std;
 
 class Sprite
 {
@@ -26,7 +25,7 @@ protected:
 
     void move(BoundaryInRow boundary);
 
-    virtual void checkIfHit(vector<Bullet> bullets, Airplane airplane);
+    virtual void checkIfHit(vector<Bullet> bullets, short &);
 
 public:
     bool isDestroy;
