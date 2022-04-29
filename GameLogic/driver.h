@@ -13,9 +13,9 @@ class WaterDriver{
 public:
     // video
     static void writeBoundary(BoundaryInRow boundary);
-    static void writeSprite(Sprite sprite);
-    static void writeBullet(Bullet bullet);
-    static void writePlane(Airplane plane);
+    static void writeSpritePosition(Position position);
+    static void writeBulletPosition(Position position);
+    static void writePlanePosition(Position position);
     static void writeFuel(int fuel);
     static void writeScore(int score);
     // audio

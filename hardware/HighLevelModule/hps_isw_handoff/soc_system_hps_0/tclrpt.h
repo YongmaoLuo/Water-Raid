@@ -14,7 +14,7 @@
 *  documentation and/or other materials provided with the distribution.
 *  * Neither the name of Altera Corporation nor the
 *  names of its contributors may be used to endorse or promote products
-*  derived from this software without specific prior written permission.
+*  derived from this GameLogic without specific prior written permission.
 *
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -505,7 +505,7 @@ within this data structure are the reports. The memory address of this
 data structure is in core_debug_defines.h (it is dynamic). For example:
 #define SEQ_CORE_DEBUG_BASE 0x000140c4
 The sizes of all the data structures are dynamic, as they depend on 
-interface size and other parameters.  Accessing them outside a software
+interface size and other parameters.  Accessing them outside a GameLogic
 context is trickier but it can be done by looking at the "data_size"
 field of the reports.
 */
