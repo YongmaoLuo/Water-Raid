@@ -130,20 +130,20 @@ module vga_ball(input logic        clk,
      if (chipselect && write)
        case (address)
 
-	 0 : boundary_1_IN <= writedata[9:0];
-	 1 : boundary_2_IN <= writedata[9:0];
-	 2 : boundary_3_IN <= writedata[9:0];
-	 3 : boundary_4_IN <= writedata[9:0];
-	 4 : shift <= writedata[0];
-	 5 : sprite1_x <= writedata[9:0];
-	 6 : sprite1_y <= writedata[9:0];
-	 7 : sprite1_img <= writedata[4:0];
-	 8 : sprite2_x <= writedata[9:0];
-	 9 : sprite2_y <= writedata[9:0];
-	 10 : sprite2_img <= writedata[4:0];
-	 11 : sprite3_x <= writedata[9:0];
-	 12 : sprite3_y <= writedata[9:0];
-	 13 : sprite3_img <= writedata[4:0];
+	 6'd0 : boundary_1_IN 		<= writedata[9:0];
+	 6'd1 : boundary_2_IN 		<= writedata[9:0];
+	 6'd2 : boundary_3_IN 		<= writedata[9:0];
+	 6'd3 : boundary_4_IN 		<= writedata[9:0];
+	 6'd4 : shift 			<= writedata[0];
+	 6'd5 : sprite1_x 		<= writedata[9:0];
+	 6'd6 : sprite1_y 		<= writedata[9:0];
+	 6'd7 : sprite1_img 		<= writedata[4:0];
+	 6'd8 : sprite2_x 		<= writedata[9:0];
+	 6'd9 : sprite2_y 		<= writedata[9:0];
+	 6'd10 : sprite2_img 		<= writedata[4:0];
+	 6'd11 : sprite3_x 		<= writedata[9:0];
+	 6'd12 : sprite3_y 		<= writedata[9:0];
+	 6'd13 : sprite3_img 		<= writedata[4:0];
 
        endcase
    end
@@ -155,44 +155,44 @@ module vga_ball(input logic        clk,
         else if(isSprite && current_color_LATCHED != 0) begin
 		case(current_color_LATCHED)
 
-			0: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			1: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'hff, 8'h00}; //Green
-			2: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'h00, 8'hff}; //Blue
-			3: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'h00, 8'h00}; //Red
-			4: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'h00}; //Yellow
-			5: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'hff, 8'hff}; //Cyan
-			6: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'h00, 8'hff}; //Magenta
-			7: {VGA_R, VGA_G, VGA_B} <= {8'h80, 8'h80, 8'h80}; //Gray
-			8: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'h00, 8'h00}; //Black
-			9: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'h00}; //White
-			10: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			11: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			12: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			13: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			14: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			15: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
+			0: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			1: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'hff, 8'h00}; //Green
+			2: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'h00, 8'hff}; //Blue
+			3: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'h00, 8'h00}; //Red
+			4: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'h00}; //Yellow
+			5: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'hff, 8'hff}; //Cyan
+			6: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'h00, 8'hff}; //Magenta
+			7: {VGA_R, VGA_G, VGA_B} 	<= {8'h80, 8'h80, 8'h80}; //Gray
+			8: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'h00, 8'h00}; //Black
+			9: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'h00}; //White
+			10: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			11: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			12: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			13: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			14: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			15: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
 
 		endcase
 	end
 	else begin
 		case(current_background_LATCHED)
 
-			0: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			1: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'hff, 8'h00}; //Green
-			2: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'h00, 8'hff}; //Blue
-			3: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'h00, 8'h00}; //Red
-			4: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'h00}; //Yellow
-			5: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'hff, 8'hff}; //Cyan
-			6: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'h00, 8'hff}; //Magenta
-			7: {VGA_R, VGA_G, VGA_B} <= {8'h80, 8'h80, 8'h80}; //Gray
-			8: {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'h00, 8'h00}; //Black
-			9: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'h00}; //White
-			10: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			11: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			12: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			13: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			14: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
-			15: {VGA_R, VGA_G, VGA_B} <= {8'hff, 8'hff, 8'hff}; //White
+			0: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			1: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'hff, 8'h00}; //Green
+			2: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'h00, 8'hff}; //Blue
+			3: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'h00, 8'h00}; //Red
+			4: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'h00}; //Yellow
+			5: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'hff, 8'hff}; //Cyan
+			6: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'h00, 8'hff}; //Magenta
+			7: {VGA_R, VGA_G, VGA_B} 	<= {8'h80, 8'h80, 8'h80}; //Gray
+			8: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'h00, 8'h00}; //Black
+			9: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'h00}; //White
+			10: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			11: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			12: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			13: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			14: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			15: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
 
 		endcase
 	end
