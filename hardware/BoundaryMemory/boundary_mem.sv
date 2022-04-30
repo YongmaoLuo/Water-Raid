@@ -1,4 +1,5 @@
-`include "../SRAM/SRAM.v"
+`include "../SRAM/SRAM_twoport.v"
+
 
 module boundary_mem(
 	input 		clk,
@@ -9,40 +10,44 @@ module boundary_mem(
 	output		[39:0] dataout
 	);
 
-	logic 		[8:0] readbase;
-	logic 		[8:0] writebase;
-		
-	logic 		shift_prev;
-	logic		wren;
+	logic 		[8:0] readbase = 9'd1;
+	logic 		[8:0] writebase = 9'd0;
+	logic		[39:0] q_b; //non-necessary	
 
-	logic		[8:0] readaddress_mem;
+	logic 		shift_prev = 0;
 
-	assign readaddress_mem = (readaddress + readbase)%480;
-	
-	SRAM		SRAM(
-				.clock(clk),
-				.data(datain),
-				.rdaddress(readaddress_mem),
-				.wraddress(writebase),
-				.wren(wren),
-				.q(dataout)
-			);
+	logic		[8:0] readaddress_mem;	
 
-	always_ff @(posedge clk) begin
+	assign readaddress_mem = readaddress + readbase;
+
+	SRAM_twoport 	SRAM_twoport( //port a will be read, port b will be write
+		.address_a(readaddress_mem),
+		.address_b(writebase),
+		.clock(clk),
+		.data_a(39'bX),
+		.data_b(datain),
+		.wren_a(1'b0),
+		.wren_b(1'b1),
+		.q_a(dataout),
+		.q_b(q_b)
+	);
+
+	always_ff @(negedge clk) begin
+
 		if(reset) begin
+			readbase <= 9'd1;
+			writebase <= 9'd0;
 			shift_prev <= shift;
-			wren <= 0;
 		end
 		if (shift != shift_prev) begin
-			readbase <= (readbase+1)%480;
-			writebase <= (writebase+1)%480;	
-			wren <= 1;
-			shift_prev <= shift;		
-		end
-		if (wren != 0) begin
-			wren <= 0;
+			readbase <= readbase-1;
+			writebase <= writebase-1;
+			shift_prev <= shift;	
 		end
 	end
 
 
 endmodule
+
+
+
