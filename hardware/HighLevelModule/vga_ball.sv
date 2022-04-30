@@ -5,10 +5,11 @@
  * Columbia University
  */
 `include "../ROM/plane_ROM.v"
+`include "../ROM/fuel_ROM.v"
 `include "../ROM/chopper_ROM.v"
 `include "../ROM/battleship_ROM.v"
 `include "../BoundaryMemory/boundary_mem.sv"
-//`include "../SRAM/SRAM_oneport.v"
+
 
 module vga_ball(input logic        clk,
 	        input logic 	   reset,
@@ -56,9 +57,11 @@ module vga_ball(input logic        clk,
    logic [3:0] 	   sprite1_color;
    logic [3:0]     sprite2_color;
    logic [3:0]     sprite3_color;
+   logic [3:0]     sprite4_color;
    logic [3:0] 	   sprite1_color_LATCHED;
    logic [3:0]     sprite2_color_LATCHED;
    logic [3:0]     sprite3_color_LATCHED;
+   logic [3:0]     sprite4_color_LATCHED;
 
    // last bit of y positions indicates whether sprite is onscreen
    logic	   shift;
@@ -75,6 +78,10 @@ module vga_ball(input logic        clk,
    logic [9:0]	   sprite3_x;
    logic [9:0]	   sprite3_y;
    logic [4:0]	   sprite3_img; //which sprite is this?
+
+   logic [9:0]	   sprite4_x;
+   logic [9:0]	   sprite4_y;
+   logic [4:0]	   sprite4_img; //which sprite is this?
 
    logic	   isSprite;
    logic	   isMusic;
@@ -101,12 +108,15 @@ module vga_ball(input logic        clk,
    logic [9:0]	   sprite1_address;
    logic [9:0]	   sprite2_address;
    logic [9:0]     sprite3_address;
+   logic [9:0]	   sprite4_address;
    logic	   isSprite1;
    logic	   isSprite2;
    logic 	   isSprite3;
+   logic	   isSprite4;
    logic	   isSprite1_LATCHED;
    logic	   isSprite2_LATCHED;
    logic 	   isSprite3_LATCHED;
+   logic	   isSprite4_LATCHED;
 
    logic [3:0]     plane_out;
    logic [9:0]     plane_address;
@@ -120,11 +130,16 @@ module vga_ball(input logic        clk,
    logic [9:0]     battleship_address;
    logic [9:0]     battleship_address_LATCHED;
 
+   logic [3:0]     fuel_out;
+   logic [9:0]     fuel_address;
+   logic [9:0]     fuel_address_LATCHED;
+
    plane_ROM 	plane_ROM(.address(plane_address_LATCHED), .clock(clk),.q(plane_out));
    chopper_ROM 	chopper_ROM(.address(chopper_address_LATCHED),.clock(clk),.q(chopper_out));	
    battleship_ROM batteship_ROM(.address(battleship_address_LATCHED), .clock(clk), .q(battleship_out));
+   fuel_ROM fuel_ROM(.address(fuel_address_LATCHED), .clock(clk), .q(fuel_out));
 
-   assign isSprite = isSprite1 || isSprite2 || isSprite3;
+   assign isSprite = isSprite1 || isSprite2 || isSprite3 || isSprite4;
 
    always_ff @(posedge clk) begin
      if (chipselect && write)
@@ -144,6 +159,9 @@ module vga_ball(input logic        clk,
 	 6'd11 : sprite3_x 		<= writedata[9:0];
 	 6'd12 : sprite3_y 		<= writedata[9:0];
 	 6'd13 : sprite3_img 		<= writedata[4:0];
+	 6'd14 : sprite4_x		<= writedata[9:0];
+	 6'd15 : sprite4_y		<= writedata[9:0];
+	 6'd16 : sprite4_img 		<= writedata[4:0];
 
        endcase
    end
@@ -208,12 +226,15 @@ module vga_ball(input logic        clk,
 	plane_address_LATCHED		<= plane_address;
 	chopper_address_LATCHED		<= chopper_address;
 	battleship_address_LATCHED	<= battleship_address;
+	fuel_address_LATCHED 		<= fuel_address;
    	sprite1_color_LATCHED		<= sprite1_color;
    	sprite2_color_LATCHED		<= sprite2_color;
      	sprite3_color_LATCHED		<= sprite3_color;
+     	sprite4_color_LATCHED		<= sprite4_color;
    	isSprite1_LATCHED 		<= isSprite1;
    	isSprite2_LATCHED		<= isSprite2;
    	isSprite3_LATCHED		<= isSprite3;
+	isSprite4_LATCHED		<= isSprite4;
    end
 /*
    always @(posedge clk) begin //pulse boundary mem reset once when board boots up
@@ -231,10 +252,12 @@ module vga_ball(input logic        clk,
       isSprite1 = 0;
       isSprite2 = 0;
       isSprite3 = 0;
+      isSprite4 = 0;
 			
       sprite1_address = ((vcount - (sprite1_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite1_x-16));
       sprite2_address = ((vcount - (sprite2_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite2_x-16));
       sprite3_address = ((vcount - (sprite3_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite3_x-16));
+      sprite4_address = ((vcount - (sprite4_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite4_x-16));
 
       //assuming none of the images will be the same
       case(sprite1_img)
@@ -250,6 +273,10 @@ module vga_ball(input logic        clk,
 			battleship_address = sprite1_address;
 			sprite1_color = battleship_out;
    		   end
+		3: begin
+			fuel_address = sprite1_address;
+			sprite1_color = fuel_out;
+		   end
       endcase
 
       case(sprite2_img)
@@ -265,6 +292,10 @@ module vga_ball(input logic        clk,
 			battleship_address = sprite2_address;
 			sprite2_color = battleship_out;
 		   end
+		3: begin
+			fuel_address = sprite2_address;
+			sprite2_color = fuel_out;
+		   end
       endcase
 
       case(sprite3_img)
@@ -279,6 +310,29 @@ module vga_ball(input logic        clk,
 		2: begin
 			battleship_address = sprite3_address;
 			sprite3_color = battleship_out;
+		   end
+		3: begin
+			fuel_address = sprite3_address;
+			sprite3_color = fuel_out;
+		   end
+      endcase
+
+      case(sprite4_img)
+		0: begin 
+			plane_address = sprite4_address;
+			sprite4_color = plane_out;
+		   end
+		1: begin
+			chopper_address = sprite4_address;
+			sprite4_color = chopper_out;
+		   end
+		2: begin
+			battleship_address = sprite4_address;
+			sprite4_color = battleship_out;
+		   end
+		3: begin
+			fuel_address = sprite4_address;
+			sprite4_color = fuel_out;
 		   end
       endcase
 
@@ -300,6 +354,13 @@ module vga_ball(input logic        clk,
 	      if((hcount[10:1] < sprite3_x + 16) && (hcount[10:1] >= sprite3_x - 16) && (vcount < sprite3_y[9:1] + 16) && (vcount  >= sprite3_y[9:1] - 16)) begin // check sprite3
 			//pull its contents from memory
 			isSprite3 = 1;		
+	      end
+      end
+
+      if(sprite4_y[0]) begin
+	      if((hcount[10:1] < sprite4_x + 16) && (hcount[10:1] >= sprite4_x - 16) && (vcount < sprite4_y[9:1] + 16) && (vcount  >= sprite4_y[9:1] - 16)) begin // check sprite4
+			//pull its contents from memory
+			isSprite4 = 1;		
 	      end
       end
 
@@ -341,6 +402,9 @@ module vga_ball(input logic        clk,
       end
       else if(isSprite3 && sprite3_color_LATCHED != 0) begin
 		current_color = sprite3_color_LATCHED;
+      end
+      else if(isSprite4 && sprite4_color_LATCHED != 0) begin
+		current_color = sprite4_color_LATCHED;
       end
       else begin
 		current_color = 0;
