@@ -1,5 +1,5 @@
 Assembler report for soc_system
-Sat Apr 30 13:55:31 2022
+Sun May  1 15:40:08 2022
 Quartus Prime Version 21.1.0 Build 842 10/21/2021 SJ Lite Edition
 
 
@@ -38,7 +38,7 @@ https://fpgasoftware.intel.com/eula.
 +---------------------------------------------------------------+
 ; Assembler Summary                                             ;
 +-----------------------+---------------------------------------+
-; Assembler Status      ; Successful - Sat Apr 30 13:55:31 2022 ;
+; Assembler Status      ; Successful - Sun May  1 15:40:08 2022 ;
 ; Revision Name         ; soc_system                            ;
 ; Top-level Entity Name ; soc_system_top                        ;
 ; Family                ; Cyclone V                             ;
@@ -95,8 +95,8 @@ https://fpgasoftware.intel.com/eula.
 +----------------+-------------------------+
 ; Option         ; Setting                 ;
 +----------------+-------------------------+
-; JTAG usercode  ; 0x00E25DC2              ;
-; Checksum       ; 0x00E25DC2              ;
+; JTAG usercode  ; 0x012402A3              ;
+; Checksum       ; 0x012402A3              ;
 +----------------+-------------------------+
 
 
@@ -120,14 +120,14 @@ Info: Running Quartus Prime Assembler
     Info: Intel and sold by Intel or its authorized distributors.  Please
     Info: refer to the applicable agreement for further details, at
     Info: https://fpgasoftware.intel.com/eula.
-    Info: Processing started: Sat Apr 30 13:55:17 2022
+    Info: Processing started: Sun May  1 15:39:52 2022
 Info: Command: quartus_asm soc_system
 Info (115030): Assembler is generating device programming files
 Info (11878): Hard Processor Subsystem configuration has not changed and a Preloader software update is not required
 Info: Quartus Prime Assembler was successful. 0 errors, 0 warnings
-    Info: Peak virtual memory: 686 megabytes
-    Info: Processing ended: Sat Apr 30 13:55:31 2022
-    Info: Elapsed time: 00:00:14
+    Info: Peak virtual memory: 695 megabytes
+    Info: Processing ended: Sun May  1 15:40:08 2022
+    Info: Elapsed time: 00:00:16
     Info: Total CPU time (on all processors): 00:00:09
 
 

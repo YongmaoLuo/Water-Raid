@@ -5,9 +5,20 @@
  * Columbia University
  */
 `include "../ROM/plane_ROM.v"
+`include "../ROM/zero_ROM.v"
+`include "../ROM/one_ROM.v"
+`include "../ROM/two_ROM.v"
+`include "../ROM/three_ROM.v"
+`include "../ROM/four_ROM.v"
+`include "../ROM/five_ROM.v"
+`include "../ROM/six_ROM.v"
+`include "../ROM/seven_ROM.v"
+`include "../ROM/eight_ROM.v"
+`include "../ROM/nine_ROM.v"
 `include "../ROM/fuel_ROM.v"
 `include "../ROM/chopper_ROM.v"
 `include "../ROM/battleship_ROM.v"
+`include "../ROM/scoreboard_ROM.v"
 `include "../BoundaryMemory/boundary_mem.sv"
 
 
@@ -58,11 +69,17 @@ module vga_ball(input logic        clk,
    logic [3:0]     sprite2_color;
    logic [3:0]     sprite3_color;
    logic [3:0]     sprite4_color;
+   logic [3:0]	   digit1_color;
+   logic [3:0]	   digit2_color;
+   logic [3:0]	   digit3_color;
+
    logic [3:0] 	   sprite1_color_LATCHED;
    logic [3:0]     sprite2_color_LATCHED;
    logic [3:0]     sprite3_color_LATCHED;
    logic [3:0]     sprite4_color_LATCHED;
-
+   logic [3:0]	   digit1_color_LATCHED;
+   logic [3:0]	   digit2_color_LATCHED;
+   logic [3:0]	   digit3_color_LATCHED;
    // last bit of y positions indicates whether sprite is onscreen
    logic	   shift;
    // logic to determine whether or not to pull reset high
@@ -82,6 +99,22 @@ module vga_ball(input logic        clk,
    logic [9:0]	   sprite4_x;
    logic [9:0]	   sprite4_y;
    logic [4:0]	   sprite4_img; //which sprite is this?
+
+   logic [9:0]     digit1_x;
+   logic [9:0]	   digit1_y;
+   logic [3:0]     digit1_img;
+
+   logic [9:0]     digit2_x;
+   logic [9:0]	   digit2_y;
+   logic [3:0]     digit2_img;
+
+   logic [9:0]     digit3_x;
+   logic [9:0]	   digit3_y;
+   logic [3:0]     digit3_img;
+
+
+   logic [9:0]     scoreboard_x;
+   logic [9:0]     scoreboard_y;
 
    logic	   isSprite;
    logic	   isMusic;
@@ -109,14 +142,27 @@ module vga_ball(input logic        clk,
    logic [9:0]	   sprite2_address;
    logic [9:0]     sprite3_address;
    logic [9:0]	   sprite4_address;
+   logic [9:0]	   digit1_address;
+   logic [9:0]	   digit2_address;
+   logic [9:0]	   digit3_address;
+
    logic	   isSprite1;
    logic	   isSprite2;
    logic 	   isSprite3;
    logic	   isSprite4;
+   logic	   isScoreboard;
+   logic	   isDigit1;
+   logic	   isDigit2;
+   logic	   isDigit3;
+
    logic	   isSprite1_LATCHED;
    logic	   isSprite2_LATCHED;
    logic 	   isSprite3_LATCHED;
    logic	   isSprite4_LATCHED;
+   logic	   isScoreboard_LATCHED;
+   logic	   isDigit1_LATCHED;
+   logic	   isDigit2_LATCHED;
+   logic	   isDigit3_LATCHED;
 
    logic [3:0]     plane_out;
    logic [9:0]     plane_address;
@@ -134,12 +180,79 @@ module vga_ball(input logic        clk,
    logic [9:0]     fuel_address;
    logic [9:0]     fuel_address_LATCHED;
 
-   plane_ROM 	plane_ROM(.address(plane_address_LATCHED), .clock(clk),.q(plane_out));
-   chopper_ROM 	chopper_ROM(.address(chopper_address_LATCHED),.clock(clk),.q(chopper_out));	
-   battleship_ROM batteship_ROM(.address(battleship_address_LATCHED), .clock(clk), .q(battleship_out));
-   fuel_ROM fuel_ROM(.address(fuel_address_LATCHED), .clock(clk), .q(fuel_out));
+   logic [3:0]	   scoreboard_out;
+   logic [9:0]     scoreboard_address;
+   logic [9:0]     scoreboard_address_LATCHED;
 
-   assign isSprite = isSprite1 || isSprite2 || isSprite3 || isSprite4;
+   plane_ROM 		plane_ROM(.address(plane_address_LATCHED), .clock(clk),.q(plane_out));
+   chopper_ROM 		chopper_ROM(.address(chopper_address_LATCHED),.clock(clk),.q(chopper_out));	
+   battleship_ROM 	batteship_ROM(.address(battleship_address_LATCHED), .clock(clk), .q(battleship_out));
+   fuel_ROM 		fuel_ROM(.address(fuel_address_LATCHED), .clock(clk), .q(fuel_out));
+   scoreboard_ROM 	scoreboard_ROM(.address(scoreboard_address_LATCHED), .clock(clk), .q(scoreboard_out));
+
+
+   logic [3:0]	   zero_out;
+   logic [9:0]	   zero_address;
+   logic [9:0] 	   zero_address_LATCHED;
+
+   zero_ROM		zero_ROM(.address(zero_address_LATCHED),.clock(clk), .q(zero_out));
+
+   logic [3:0]	   one_out;
+   logic [9:0]	   one_address;
+   logic [9:0] 	   one_address_LATCHED;
+
+   one_ROM		one_ROM(.address(one_address_LATCHED),.clock(clk), .q(one_out));
+
+   logic [3:0]	   two_out;
+   logic [9:0]	   two_address;
+   logic [9:0] 	   two_address_LATCHED;
+
+   two_ROM		two_ROM(.address(two_address_LATCHED),.clock(clk), .q(two_out));
+
+   logic [3:0]	   three_out;
+   logic [9:0]	   three_address;
+   logic [9:0] 	   three_address_LATCHED;
+
+   three_ROM		three_ROM(.address(three_address_LATCHED),.clock(clk),.q(three_out));
+
+   logic [3:0]	   four_out;
+   logic [9:0]	   four_address;
+   logic [9:0] 	   four_address_LATCHED;
+
+   four_ROM		four_ROM(.address(four_address_LATCHED),.clock(clk), .q(four_out));
+
+   logic [3:0]	   five_out;
+   logic [9:0]	   five_address;
+   logic [9:0] 	   five_address_LATCHED;
+
+   five_ROM		five_ROM(.address(five_address_LATCHED),.clock(clk), .q(five_out));
+
+   logic [3:0]	   six_out;
+   logic [9:0]	   six_address;
+   logic [9:0] 	   six_address_LATCHED;
+
+   six_ROM		six_ROM(.address(six_address_LATCHED),.clock(clk), .q(six_out));
+
+   logic [3:0]	   seven_out;
+   logic [9:0]	   seven_address;
+   logic [9:0] 	   seven_address_LATCHED;
+
+   seven_ROM		seven_ROM(.address(seven_address_LATCHED),.clock(clk), .q(seven_out));
+
+   logic [3:0]	   eight_out;
+   logic [9:0]	   eight_address;
+   logic [9:0] 	   eight_address_LATCHED;
+
+   eight_ROM		eight_ROM(.address(eight_address_LATCHED),.clock(clk), .q(eight_out));
+
+   logic [3:0]	   nine_out;
+   logic [9:0]	   nine_address;
+   logic [9:0] 	   nine_address_LATCHED;
+
+   nine_ROM		nine_ROM(.address(nine_address_LATCHED),.clock(clk), .q(nine_out));
+
+
+   assign isSprite = isSprite1 || isSprite2 || isSprite3 || isSprite4 || isScoreboard || isDigit1 || isDigit2 || isDigit3;
 
    always_ff @(posedge clk) begin
      if (chipselect && write)
@@ -162,6 +275,17 @@ module vga_ball(input logic        clk,
 	 6'd14 : sprite4_x		<= writedata[9:0];
 	 6'd15 : sprite4_y		<= writedata[9:0];
 	 6'd16 : sprite4_img 		<= writedata[4:0];
+	 6'd17 : scoreboard_x		<= writedata[9:0];
+	 6'd18 : scoreboard_y		<= writedata[9:0];
+	 6'd19 : digit1_x		<= writedata[9:0];
+	 6'd20 : digit1_y		<= writedata[9:0];
+	 6'd21 : digit1_img		<= writedata[3:0];	
+	 6'd22 : digit2_x		<= writedata[9:0];
+	 6'd23 : digit2_y		<= writedata[9:0];
+	 6'd24 : digit2_img		<= writedata[3:0];
+	 6'd25 : digit3_x		<= writedata[9:0];
+	 6'd26 : digit3_y		<= writedata[9:0];
+	 6'd27 : digit3_img		<= writedata[3:0];
 
        endcase
    end
@@ -227,37 +351,53 @@ module vga_ball(input logic        clk,
 	chopper_address_LATCHED		<= chopper_address;
 	battleship_address_LATCHED	<= battleship_address;
 	fuel_address_LATCHED 		<= fuel_address;
+	scoreboard_address_LATCHED	<= scoreboard_address;
+	zero_address_LATCHED		<= zero_address;
+	one_address_LATCHED		<= one_address;
+	two_address_LATCHED		<= two_address;
+	three_address_LATCHED		<= three_address;
+	four_address_LATCHED		<= four_address;
+	five_address_LATCHED		<= five_address;
+	six_address_LATCHED		<= six_address;
+	seven_address_LATCHED		<= seven_address;
+	eight_address_LATCHED		<= eight_address;
+	nine_address_LATCHED		<= nine_address;
    	sprite1_color_LATCHED		<= sprite1_color;
    	sprite2_color_LATCHED		<= sprite2_color;
      	sprite3_color_LATCHED		<= sprite3_color;
      	sprite4_color_LATCHED		<= sprite4_color;
+	digit1_color_LATCHED		<= digit1_color;
+	digit2_color_LATCHED		<= digit2_color;
+	digit3_color_LATCHED		<= digit3_color;
    	isSprite1_LATCHED 		<= isSprite1;
    	isSprite2_LATCHED		<= isSprite2;
    	isSprite3_LATCHED		<= isSprite3;
 	isSprite4_LATCHED		<= isSprite4;
+	isDigit1_LATCHED		<= isDigit1;
+	isDigit2_LATCHED		<= isDigit2;
+	isDigit3_LATCHED		<= isDigit3;
+	isScoreboard_LATCHED		<= isScoreboard;
    end
-/*
-   always @(posedge clk) begin //pulse boundary mem reset once when board boots up
-	if (reset_mem_prev == 0) begin
-		reset_mem <= 1;
-		reset_mem_prev <= 1;
-	end
-	if (reset_mem == 1) begin
-		reset_mem <= 0;
-	end
-   end
-*/
+
    always begin
       
       isSprite1 = 0;
       isSprite2 = 0;
       isSprite3 = 0;
       isSprite4 = 0;
+      isScoreboard = 0;
+      isDigit1 = 0;
+      isDigit2 = 0;
+      isDigit3 = 0;
 			
       sprite1_address = ((vcount - (sprite1_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite1_x-16));
       sprite2_address = ((vcount - (sprite2_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite2_x-16));
       sprite3_address = ((vcount - (sprite3_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite3_x-16));
       sprite4_address = ((vcount - (sprite4_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite4_x-16));
+      scoreboard_address = ((vcount - (scoreboard_y[9:1]-16)) * 40) + (hcount[10:1] - (scoreboard_x-20));
+      digit1_address = ((vcount - (digit1_y[9:1]-16)) << 5) + (hcount[10:1] - (digit1_x-16));
+      digit2_address = ((vcount - (digit2_y[9:1]-16)) << 5) + (hcount[10:1] - (digit2_x-16));
+      digit3_address = ((vcount - (digit3_y[9:1]-16)) << 5) + (hcount[10:1] - (digit3_x-16));
 
       //assuming none of the images will be the same
       case(sprite1_img)
@@ -336,6 +476,138 @@ module vga_ball(input logic        clk,
 		   end
       endcase
 
+
+      case(digit1_img)
+		0: begin
+			zero_address = digit1_address;
+			digit1_color = zero_out;	
+		end
+		1: begin
+			one_address = digit1_address;
+			digit1_color = one_out;	
+		end
+		2: begin
+			two_address = digit1_address;
+			digit1_color = two_out;	
+		end
+		3: begin
+			three_address = digit1_address;
+			digit1_color = three_out;	
+		end
+		4: begin
+			four_address = digit1_address;
+			digit1_color = four_out;	
+		end
+		5: begin
+			five_address = digit1_address;
+			digit1_color = five_out;	
+		end
+		6: begin
+			six_address = digit1_address;
+			digit1_color = six_out;	
+		end
+		7: begin
+			seven_address = digit1_address;
+			digit1_color = seven_out;	
+		end
+		8: begin
+			eight_address = digit1_address;
+			digit1_color = eight_out;	
+		end
+		9: begin
+			nine_address = digit1_address;
+			digit1_color = nine_out;	
+		end
+      endcase
+
+
+      case(digit2_img)
+		0: begin
+			zero_address = digit2_address;
+			digit2_color = zero_out;	
+		end
+		1: begin
+			one_address = digit2_address;
+			digit2_color = one_out;	
+		end
+		2: begin
+			two_address = digit2_address;
+			digit2_color = two_out;	
+		end
+		3: begin
+			three_address = digit2_address;
+			digit2_color = three_out;	
+		end
+		4: begin
+			four_address = digit2_address;
+			digit2_color = four_out;	
+		end
+		5: begin
+			five_address = digit2_address;
+			digit2_color = five_out;	
+		end
+		6: begin
+			six_address = digit2_address;
+			digit2_color = six_out;	
+		end
+		7: begin
+			seven_address = digit2_address;
+			digit2_color = seven_out;	
+		end
+		8: begin
+			eight_address = digit2_address;
+			digit2_color = eight_out;	
+		end
+		9: begin
+			nine_address = digit2_address;
+			digit2_color = nine_out;	
+		end
+      endcase
+
+
+      case(digit3_img)
+		0: begin
+			zero_address = digit3_address;
+			digit3_color = zero_out;	
+		end
+		1: begin
+			one_address = digit3_address;
+			digit3_color = one_out;	
+		end
+		2: begin
+			two_address = digit3_address;
+			digit3_color = two_out;	
+		end
+		3: begin
+			three_address = digit3_address;
+			digit3_color = three_out;	
+		end
+		4: begin
+			four_address = digit3_address;
+			digit3_color = four_out;	
+		end
+		5: begin
+			five_address = digit3_address;
+			digit3_color = five_out;	
+		end
+		6: begin
+			six_address = digit3_address;
+			digit3_color = six_out;	
+		end
+		7: begin
+			seven_address = digit3_address;
+			digit3_color = seven_out;	
+		end
+		8: begin
+			eight_address = digit3_address;
+			digit3_color = eight_out;	
+		end
+		9: begin
+			nine_address = digit3_address;
+			digit3_color = nine_out;	
+		end
+      endcase
+
       if(sprite1_y[0]) begin
 	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] >= sprite1_x - 16) && (vcount < sprite1_y[9:1]+16) && (vcount  >= sprite1_y[9:1]-16)) begin // check sprite1
 			//pull its contents from memory
@@ -361,6 +633,34 @@ module vga_ball(input logic        clk,
 	      if((hcount[10:1] < sprite4_x + 16) && (hcount[10:1] >= sprite4_x - 16) && (vcount < sprite4_y[9:1] + 16) && (vcount  >= sprite4_y[9:1] - 16)) begin // check sprite4
 			//pull its contents from memory
 			isSprite4 = 1;		
+	      end
+      end
+
+      if(scoreboard_y[0]) begin
+	      if((hcount[10:1] < scoreboard_x + 20) && (hcount[10:1] >= scoreboard_x - 20) && (vcount < scoreboard_y[9:1] + 16) && (vcount  >= scoreboard_y[9:1] - 16)) begin // check sprite4
+			//pull its contents from memory
+			isScoreboard = 1;		
+	      end
+      end
+
+      if(digit1_y[0]) begin
+	      if((hcount[10:1] < digit1_x + 20) && (hcount[10:1] >= digit1_x - 20) && (vcount < digit1_y[9:1] + 16) && (vcount  >= digit1_y[9:1] - 16)) begin // check sprite4
+			//pull its contents from memory
+			isDigit1 = 1;		
+	      end
+      end
+
+      if(digit2_y[0]) begin
+	      if((hcount[10:1] < digit2_x + 20) && (hcount[10:1] >= digit2_x - 20) && (vcount < digit2_y[9:1] + 16) && (vcount  >= digit2_y[9:1] - 16)) begin // check sprite4
+			//pull its contents from memory
+			isDigit2 = 1;		
+	      end
+      end
+
+      if(digit3_y[0]) begin
+	      if((hcount[10:1] < digit3_x + 20) && (hcount[10:1] >= digit3_x - 20) && (vcount < digit3_y[9:1] + 16) && (vcount  >= digit3_y[9:1] - 16)) begin // check sprite4
+			//pull its contents from memory
+			isDigit3 = 1;		
 	      end
       end
 
@@ -394,7 +694,19 @@ module vga_ball(input logic        clk,
       end
 
       //priority encoding of sprites
-      if (isSprite1 && sprite1_color_LATCHED != 0) begin
+      if (isScoreboard) begin
+		current_color = scoreboard_out;
+      end
+      else if (isDigit1 && digit1_color_LATCHED != 0) begin
+		current_color = digit1_color_LATCHED;
+      end
+      else if (isDigit2 && digit2_color_LATCHED != 0) begin
+		current_color = digit2_color_LATCHED;
+      end
+      else if (isDigit3 && digit3_color_LATCHED != 0) begin
+		current_color = digit3_color_LATCHED;
+      end
+      else if (isSprite1 && sprite1_color_LATCHED != 0) begin
 		current_color = sprite1_color_LATCHED;
       end
       else if(isSprite2 && sprite2_color_LATCHED != 0) begin

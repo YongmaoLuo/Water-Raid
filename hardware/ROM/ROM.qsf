@@ -51,3 +51,14 @@ set_global_assignment -name QIP_FILE plane_ROM.qip
 set_global_assignment -name QIP_FILE chopper_ROM.qip
 set_global_assignment -name QIP_FILE battleship_ROM.qip
 set_global_assignment -name QIP_FILE fuel_ROM.qip
+set_global_assignment -name QIP_FILE scoreboard_ROM.qip
+set_global_assignment -name QIP_FILE zero_ROM.qip
+set_global_assignment -name QIP_FILE one_ROM.qip
+set_global_assignment -name QIP_FILE two_ROM.qip
+set_global_assignment -name QIP_FILE four_ROM.qip
+set_global_assignment -name QIP_FILE five_ROM.qip
+set_global_assignment -name QIP_FILE six_ROM.qip
+set_global_assignment -name QIP_FILE seven_ROM.qip
+set_global_assignment -name QIP_FILE eight_ROM.qip
+set_global_assignment -name QIP_FILE nine_ROM.qip
+set_global_assignment -name QIP_FILE three_ROM.qip
