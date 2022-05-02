@@ -19,6 +19,8 @@
 `include "../ROM/chopper_ROM.v"
 `include "../ROM/battleship_ROM.v"
 `include "../ROM/scoreboard_ROM.v"
+`include "../ROM/fuelgauge_ROM.v"
+`include "../ROM/indicator_ROM.v"
 `include "../BoundaryMemory/boundary_mem.sv"
 
 
@@ -115,6 +117,10 @@ module vga_ball(input logic        clk,
 
    logic [9:0]     scoreboard_x;
    logic [9:0]     scoreboard_y;
+   logic [9:0]	   fuelgauge_x;
+   logic [9:0]	   fuelgauge_y;
+   logic [9:0]     indicator_x;
+   logic [9:0]     indicator_y;
 
    logic	   isSprite;
    logic	   isMusic;
@@ -151,6 +157,8 @@ module vga_ball(input logic        clk,
    logic 	   isSprite3;
    logic	   isSprite4;
    logic	   isScoreboard;
+   logic	   isFuelgauge;
+   logic	   isIndicator;
    logic	   isDigit1;
    logic	   isDigit2;
    logic	   isDigit3;
@@ -160,6 +168,8 @@ module vga_ball(input logic        clk,
    logic 	   isSprite3_LATCHED;
    logic	   isSprite4_LATCHED;
    logic	   isScoreboard_LATCHED;
+   logic	   isFuelgauge_LATCHED;
+   logic	   isIndicator_LATCHED;
    logic	   isDigit1_LATCHED;
    logic	   isDigit2_LATCHED;
    logic	   isDigit3_LATCHED;
@@ -184,11 +194,21 @@ module vga_ball(input logic        clk,
    logic [9:0]     scoreboard_address;
    logic [9:0]     scoreboard_address_LATCHED;
 
+   logic [3:0]     fuelgauge_out;
+   logic [11:0]    fuelgauge_address;
+   logic [11:0]    fuelgauge_address_LATCHED;
+
+   logic [3:0]     indicator_out;
+   logic [9:0]     indicator_address;
+   logic [9:0]	   indicator_address_LATCHED;
+
    plane_ROM 		plane_ROM(.address(plane_address_LATCHED), .clock(clk),.q(plane_out));
    chopper_ROM 		chopper_ROM(.address(chopper_address_LATCHED),.clock(clk),.q(chopper_out));	
    battleship_ROM 	batteship_ROM(.address(battleship_address_LATCHED), .clock(clk), .q(battleship_out));
    fuel_ROM 		fuel_ROM(.address(fuel_address_LATCHED), .clock(clk), .q(fuel_out));
    scoreboard_ROM 	scoreboard_ROM(.address(scoreboard_address_LATCHED), .clock(clk), .q(scoreboard_out));
+   fuelgauge_ROM	fuelgauge_ROM(.address(fuelgauge_address_LATCHED),.clock(clk),.q(fuelgauge_out));
+   indicator_ROM	indicator_ROM(.address(indicator_address_LATCHED),.clock(clk),.q(indicator_out));
 
 
    logic [3:0]	   zero_out;
@@ -252,7 +272,7 @@ module vga_ball(input logic        clk,
    nine_ROM		nine_ROM(.address(nine_address_LATCHED),.clock(clk), .q(nine_out));
 
 
-   assign isSprite = isSprite1 || isSprite2 || isSprite3 || isSprite4 || isScoreboard || isDigit1 || isDigit2 || isDigit3;
+   assign isSprite = isSprite1_LATCHED || isSprite2_LATCHED || isSprite3_LATCHED || isSprite4_LATCHED || isScoreboard_LATCHED || isFuelgauge_LATCHED || isIndicator_LATCHED || isDigit1_LATCHED || isDigit2_LATCHED || isDigit3_LATCHED;
 
    always_ff @(posedge clk) begin
      if (chipselect && write)
@@ -286,6 +306,10 @@ module vga_ball(input logic        clk,
 	 6'd25 : digit3_x		<= writedata[9:0];
 	 6'd26 : digit3_y		<= writedata[9:0];
 	 6'd27 : digit3_img		<= writedata[3:0];
+	 6'd28 : fuelgauge_x		<= writedata[9:0];
+	 6'd29 : fuelgauge_y		<= writedata[9:0];
+	 6'd30 : indicator_x		<= writedata[9:0];
+	 6'd31 : indicator_y		<= writedata[9:0];
 
        endcase
    end
@@ -352,6 +376,8 @@ module vga_ball(input logic        clk,
 	battleship_address_LATCHED	<= battleship_address;
 	fuel_address_LATCHED 		<= fuel_address;
 	scoreboard_address_LATCHED	<= scoreboard_address;
+	fuelgauge_address_LATCHED	<= fuelgauge_address;
+	indicator_address_LATCHED	<= indicator_address;
 	zero_address_LATCHED		<= zero_address;
 	one_address_LATCHED		<= one_address;
 	two_address_LATCHED		<= two_address;
@@ -377,6 +403,8 @@ module vga_ball(input logic        clk,
 	isDigit2_LATCHED		<= isDigit2;
 	isDigit3_LATCHED		<= isDigit3;
 	isScoreboard_LATCHED		<= isScoreboard;
+	isFuelgauge_LATCHED		<= isFuelgauge;
+	isIndicator_LATCHED		<= isIndicator;
    end
 
    always begin
@@ -386,20 +414,40 @@ module vga_ball(input logic        clk,
       isSprite3 = 0;
       isSprite4 = 0;
       isScoreboard = 0;
+      isFuelgauge = 0;
+      isIndicator = 0;
       isDigit1 = 0;
       isDigit2 = 0;
       isDigit3 = 0;
+
+      zero_address = 10'd0;
+      two_address = 10'd0;
+      three_address = 10'd0;
+      four_address = 10'd0;
+      five_address = 10'd0;
+      six_address = 10'd0;
+      seven_address = 10'd0;
+      eight_address = 10'd0;
+      nine_address = 10'd0;
+
+      digit1_color = 4'b0;
+      digit2_color = 4'b0;
+      digit3_color = 4'b0;
+
 			
       sprite1_address = ((vcount - (sprite1_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite1_x-16));
       sprite2_address = ((vcount - (sprite2_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite2_x-16));
       sprite3_address = ((vcount - (sprite3_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite3_x-16));
       sprite4_address = ((vcount - (sprite4_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite4_x-16));
       scoreboard_address = ((vcount - (scoreboard_y[9:1]-16)) * 40) + (hcount[10:1] - (scoreboard_x-20));
-      digit1_address = ((vcount - (digit1_y[9:1]-16)) << 5) + (hcount[10:1] - (digit1_x-16));
-      digit2_address = ((vcount - (digit2_y[9:1]-16)) << 5) + (hcount[10:1] - (digit2_x-16));
-      digit3_address = ((vcount - (digit3_y[9:1]-16)) << 5) + (hcount[10:1] - (digit3_x-16));
+      fuelgauge_address = (({2'b00,vcount} - ({3'b000, fuelgauge_y[9:1]}-30)) * 80) + ({2'b00,hcount[10:1]} - ({2'b00,fuelgauge_x}-40));
+      indicator_address = ((vcount - (indicator_y[9:1]-16)) << 5) + (hcount[10:1] - (indicator_x - 16));
+      digit1_address = ((vcount - (digit1_y[9:1]-16)) * 20) + (hcount[10:1] - (digit1_x-10));
+      digit2_address = ((vcount - (digit2_y[9:1]-16)) * 20) + (hcount[10:1] - (digit2_x-10));
+      digit3_address = ((vcount - (digit3_y[9:1]-16)) * 20) + (hcount[10:1] - (digit3_x-10));
 
       //assuming none of the images will be the same
+
       case(sprite1_img)
 		0: begin 
 			plane_address = sprite1_address;
@@ -477,136 +525,140 @@ module vga_ball(input logic        clk,
       endcase
 
 
-      case(digit1_img)
-		0: begin
-			zero_address = digit1_address;
-			digit1_color = zero_out;	
-		end
-		1: begin
-			one_address = digit1_address;
-			digit1_color = one_out;	
-		end
-		2: begin
-			two_address = digit1_address;
-			digit1_color = two_out;	
-		end
-		3: begin
-			three_address = digit1_address;
-			digit1_color = three_out;	
-		end
-		4: begin
-			four_address = digit1_address;
-			digit1_color = four_out;	
-		end
-		5: begin
-			five_address = digit1_address;
-			digit1_color = five_out;	
-		end
-		6: begin
-			six_address = digit1_address;
-			digit1_color = six_out;	
-		end
-		7: begin
-			seven_address = digit1_address;
-			digit1_color = seven_out;	
-		end
-		8: begin
-			eight_address = digit1_address;
-			digit1_color = eight_out;	
-		end
-		9: begin
-			nine_address = digit1_address;
-			digit1_color = nine_out;	
-		end
-      endcase
+      if(isDigit1_LATCHED) begin
+	      case(digit1_img)
+			0: begin
+				zero_address = digit1_address;
+				digit1_color = zero_out;	
+			end
+			1: begin
+				one_address = digit1_address;
+				digit1_color = one_out;	
+			end
+			2: begin
+				two_address = digit1_address;
+				digit1_color = two_out;	
+			end
+			3: begin
+				three_address = digit1_address;
+				digit1_color = three_out;	
+			end
+			4: begin
+				four_address = digit1_address;
+				digit1_color = four_out;	
+			end
+			5: begin
+				five_address = digit1_address;
+				digit1_color = five_out;	
+			end
+			6: begin
+				six_address = digit1_address;
+				digit1_color = six_out;	
+			end
+			7: begin
+				seven_address = digit1_address;
+				digit1_color = seven_out;	
+			end
+			8: begin
+				eight_address = digit1_address;
+				digit1_color = eight_out;	
+			end
+			9: begin
+				nine_address = digit1_address;
+				digit1_color = nine_out;	
+			end
+	      endcase
+      end
+    
+      if (isDigit2_LATCHED) begin
+	      case(digit2_img)
+			0: begin
+				zero_address = digit2_address;
+				digit2_color = zero_out;	
+			end
+			1: begin
+				one_address = digit2_address;
+				digit2_color = one_out;	
+			end
+			2: begin
+				two_address = digit2_address;
+				digit2_color = two_out;	
+			end
+			3: begin
+				three_address = digit2_address;
+				digit2_color = three_out;	
+			end
+			4: begin
+				four_address = digit2_address;
+				digit2_color = four_out;	
+			end
+			5: begin
+				five_address = digit2_address;
+				digit2_color = five_out;	
+			end
+			6: begin
+				six_address = digit2_address;
+				digit2_color = six_out;	
+			end
+			7: begin
+				seven_address = digit2_address;
+				digit2_color = seven_out;	
+			end
+			8: begin
+				eight_address = digit2_address;
+				digit2_color = eight_out;	
+			end
+			9: begin
+				nine_address = digit2_address;
+				digit2_color = nine_out;	
+			end
+	      endcase
+      end
 
-
-      case(digit2_img)
-		0: begin
-			zero_address = digit2_address;
-			digit2_color = zero_out;	
-		end
-		1: begin
-			one_address = digit2_address;
-			digit2_color = one_out;	
-		end
-		2: begin
-			two_address = digit2_address;
-			digit2_color = two_out;	
-		end
-		3: begin
-			three_address = digit2_address;
-			digit2_color = three_out;	
-		end
-		4: begin
-			four_address = digit2_address;
-			digit2_color = four_out;	
-		end
-		5: begin
-			five_address = digit2_address;
-			digit2_color = five_out;	
-		end
-		6: begin
-			six_address = digit2_address;
-			digit2_color = six_out;	
-		end
-		7: begin
-			seven_address = digit2_address;
-			digit2_color = seven_out;	
-		end
-		8: begin
-			eight_address = digit2_address;
-			digit2_color = eight_out;	
-		end
-		9: begin
-			nine_address = digit2_address;
-			digit2_color = nine_out;	
-		end
-      endcase
-
-
-      case(digit3_img)
-		0: begin
-			zero_address = digit3_address;
-			digit3_color = zero_out;	
-		end
-		1: begin
-			one_address = digit3_address;
-			digit3_color = one_out;	
-		end
-		2: begin
-			two_address = digit3_address;
-			digit3_color = two_out;	
-		end
-		3: begin
-			three_address = digit3_address;
-			digit3_color = three_out;	
-		end
-		4: begin
-			four_address = digit3_address;
-			digit3_color = four_out;	
-		end
-		5: begin
-			five_address = digit3_address;
-			digit3_color = five_out;	
-		end
-		6: begin
-			six_address = digit3_address;
-			digit3_color = six_out;	
-		end
-		7: begin
-			seven_address = digit3_address;
-			digit3_color = seven_out;	
-		end
-		8: begin
-			eight_address = digit3_address;
-			digit3_color = eight_out;	
-		end
-		9: begin
-			nine_address = digit3_address;
-			digit3_color = nine_out;	
-		end
-      endcase
+      if(isDigit3_LATCHED) begin
+	      case(digit3_img)
+			0: begin
+				zero_address = digit3_address;
+				digit3_color = zero_out;	
+			end
+			1: begin
+				one_address = digit3_address;
+				digit3_color = one_out;	
+			end
+			2: begin
+				two_address = digit3_address;
+				digit3_color = two_out;	
+			end
+			3: begin
+				three_address = digit3_address;
+				digit3_color = three_out;	
+			end
+			4: begin
+				four_address = digit3_address;
+				digit3_color = four_out;	
+			end
+			5: begin
+				five_address = digit3_address;
+				digit3_color = five_out;	
+			end
+			6: begin
+				six_address = digit3_address;
+				digit3_color = six_out;	
+			end
+			7: begin
+				seven_address = digit3_address;
+				digit3_color = seven_out;	
+			end
+			8: begin
+				eight_address = digit3_address;
+				digit3_color = eight_out;	
+			end
+			9: begin
+				nine_address = digit3_address;
+				digit3_color = nine_out;	
+			end
+	      endcase
+      end
 
       if(sprite1_y[0]) begin
 	      if((hcount[10:1] < sprite1_x + 16) && (hcount[10:1] >= sprite1_x - 16) && (vcount < sprite1_y[9:1]+16) && (vcount  >= sprite1_y[9:1]-16)) begin // check sprite1
@@ -637,34 +689,51 @@ module vga_ball(input logic        clk,
       end
 
       if(scoreboard_y[0]) begin
-	      if((hcount[10:1] < scoreboard_x + 20) && (hcount[10:1] >= scoreboard_x - 20) && (vcount < scoreboard_y[9:1] + 16) && (vcount  >= scoreboard_y[9:1] - 16)) begin // check sprite4
+	      if((hcount[10:1] < scoreboard_x + 20) && (hcount[10:1] >= scoreboard_x - 20) && (vcount < scoreboard_y[9:1] + 16) && (vcount  >= scoreboard_y[9:1] - 16)) begin // check scoreboard
 			//pull its contents from memory
 			isScoreboard = 1;		
 	      end
       end
 
+      if(fuelgauge_y[0]) begin
+	      if((hcount[10:1] < fuelgauge_x + 40) && (hcount[10:1] >= fuelgauge_x - 40) && (vcount < fuelgauge_y[9:1] + 30) && (vcount  >= fuelgauge_y[9:1] - 30)) begin // check fuelgauge
+			//pull its contents from memory
+			isFuelgauge = 1;		
+	      end
+      end
+
+      if(indicator_y[0]) begin
+	      if((hcount[10:1] < indicator_x + 16) && (hcount[10:1] >= indicator_x - 16) && (vcount < indicator_y[9:1] + 16) && (vcount  >= indicator_y[9:1] - 16)) begin // check indicator
+			//pull its contents from memory
+			isIndicator = 1;		
+	      end
+      end
+
       if(digit1_y[0]) begin
-	      if((hcount[10:1] < digit1_x + 20) && (hcount[10:1] >= digit1_x - 20) && (vcount < digit1_y[9:1] + 16) && (vcount  >= digit1_y[9:1] - 16)) begin // check sprite4
+	      if((hcount[10:1] < digit1_x + 10) && (hcount[10:1] >= digit1_x - 10) && (vcount < digit1_y[9:1] + 16) && (vcount  >= digit1_y[9:1] - 16)) begin // check digit1
 			//pull its contents from memory
 			isDigit1 = 1;		
 	      end
       end
 
       if(digit2_y[0]) begin
-	      if((hcount[10:1] < digit2_x + 20) && (hcount[10:1] >= digit2_x - 20) && (vcount < digit2_y[9:1] + 16) && (vcount  >= digit2_y[9:1] - 16)) begin // check sprite4
+	      if((hcount[10:1] < digit2_x + 10) && (hcount[10:1] >= digit2_x - 10) && (vcount < digit2_y[9:1] + 16) && (vcount  >= digit2_y[9:1] - 16)) begin // check digit2
 			//pull its contents from memory
 			isDigit2 = 1;		
 	      end
       end
 
       if(digit3_y[0]) begin
-	      if((hcount[10:1] < digit3_x + 20) && (hcount[10:1] >= digit3_x - 20) && (vcount < digit3_y[9:1] + 16) && (vcount  >= digit3_y[9:1] - 16)) begin // check sprite4
+	      if((hcount[10:1] < digit3_x + 10) && (hcount[10:1] >= digit3_x - 10) && (vcount < digit3_y[9:1] + 16) && (vcount  >= digit3_y[9:1] - 16)) begin // check digit3
 			//pull its contents from memory
 			isDigit3 = 1;		
 	      end
       end
 
-      if (boundary_3_LATCHED == 0 && boundary_4_LATCHED == 0) begin // 1 River
+      if(vcount > 400) begin
+            current_background = 7; //gray
+      end
+      else if (boundary_3_LATCHED == 0 && boundary_4_LATCHED == 0) begin // 1 River
          if  (hcount[10:1] < boundary_1_LATCHED) begin
             current_background = 1; // green
 	 end
@@ -696,6 +765,12 @@ module vga_ball(input logic        clk,
       //priority encoding of sprites
       if (isScoreboard) begin
 		current_color = scoreboard_out;
+      end
+      else if (isFuelgauge && fuelgauge_out != 0) begin
+		current_color = fuelgauge_out;
+      end
+      else if (isIndicator && indicator_out != 0) begin
+		current_color = indicator_out;
       end
       else if (isDigit1 && digit1_color_LATCHED != 0) begin
 		current_color = digit1_color_LATCHED;

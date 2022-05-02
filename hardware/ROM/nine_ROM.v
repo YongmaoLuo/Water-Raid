@@ -88,10 +88,11 @@ module nine_ROM (
 		altsyncram_component.intended_device_family = "Cyclone V",
 		altsyncram_component.lpm_hint = "ENABLE_RUNTIME_MOD=NO",
 		altsyncram_component.lpm_type = "altsyncram",
-		altsyncram_component.numwords_a = 1024,
+		altsyncram_component.numwords_a = 640,
 		altsyncram_component.operation_mode = "ROM",
 		altsyncram_component.outdata_aclr_a = "NONE",
 		altsyncram_component.outdata_reg_a = "CLOCK0",
+		altsyncram_component.ram_block_type = "M10K",
 		altsyncram_component.widthad_a = 10,
 		altsyncram_component.width_a = 4,
 		altsyncram_component.width_byteena_a = 1;
@@ -120,8 +121,8 @@ endmodule
 // Retrieval info: PRIVATE: JTAG_ID STRING "NONE"
 // Retrieval info: PRIVATE: MAXIMUM_DEPTH NUMERIC "0"
 // Retrieval info: PRIVATE: MIFfilename STRING "../Sprites/nine.mif"
-// Retrieval info: PRIVATE: NUMWORDS_A NUMERIC "1024"
-// Retrieval info: PRIVATE: RAM_BLOCK_TYPE NUMERIC "0"
+// Retrieval info: PRIVATE: NUMWORDS_A NUMERIC "640"
+// Retrieval info: PRIVATE: RAM_BLOCK_TYPE NUMERIC "2"
 // Retrieval info: PRIVATE: RegAddr NUMERIC "1"
 // Retrieval info: PRIVATE: RegOutput NUMERIC "1"
 // Retrieval info: PRIVATE: SYNTH_WRAPPER_GEN_POSTFIX STRING "0"
@@ -138,10 +139,11 @@ endmodule
 // Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone V"
 // Retrieval info: CONSTANT: LPM_HINT STRING "ENABLE_RUNTIME_MOD=NO"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "altsyncram"
-// Retrieval info: CONSTANT: NUMWORDS_A NUMERIC "1024"
+// Retrieval info: CONSTANT: NUMWORDS_A NUMERIC "640"
 // Retrieval info: CONSTANT: OPERATION_MODE STRING "ROM"
 // Retrieval info: CONSTANT: OUTDATA_ACLR_A STRING "NONE"
 // Retrieval info: CONSTANT: OUTDATA_REG_A STRING "CLOCK0"
+// Retrieval info: CONSTANT: RAM_BLOCK_TYPE STRING "M10K"
 // Retrieval info: CONSTANT: WIDTHAD_A NUMERIC "10"
 // Retrieval info: CONSTANT: WIDTH_A NUMERIC "4"
 // Retrieval info: CONSTANT: WIDTH_BYTEENA_A NUMERIC "1"
