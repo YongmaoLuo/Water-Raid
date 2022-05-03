@@ -21,6 +21,9 @@
 `include "../ROM/scoreboard_ROM.v"
 `include "../ROM/fuelgauge_ROM.v"
 `include "../ROM/indicator_ROM.v"
+`include "../ROM/shoot_ROM.v"
+`include "../ROM/explosion_ROM.v"
+`include "../ROM/hotairballoon_ROM.v"
 `include "../BoundaryMemory/boundary_mem.sv"
 
 
@@ -71,6 +74,9 @@ module vga_ball(input logic        clk,
    logic [3:0]     sprite2_color;
    logic [3:0]     sprite3_color;
    logic [3:0]     sprite4_color;
+   logic [3:0]     sprite5_color;
+   logic [3:0] 	   sprite6_color;
+   logic [3:0] 	   sprite7_color;
    logic [3:0]	   digit1_color;
    logic [3:0]	   digit2_color;
    logic [3:0]	   digit3_color;
@@ -79,6 +85,9 @@ module vga_ball(input logic        clk,
    logic [3:0]     sprite2_color_LATCHED;
    logic [3:0]     sprite3_color_LATCHED;
    logic [3:0]     sprite4_color_LATCHED;
+   logic [3:0]	   sprite5_color_LATCHED;
+   logic [3:0] 	   sprite6_color_LATCHED;
+   logic [3:0] 	   sprite7_color_LATCHED;
    logic [3:0]	   digit1_color_LATCHED;
    logic [3:0]	   digit2_color_LATCHED;
    logic [3:0]	   digit3_color_LATCHED;
@@ -101,6 +110,18 @@ module vga_ball(input logic        clk,
    logic [9:0]	   sprite4_x;
    logic [9:0]	   sprite4_y;
    logic [4:0]	   sprite4_img; //which sprite is this?
+
+   logic [9:0]     sprite5_x;
+   logic [9:0]	   sprite5_y;
+   logic [4:0]     sprite5_img;
+
+   logic [9:0]	   sprite6_x;
+   logic [9:0]	   sprite6_y;
+   logic [4:0]	   sprite6_img; //which sprite is this?
+
+   logic [9:0]	   sprite7_x;
+   logic [9:0]	   sprite7_y;
+   logic [4:0]	   sprite7_img; //which sprite is this?
 
    logic [9:0]     digit1_x;
    logic [9:0]	   digit1_y;
@@ -148,6 +169,9 @@ module vga_ball(input logic        clk,
    logic [9:0]	   sprite2_address;
    logic [9:0]     sprite3_address;
    logic [9:0]	   sprite4_address;
+   logic [9:0] 	   sprite5_address;
+   logic [9:0]	   sprite6_address;
+   logic [9:0]	   sprite7_address;
    logic [9:0]	   digit1_address;
    logic [9:0]	   digit2_address;
    logic [9:0]	   digit3_address;
@@ -156,6 +180,9 @@ module vga_ball(input logic        clk,
    logic	   isSprite2;
    logic 	   isSprite3;
    logic	   isSprite4;
+   logic	   isSprite5;
+   logic	   isSprite6;
+   logic	   isSprite7;
    logic	   isScoreboard;
    logic	   isFuelgauge;
    logic	   isIndicator;
@@ -167,6 +194,9 @@ module vga_ball(input logic        clk,
    logic	   isSprite2_LATCHED;
    logic 	   isSprite3_LATCHED;
    logic	   isSprite4_LATCHED;
+   logic	   isSprite5_LATCHED;
+   logic	   isSprite6_LATCHED;
+   logic	   isSprite7_LATCHED;
    logic	   isScoreboard_LATCHED;
    logic	   isFuelgauge_LATCHED;
    logic	   isIndicator_LATCHED;
@@ -190,6 +220,18 @@ module vga_ball(input logic        clk,
    logic [9:0]     fuel_address;
    logic [9:0]     fuel_address_LATCHED;
 
+   logic [3:0]     shoot_out;
+   logic [9:0]     shoot_address;
+   logic [9:0]	   shoot_address_LATCHED;
+
+   logic [3:0]     explosion_out;
+   logic [9:0]     explosion_address;
+   logic [9:0]	   explosion_address_LATCHED;
+
+   logic [3:0]     hotairballoon_out;
+   logic [9:0]     hotairballoon_address;
+   logic [9:0]	   hotairballoon_address_LATCHED;
+
    logic [3:0]	   scoreboard_out;
    logic [9:0]     scoreboard_address;
    logic [9:0]     scoreboard_address_LATCHED;
@@ -209,6 +251,9 @@ module vga_ball(input logic        clk,
    scoreboard_ROM 	scoreboard_ROM(.address(scoreboard_address_LATCHED), .clock(clk), .q(scoreboard_out));
    fuelgauge_ROM	fuelgauge_ROM(.address(fuelgauge_address_LATCHED),.clock(clk),.q(fuelgauge_out));
    indicator_ROM	indicator_ROM(.address(indicator_address_LATCHED),.clock(clk),.q(indicator_out));
+   shoot_ROM 		shoot_ROM(.address(shoot_address_LATCHED), .clock(clk),.q(shoot_out));
+   explosion_ROM 	explosion_ROM(.address(explosion_address_LATCHED), .clock(clk),.q(explosion_out));
+   hotairballoon_ROM 	hotairballoon_ROM(.address(hotairballoon_address_LATCHED), .clock(clk),.q(hotairballoon_out));
 
 
    logic [3:0]	   zero_out;
@@ -272,7 +317,7 @@ module vga_ball(input logic        clk,
    nine_ROM		nine_ROM(.address(nine_address_LATCHED),.clock(clk), .q(nine_out));
 
 
-   assign isSprite = isSprite1_LATCHED || isSprite2_LATCHED || isSprite3_LATCHED || isSprite4_LATCHED || isScoreboard_LATCHED || isFuelgauge_LATCHED || isIndicator_LATCHED || isDigit1_LATCHED || isDigit2_LATCHED || isDigit3_LATCHED;
+   assign isSprite = isSprite1_LATCHED || isSprite2_LATCHED || isSprite3_LATCHED || isSprite4_LATCHED || isSprite5_LATCHED || isSprite6_LATCHED || isSprite7_LATCHED || isScoreboard_LATCHED || isFuelgauge_LATCHED || isIndicator_LATCHED || isDigit1_LATCHED || isDigit2_LATCHED || isDigit3_LATCHED;
 
    always_ff @(posedge clk) begin
      if (chipselect && write)
@@ -310,6 +355,15 @@ module vga_ball(input logic        clk,
 	 6'd29 : fuelgauge_y		<= writedata[9:0];
 	 6'd30 : indicator_x		<= writedata[9:0];
 	 6'd31 : indicator_y		<= writedata[9:0];
+	 6'd32 : sprite5_x		<= writedata[9:0];
+	 6'd33 : sprite5_y		<= writedata[9:0];
+	 6'd34 : sprite5_img 		<= writedata[4:0];
+	 6'd35 : sprite6_x		<= writedata[9:0];
+	 6'd36 : sprite6_y		<= writedata[9:0];
+	 6'd37 : sprite6_img 		<= writedata[4:0];
+	 6'd38 : sprite7_x		<= writedata[9:0];
+	 6'd39 : sprite7_y		<= writedata[9:0];
+	 6'd40 : sprite7_img 		<= writedata[4:0];
 
        endcase
    end
@@ -372,6 +426,9 @@ module vga_ball(input logic        clk,
 	boundary_3_LATCHED 		<= boundary_3;
 	boundary_4_LATCHED 		<= boundary_4;
 	plane_address_LATCHED		<= plane_address;
+	shoot_address_LATCHED		<= shoot_address;
+	explosion_address_LATCHED	<= explosion_address;
+	hotairballoon_address_LATCHED	<= hotairballoon_address;
 	chopper_address_LATCHED		<= chopper_address;
 	battleship_address_LATCHED	<= battleship_address;
 	fuel_address_LATCHED 		<= fuel_address;
@@ -392,6 +449,9 @@ module vga_ball(input logic        clk,
    	sprite2_color_LATCHED		<= sprite2_color;
      	sprite3_color_LATCHED		<= sprite3_color;
      	sprite4_color_LATCHED		<= sprite4_color;
+	sprite5_color_LATCHED		<= sprite5_color;
+   	sprite6_color_LATCHED		<= sprite6_color;
+   	sprite7_color_LATCHED		<= sprite7_color;
 	digit1_color_LATCHED		<= digit1_color;
 	digit2_color_LATCHED		<= digit2_color;
 	digit3_color_LATCHED		<= digit3_color;
@@ -399,6 +459,9 @@ module vga_ball(input logic        clk,
    	isSprite2_LATCHED		<= isSprite2;
    	isSprite3_LATCHED		<= isSprite3;
 	isSprite4_LATCHED		<= isSprite4;
+	isSprite5_LATCHED		<= isSprite5;
+   	isSprite6_LATCHED 		<= isSprite6;
+   	isSprite7_LATCHED 		<= isSprite7;
 	isDigit1_LATCHED		<= isDigit1;
 	isDigit2_LATCHED		<= isDigit2;
 	isDigit3_LATCHED		<= isDigit3;
@@ -413,6 +476,9 @@ module vga_ball(input logic        clk,
       isSprite2 = 0;
       isSprite3 = 0;
       isSprite4 = 0;
+      isSprite5 = 0;
+      isSprite6 = 0;
+      isSprite7 = 0;
       isScoreboard = 0;
       isFuelgauge = 0;
       isIndicator = 0;
@@ -421,6 +487,7 @@ module vga_ball(input logic        clk,
       isDigit3 = 0;
 
       zero_address = 10'd0;
+      one_address = 10'd0;
       two_address = 10'd0;
       three_address = 10'd0;
       four_address = 10'd0;
@@ -429,101 +496,270 @@ module vga_ball(input logic        clk,
       seven_address = 10'd0;
       eight_address = 10'd0;
       nine_address = 10'd0;
+      plane_address = 10'd0;
+      explosion_address = 10'd0;
+      hotairballoon_address = 10'd0;
+      shoot_address = 10'd0;
+      chopper_address = 10'd0;
+      battleship_address = 10'd0;
+      fuel_address = 10'd0;
 
       digit1_color = 4'b0;
       digit2_color = 4'b0;
       digit3_color = 4'b0;
-
+      sprite1_color = 4'b0;
+      sprite2_color = 4'b0;
+      sprite3_color = 4'b0;
+      sprite4_color = 4'b0;
+      sprite5_color = 4'b0;
+      sprite6_color = 4'b0;
+      sprite7_color = 4'b0;
 			
       sprite1_address = ((vcount - (sprite1_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite1_x-16));
       sprite2_address = ((vcount - (sprite2_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite2_x-16));
       sprite3_address = ((vcount - (sprite3_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite3_x-16));
       sprite4_address = ((vcount - (sprite4_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite4_x-16));
+      sprite5_address = ((vcount - (sprite5_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite5_x-16));
+      sprite6_address = ((vcount - (sprite6_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite6_x-16));
+      sprite7_address = ((vcount - (sprite7_y[9:1]-16)) << 5) + (hcount[10:1] - (sprite7_x-16));
       scoreboard_address = ((vcount - (scoreboard_y[9:1]-16)) * 40) + (hcount[10:1] - (scoreboard_x-20));
-      fuelgauge_address = (({2'b00,vcount} - ({3'b000, fuelgauge_y[9:1]}-30)) * 80) + ({2'b00,hcount[10:1]} - ({2'b00,fuelgauge_x}-40));
+      fuelgauge_address = (({2'b00,vcount} - ({3'b000, fuelgauge_y[9:1]}-20)) * 80) + ({2'b00,hcount[10:1]} - ({2'b00,fuelgauge_x}-40));
       indicator_address = ((vcount - (indicator_y[9:1]-16)) << 5) + (hcount[10:1] - (indicator_x - 16));
       digit1_address = ((vcount - (digit1_y[9:1]-16)) * 20) + (hcount[10:1] - (digit1_x-10));
       digit2_address = ((vcount - (digit2_y[9:1]-16)) * 20) + (hcount[10:1] - (digit2_x-10));
       digit3_address = ((vcount - (digit3_y[9:1]-16)) * 20) + (hcount[10:1] - (digit3_x-10));
 
       //assuming none of the images will be the same
+      if(isSprite1_LATCHED) begin
+	      case(sprite1_img)
+			0: begin 
+				plane_address = sprite1_address;
+				sprite1_color = plane_out; //maybe latch the sprite colors
+			   end
+			1: begin
+				chopper_address = sprite1_address;
+				sprite1_color = chopper_out;
+			   end
+			2: begin
+				battleship_address = sprite1_address;
+				sprite1_color = battleship_out;
+	   		   end
+			3: begin
+				fuel_address = sprite1_address;
+				sprite1_color = fuel_out;
+			   end
+			4: begin
+				shoot_address = sprite1_address;
+				sprite1_color = shoot_out;
+			   end
+			5: begin 
+				explosion_address = sprite1_address;
+				sprite1_color = explosion_out; //maybe latch the sprite colors
+			   end
+			6: begin 
+				hotairballoon_address = sprite1_address;
+				sprite1_color = hotairballoon_out; //maybe latch the sprite colors
+			   end
+	      endcase
+      end
 
-      case(sprite1_img)
-		0: begin 
-			plane_address = sprite1_address;
-			sprite1_color = plane_out; //maybe latch the sprite colors
-		   end
-		1: begin
-			chopper_address = sprite1_address;
-			sprite1_color = chopper_out;
-		   end
-		2: begin
-			battleship_address = sprite1_address;
-			sprite1_color = battleship_out;
-   		   end
-		3: begin
-			fuel_address = sprite1_address;
-			sprite1_color = fuel_out;
-		   end
-      endcase
+      if(isSprite2_LATCHED) begin
+	      case(sprite2_img)
+			0: begin 
+				plane_address = sprite2_address;
+				sprite2_color = plane_out;
+			   end
+			1: begin
+				chopper_address = sprite2_address;
+				sprite2_color = chopper_out;
+			   end
+			2: begin
+				battleship_address = sprite2_address;
+				sprite2_color = battleship_out;
+			   end
+			3: begin
+				fuel_address = sprite2_address;
+				sprite2_color = fuel_out;
+			   end
+			4: begin
+				shoot_address = sprite2_address;
+				sprite2_color = shoot_out;
+			   end
+			5: begin 
+				explosion_address = sprite2_address;
+				sprite2_color = explosion_out; //maybe latch the sprite colors
+			   end
+			6: begin 
+				hotairballoon_address = sprite2_address;
+				sprite2_color = hotairballoon_out; //maybe latch the sprite colors
+			   end
+	      endcase
+      end
 
-      case(sprite2_img)
-		0: begin 
-			plane_address = sprite2_address;
-			sprite2_color = plane_out;
-		   end
-		1: begin
-			chopper_address = sprite2_address;
-			sprite2_color = chopper_out;
-		   end
-		2: begin
-			battleship_address = sprite2_address;
-			sprite2_color = battleship_out;
-		   end
-		3: begin
-			fuel_address = sprite2_address;
-			sprite2_color = fuel_out;
-		   end
-      endcase
+      if(isSprite3_LATCHED) begin
+	      case(sprite3_img)
+			0: begin 
+				plane_address = sprite3_address;
+				sprite3_color = plane_out;
+			   end
+			1: begin
+				chopper_address = sprite3_address;
+				sprite3_color = chopper_out;
+			   end
+			2: begin
+				battleship_address = sprite3_address;
+				sprite3_color = battleship_out;
+			   end
+			3: begin
+				fuel_address = sprite3_address;
+				sprite3_color = fuel_out;
+			   end
+			4: begin
+				shoot_address = sprite3_address;
+				sprite3_color = shoot_out;
+			   end
+			5: begin 
+				explosion_address = sprite3_address;
+				sprite3_color = explosion_out; //maybe latch the sprite colors
+			   end
+			6: begin 
+				hotairballoon_address = sprite3_address;
+				sprite3_color = hotairballoon_out; //maybe latch the sprite colors
+			   end
+	      endcase
+      end
 
-      case(sprite3_img)
-		0: begin 
-			plane_address = sprite3_address;
-			sprite3_color = plane_out;
-		   end
-		1: begin
-			chopper_address = sprite3_address;
-			sprite3_color = chopper_out;
-		   end
-		2: begin
-			battleship_address = sprite3_address;
-			sprite3_color = battleship_out;
-		   end
-		3: begin
-			fuel_address = sprite3_address;
-			sprite3_color = fuel_out;
-		   end
-      endcase
+      if(isSprite4_LATCHED) begin
+	      case(sprite4_img)
+			0: begin 
+				plane_address = sprite4_address;
+				sprite4_color = plane_out;
+			   end
+			1: begin
+				chopper_address = sprite4_address;
+				sprite4_color = chopper_out;
+			   end
+			2: begin
+				battleship_address = sprite4_address;
+				sprite4_color = battleship_out;
+			   end
+			3: begin
+				fuel_address = sprite4_address;
+				sprite4_color = fuel_out;
+			   end
+			4: begin
+				shoot_address = sprite4_address;
+				sprite4_color = shoot_out;
+			   end
+			5: begin 
+				explosion_address = sprite4_address;
+				sprite4_color = explosion_out; //maybe latch the sprite colors
+			   end
+			6: begin 
+				hotairballoon_address = sprite4_address;
+				sprite4_color = hotairballoon_out; //maybe latch the sprite colors
+			   end
+	      endcase
+      end
 
-      case(sprite4_img)
-		0: begin 
-			plane_address = sprite4_address;
-			sprite4_color = plane_out;
-		   end
-		1: begin
-			chopper_address = sprite4_address;
-			sprite4_color = chopper_out;
-		   end
-		2: begin
-			battleship_address = sprite4_address;
-			sprite4_color = battleship_out;
-		   end
-		3: begin
-			fuel_address = sprite4_address;
-			sprite4_color = fuel_out;
-		   end
-      endcase
+      if(isSprite5_LATCHED) begin
+	      case(sprite5_img)
+			0: begin 
+				plane_address = sprite5_address;
+				sprite5_color = plane_out;
+			   end
+			1: begin
+				chopper_address = sprite5_address;
+				sprite5_color = chopper_out;
+			   end
+			2: begin
+				battleship_address = sprite5_address;
+				sprite5_color = battleship_out;
+			   end
+			3: begin
+				fuel_address = sprite5_address;
+				sprite5_color = fuel_out;
+			   end
+			4: begin
+				shoot_address = sprite5_address;
+				sprite5_color = shoot_out;
+			   end
+			5: begin 
+				explosion_address = sprite5_address;
+				sprite5_color = explosion_out; //maybe latch the sprite colors
+			   end
+			6: begin 
+				hotairballoon_address = sprite5_address;
+				sprite5_color = hotairballoon_out; //maybe latch the sprite colors
+			   end
+	      endcase
+      end
 
+      if(isSprite6_LATCHED) begin
+	      case(sprite6_img)
+			0: begin 
+				plane_address = sprite6_address;
+				sprite6_color = plane_out; //maybe latch the sprite colors
+			   end
+			1: begin
+				chopper_address = sprite6_address;
+				sprite6_color = chopper_out;
+			   end
+			2: begin
+				battleship_address = sprite6_address;
+				sprite6_color = battleship_out;
+	   		   end
+			3: begin
+				fuel_address = sprite6_address;
+				sprite6_color = fuel_out;
+			   end
+			4: begin
+				shoot_address = sprite6_address;
+				sprite6_color = shoot_out;
+			   end
+			5: begin 
+				explosion_address = sprite6_address;
+				sprite6_color = explosion_out; //maybe latch the sprite colors
+			   end
+			6: begin 
+				hotairballoon_address = sprite6_address;
+				sprite6_color = hotairballoon_out; //maybe latch the sprite colors
+			   end
+	      endcase
+      end
+
+      if(isSprite7_LATCHED) begin
+	      case(sprite7_img)
+			0: begin 
+				plane_address = sprite7_address;
+				sprite7_color = plane_out; //maybe latch the sprite colors
+			   end
+			1: begin
+				chopper_address = sprite7_address;
+				sprite7_color = chopper_out;
+			   end
+			2: begin
+				battleship_address = sprite7_address;
+				sprite7_color = battleship_out;
+	   		   end
+			3: begin
+				fuel_address = sprite7_address;
+				sprite7_color = fuel_out;
+			   end
+			4: begin
+				shoot_address = sprite7_address;
+				sprite7_color = shoot_out;
+			   end
+			5: begin 
+				explosion_address = sprite7_address;
+				sprite7_color = explosion_out; //maybe latch the sprite colors
+			   end
+			6: begin 
+				hotairballoon_address = sprite7_address;
+				sprite7_color = hotairballoon_out; //maybe latch the sprite colors
+			   end
+	      endcase
+      end
 
       if(isDigit1_LATCHED) begin
 	      case(digit1_img)
@@ -688,6 +924,27 @@ module vga_ball(input logic        clk,
 	      end
       end
 
+      if(sprite5_y[0]) begin
+	      if((hcount[10:1] < sprite5_x + 16) && (hcount[10:1] >= sprite5_x - 16) && (vcount < sprite5_y[9:1] + 16) && (vcount  >= sprite5_y[9:1] - 16)) begin // check sprite5
+			//pull its contents from memory
+			isSprite5 = 1;		
+	      end
+      end
+      
+      if(sprite6_y[0]) begin
+	      if((hcount[10:1] < sprite6_x + 16) && (hcount[10:1] >= sprite6_x - 16) && (vcount < sprite6_y[9:1]+16) && (vcount  >= sprite6_y[9:1]-16)) begin // check sprite6
+			//pull its contents from memory
+			isSprite6 = 1;
+	      end
+      end
+
+      if(sprite7_y[0]) begin
+	      if((hcount[10:1] < sprite7_x + 16) && (hcount[10:1] >= sprite7_x - 16) && (vcount < sprite7_y[9:1]+16) && (vcount  >= sprite7_y[9:1]-16)) begin // check sprite7
+			//pull its contents from memory
+			isSprite7 = 1;
+	      end
+      end
+
       if(scoreboard_y[0]) begin
 	      if((hcount[10:1] < scoreboard_x + 20) && (hcount[10:1] >= scoreboard_x - 20) && (vcount < scoreboard_y[9:1] + 16) && (vcount  >= scoreboard_y[9:1] - 16)) begin // check scoreboard
 			//pull its contents from memory
@@ -696,7 +953,7 @@ module vga_ball(input logic        clk,
       end
 
       if(fuelgauge_y[0]) begin
-	      if((hcount[10:1] < fuelgauge_x + 40) && (hcount[10:1] >= fuelgauge_x - 40) && (vcount < fuelgauge_y[9:1] + 30) && (vcount  >= fuelgauge_y[9:1] - 30)) begin // check fuelgauge
+	      if((hcount[10:1] < fuelgauge_x + 40) && (hcount[10:1] >= fuelgauge_x - 40) && (vcount < fuelgauge_y[9:1] + 20) && (vcount  >= fuelgauge_y[9:1] - 20)) begin // check fuelgauge
 			//pull its contents from memory
 			isFuelgauge = 1;		
 	      end
@@ -792,6 +1049,15 @@ module vga_ball(input logic        clk,
       end
       else if(isSprite4 && sprite4_color_LATCHED != 0) begin
 		current_color = sprite4_color_LATCHED;
+      end
+      else if(isSprite5 && sprite5_color_LATCHED != 0) begin
+		current_color = sprite5_color_LATCHED;
+      end
+      else if(isSprite6 && sprite6_color_LATCHED != 0) begin
+		current_color = sprite6_color_LATCHED;
+      end
+      else if(isSprite7 && sprite7_color_LATCHED != 0) begin
+		current_color = sprite7_color_LATCHED;
       end
       else begin
 		current_color = 0;

@@ -64,3 +64,6 @@ set_global_assignment -name QIP_FILE nine_ROM.qip
 set_global_assignment -name QIP_FILE three_ROM.qip
 set_global_assignment -name QIP_FILE fuelgauge_ROM.qip
 set_global_assignment -name QIP_FILE indicator_ROM.qip
+set_global_assignment -name QIP_FILE shoot_ROM.qip
+set_global_assignment -name QIP_FILE explosion_ROM.qip
+set_global_assignment -name QIP_FILE hotairballoon_ROM.qip
