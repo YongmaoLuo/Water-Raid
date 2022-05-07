@@ -42,9 +42,9 @@ module explosion_ROM (
 	clock,
 	q);
 
-	input	[12:0]  address;
+	input	[9:0]  address;
 	input	  clock;
-	output	[15:0]  q;
+	output	[3:0]  q;
 `ifndef ALTERA_RESERVED_QIS
 // synopsys translate_off
 `endif
@@ -53,8 +53,8 @@ module explosion_ROM (
 // synopsys translate_on
 `endif
 
-	wire [15:0] sub_wire0;
-	wire [15:0] q = sub_wire0[15:0];
+	wire [3:0] sub_wire0;
+	wire [3:0] q = sub_wire0[3:0];
 
 	altsyncram	altsyncram_component (
 				.address_a (address),
@@ -72,7 +72,7 @@ module explosion_ROM (
 				.clocken1 (1'b1),
 				.clocken2 (1'b1),
 				.clocken3 (1'b1),
-				.data_a ({16{1'b1}}),
+				.data_a ({4{1'b1}}),
 				.data_b (1'b1),
 				.eccstatus (),
 				.q_b (),
@@ -84,16 +84,17 @@ module explosion_ROM (
 		altsyncram_component.address_aclr_a = "NONE",
 		altsyncram_component.clock_enable_input_a = "BYPASS",
 		altsyncram_component.clock_enable_output_a = "BYPASS",
-		altsyncram_component.init_file = "explosion.mif",
+		altsyncram_component.init_file = "../Sprites/explosion.mif",
 		altsyncram_component.intended_device_family = "Cyclone V",
 		altsyncram_component.lpm_hint = "ENABLE_RUNTIME_MOD=NO",
 		altsyncram_component.lpm_type = "altsyncram",
-		altsyncram_component.numwords_a = 8192,
+		altsyncram_component.numwords_a = 1024,
 		altsyncram_component.operation_mode = "ROM",
 		altsyncram_component.outdata_aclr_a = "NONE",
 		altsyncram_component.outdata_reg_a = "CLOCK0",
-		altsyncram_component.widthad_a = 13,
-		altsyncram_component.width_a = 16,
+		altsyncram_component.ram_block_type = "M10K",
+		altsyncram_component.widthad_a = 10,
+		altsyncram_component.width_a = 4,
 		altsyncram_component.width_byteena_a = 1;
 
 
@@ -119,38 +120,39 @@ endmodule
 // Retrieval info: PRIVATE: JTAG_ENABLED NUMERIC "0"
 // Retrieval info: PRIVATE: JTAG_ID STRING "NONE"
 // Retrieval info: PRIVATE: MAXIMUM_DEPTH NUMERIC "0"
-// Retrieval info: PRIVATE: MIFfilename STRING "explosion.mif"
-// Retrieval info: PRIVATE: NUMWORDS_A NUMERIC "8192"
-// Retrieval info: PRIVATE: RAM_BLOCK_TYPE NUMERIC "0"
+// Retrieval info: PRIVATE: MIFfilename STRING "../Sprites/explosion.mif"
+// Retrieval info: PRIVATE: NUMWORDS_A NUMERIC "1024"
+// Retrieval info: PRIVATE: RAM_BLOCK_TYPE NUMERIC "2"
 // Retrieval info: PRIVATE: RegAddr NUMERIC "1"
 // Retrieval info: PRIVATE: RegOutput NUMERIC "1"
 // Retrieval info: PRIVATE: SYNTH_WRAPPER_GEN_POSTFIX STRING "0"
 // Retrieval info: PRIVATE: SingleClock NUMERIC "1"
 // Retrieval info: PRIVATE: UseDQRAM NUMERIC "0"
-// Retrieval info: PRIVATE: WidthAddr NUMERIC "13"
-// Retrieval info: PRIVATE: WidthData NUMERIC "16"
+// Retrieval info: PRIVATE: WidthAddr NUMERIC "10"
+// Retrieval info: PRIVATE: WidthData NUMERIC "4"
 // Retrieval info: PRIVATE: rden NUMERIC "0"
 // Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
 // Retrieval info: CONSTANT: ADDRESS_ACLR_A STRING "NONE"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_INPUT_A STRING "BYPASS"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_OUTPUT_A STRING "BYPASS"
-// Retrieval info: CONSTANT: INIT_FILE STRING "explosion.mif"
+// Retrieval info: CONSTANT: INIT_FILE STRING "../Sprites/explosion.mif"
 // Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone V"
 // Retrieval info: CONSTANT: LPM_HINT STRING "ENABLE_RUNTIME_MOD=NO"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "altsyncram"
-// Retrieval info: CONSTANT: NUMWORDS_A NUMERIC "8192"
+// Retrieval info: CONSTANT: NUMWORDS_A NUMERIC "1024"
 // Retrieval info: CONSTANT: OPERATION_MODE STRING "ROM"
 // Retrieval info: CONSTANT: OUTDATA_ACLR_A STRING "NONE"
 // Retrieval info: CONSTANT: OUTDATA_REG_A STRING "CLOCK0"
-// Retrieval info: CONSTANT: WIDTHAD_A NUMERIC "13"
-// Retrieval info: CONSTANT: WIDTH_A NUMERIC "16"
+// Retrieval info: CONSTANT: RAM_BLOCK_TYPE STRING "M10K"
+// Retrieval info: CONSTANT: WIDTHAD_A NUMERIC "10"
+// Retrieval info: CONSTANT: WIDTH_A NUMERIC "4"
 // Retrieval info: CONSTANT: WIDTH_BYTEENA_A NUMERIC "1"
-// Retrieval info: USED_PORT: address 0 0 13 0 INPUT NODEFVAL "address[12..0]"
+// Retrieval info: USED_PORT: address 0 0 10 0 INPUT NODEFVAL "address[9..0]"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT VCC "clock"
-// Retrieval info: USED_PORT: q 0 0 16 0 OUTPUT NODEFVAL "q[15..0]"
-// Retrieval info: CONNECT: @address_a 0 0 13 0 address 0 0 13 0
+// Retrieval info: USED_PORT: q 0 0 4 0 OUTPUT NODEFVAL "q[3..0]"
+// Retrieval info: CONNECT: @address_a 0 0 10 0 address 0 0 10 0
 // Retrieval info: CONNECT: @clock0 0 0 0 0 clock 0 0 0 0
-// Retrieval info: CONNECT: q 0 0 16 0 @q_a 0 0 16 0
+// Retrieval info: CONNECT: q 0 0 4 0 @q_a 0 0 4 0
 // Retrieval info: GEN_FILE: TYPE_NORMAL explosion_ROM.v TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL explosion_ROM.inc FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL explosion_ROM.cmp FALSE

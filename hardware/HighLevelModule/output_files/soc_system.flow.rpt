@@ -1,5 +1,5 @@
 Flow report for soc_system
-Sun Apr 17 11:13:53 2022
+Thu May  5 14:10:10 2022
 Quartus Prime Version 21.1.0 Build 842 10/21/2021 SJ Lite Edition
 
 
@@ -41,18 +41,18 @@ https://fpgasoftware.intel.com/eula.
 +-------------------------------------------------------------------------------+
 ; Flow Summary                                                                  ;
 +---------------------------------+---------------------------------------------+
-; Flow Status                     ; Successful - Sun Apr 17 11:13:53 2022       ;
+; Flow Status                     ; Successful - Thu May  5 14:10:10 2022       ;
 ; Quartus Prime Version           ; 21.1.0 Build 842 10/21/2021 SJ Lite Edition ;
 ; Revision Name                   ; soc_system                                  ;
 ; Top-level Entity Name           ; soc_system_top                              ;
 ; Family                          ; Cyclone V                                   ;
 ; Device                          ; 5CSEMA5F31C6                                ;
 ; Timing Models                   ; Final                                       ;
-; Logic utilization (in ALMs)     ; 521 / 32,070 ( 2 % )                        ;
-; Total registers                 ; 616                                         ;
+; Logic utilization (in ALMs)     ; 1,409 / 32,070 ( 4 % )                      ;
+; Total registers                 ; 1280                                        ;
 ; Total pins                      ; 362 / 457 ( 79 % )                          ;
 ; Total virtual pins              ; 0                                           ;
-; Total block memory bits         ; 12,288 / 4,065,280 ( < 1 % )                ;
+; Total block memory bits         ; 94,464 / 4,065,280 ( 2 % )                  ;
 ; Total DSP Blocks                ; 0 / 87 ( 0 % )                              ;
 ; Total HSSI RX PCSs              ; 0                                           ;
 ; Total HSSI PMA RX Deserializers ; 0                                           ;
@@ -68,7 +68,7 @@ https://fpgasoftware.intel.com/eula.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 04/17/2022 11:08:49 ;
+; Start date & time ; 05/05/2022 14:03:49 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; soc_system          ;
 +-------------------+---------------------+
@@ -79,7 +79,7 @@ https://fpgasoftware.intel.com/eula.
 +---------------------------------------+--------------------------------------------------------------------------+---------------+--------------------------------+------------+
 ; Assignment Name                       ; Value                                                                    ; Default Value ; Entity Name                    ; Section Id ;
 +---------------------------------------+--------------------------------------------------------------------------+---------------+--------------------------------+------------+
-; COMPILER_SIGNATURE_ID                 ; 93180999528156.165020812705996                                           ; --            ; --                             ; --         ;
+; COMPILER_SIGNATURE_ID                 ; 93180999528156.165177382714650                                           ; --            ; --                             ; --         ;
 ; ECO_REGENERATE_REPORT                 ; On                                                                       ; Off           ; --                             ; --         ;
 ; HPS_ISW_FILE                          ; soc_system/synthesis/submodules/sequencer/sdram_io.pre.h                 ; --            ; soc_system_hps_0_hps_io_border ; --         ;
 ; HPS_ISW_FILE                          ; soc_system/synthesis/submodules/sequencer/alt_types.pre.h                ; --            ; soc_system_hps_0_hps_io_border ; --         ;
@@ -115,7 +115,7 @@ https://fpgasoftware.intel.com/eula.
 ; PROJECT_OUTPUT_DIRECTORY              ; output_files                                                             ; --            ; --                             ; --         ;
 ; SLD_FILE                              ; soc_system/synthesis/soc_system.regmap                                   ; --            ; --                             ; --         ;
 ; SLD_FILE                              ; soc_system/synthesis/soc_system.debuginfo                                ; --            ; --                             ; --         ;
-; SLD_INFO                              ; QSYS_NAME soc_system HAS_SOPCINFO 1 GENERATION_ID 1650208029             ; --            ; --                             ; --         ;
+; SLD_INFO                              ; QSYS_NAME soc_system HAS_SOPCINFO 1 GENERATION_ID 1651773747             ; --            ; --                             ; --         ;
 ; SOPCINFO_FILE                         ; soc_system/synthesis/../../soc_system.sopcinfo                           ; --            ; --                             ; --         ;
 ; SYNTHESIS_ONLY_QIP                    ; On                                                                       ; --            ; --                             ; --         ;
 ; TOP_LEVEL_ENTITY                      ; soc_system_top                                                           ; soc_system    ; --                             ; --         ;
@@ -128,10 +128,10 @@ https://fpgasoftware.intel.com/eula.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:00:32     ; 1.0                     ; 820 MB              ; 00:00:26                           ;
-; Fitter               ; 00:01:17     ; 1.1                     ; 2820 MB             ; 00:01:44                           ;
-; Assembler            ; 00:00:15     ; 1.0                     ; 684 MB              ; 00:00:09                           ;
-; Total                ; 00:02:04     ; --                      ; --                  ; 00:02:19                           ;
+; Analysis & Synthesis ; 00:01:15     ; 1.0                     ; 828 MB              ; 00:00:30                           ;
+; Fitter               ; 00:01:32     ; 1.1                     ; 2833 MB             ; 00:02:02                           ;
+; Assembler            ; 00:00:25     ; 1.0                     ; 695 MB              ; 00:00:09                           ;
+; Total                ; 00:03:12     ; --                      ; --                  ; 00:02:41                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 

@@ -130,7 +130,7 @@ $(DTS) : $(SOPCINFO) $(BOARD_INFO)
 #
 # Builds the SPL's preloader-mkpimage.bin image file, which should
 # be written to the "magic" 3rd parition on the SD card
-# in GameLogic/spl_bsp
+# in software/spl_bsp
 #
 # Requires the embedded_command_shell.sh script to have run so the compiler,
 # etc is available
