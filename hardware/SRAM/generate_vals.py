@@ -11,7 +11,7 @@ f.write("BEGIN\n")
 f.write("\n")
 for i in range(depth):
 	string = format(i,'03X')
-	bin_val = "0011001000"+"0110010000"+"0000000000"+"0000000000;"
+	bin_val = "0011011100"+"0110100100"+"0000000000"+"0000000000;"
 	string = string + " : "+bin_val+"\n"
 	f.write(string)
 f.write("\nEND;")
