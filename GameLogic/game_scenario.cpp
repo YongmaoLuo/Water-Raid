@@ -8,29 +8,27 @@
 
 void GameScenario::updateBackground(int videoFd) {
     // 20s to change a setting
-    double duration=1/double(frequency);
-    short singleRiverWidth;
-    clock_t change=clock();
-    short counter=0;
+    //short singleRiverWidth;
+    //clock_t change=clock();
     BoundaryInRow newBoundaries;
     srand (time(NULL));
-    short states=rand()%4;
-    clock_t execute=clock();
-    bool firstTimeDouble;
-    while(1){
+    //short states=rand()%4;
+    //clock_t execute=clock();
+    //bool firstTimeDouble;
+    //while(1){
         // change game background every duration
-        if(double(clock()-execute)/CLOCKS_PER_SEC>=duration){
-            execute=clock();
+//        if(double(clock()-execute)/CLOCKS_PER_SEC>=duration){
+//            execute=clock();
 
 
             // a round is over, need to change the background
             if(double(clock()-change)/CLOCKS_PER_SEC>=2){
                 firstTimeDouble= true;
                 int temp=rand()%4;
-                if(states==temp)
-                    while(states==temp){
-                        temp=rand()%4;
-                    }
+//                if(states==temp)
+//                    while(states==temp){
+//                        temp=rand()%4;
+//                    }
                 change=clock();
                 states=temp;
             }
@@ -143,7 +141,6 @@ void GameScenario::updateBackground(int videoFd) {
 //                        }
 //
 //                    }
-                    counter=0;
                     break;
                 case DOUBLE_RIVER:
                     printf("DOUBLE_RIVER\n");
@@ -248,18 +245,18 @@ void GameScenario::updateBackground(int videoFd) {
 
                     }else{
                         int temp=rand()%4;
-                        if(states==temp)
-                            while(states==temp){
-                                temp=rand()%4;
-                            }
+//                        if(states==temp)
+//                            while(states==temp){
+//                                temp=rand()%4;
+//                            }
                         change=clock();
                         states=temp;
                     }
                     break;
             }
-        }
+        //}
 
-    }
+    //}
 }
 
 GameScenario::GameScenario(short minimumWidth, short maximumWidth, short frequency): minimumWidth(minimumWidth), maximumWidth(maximumWidth),frequency(frequency){
@@ -269,5 +266,15 @@ GameScenario::GameScenario(short minimumWidth, short maximumWidth, short frequen
         boundaries->river2_left=0;
         boundaries->river2_right=0;
     }
+    states=0;
+    firstTimeDouble= true;
     screenHeader=0;
+}
+
+double GameScenario::getFrequency(){
+    return frequency;
+}
+
+void GameScenario::setChangeClock() {
+    change=clock();
 }

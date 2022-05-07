@@ -61,30 +61,16 @@ int main(){
     }
     GameScenario gameScenario(30,640,60);
 
-    gameScenario.updateBackground(videoFd);
-//    BoundaryInRow boundary;
-//    boundary.river1_left=40;
-//    boundary.river1_right=100;
-//    boundary.river2_left=200;
-//    boundary.river2_right=400;
-//    int left=1, right=1;
-//    while(1){
-//        if(boundary.river1_left<=20){
-//            left=-left;
-//            right=-right;
-//        }else if(boundary.river1_left>=50){
-//            left=-left;
-//            right=-right;
-//        }
-//        boundary.river1_left-=left;
-//        boundary.river1_right+=right;
-//        boundary.river2_left-=left;
-//        boundary.river2_right+=right;
-//        printf("%d\n",boundary.river1_left);
-//
-//        WaterDriver::writeBoundary(videoFd,boundary);
-//        usleep(40000);
-//    }
+    double duration=1/gameScenario.getFrequency();
+    clock_t execute=clock();
+    gameScenario.setChangeClock();
+    while(1){
+        if(double(clock()-execute)/CLOCKS_PER_SEC>=duration){
+            execute=clock();
+            gameScenario.updateBackground(videoFd);
+        }
+
+    }
 
     return 0;
 }

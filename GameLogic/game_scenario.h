@@ -19,12 +19,18 @@ class GameScenario
 private:
     short minimumWidth;
     short maximumWidth;
-    short frequency; // how many lines the plane flies over per second
+    double frequency; // how many lines the plane flies over per second
     short screenHeader;
+    short states;
+    short singleRiverWidth;
+    bool firstTimeDouble;
+    clock_t change;
 
 public:
     BoundaryInRow boundaries[480];/* background register */
     void updateBackground(int videoFd);
+    double getFrequency();
+    void setChangeClock();
     GameScenario(short minimumWidth, short maximumWidth, short frequency);
 
     BoundaryInRow get_boundaries(){
