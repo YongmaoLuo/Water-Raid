@@ -4,16 +4,19 @@
 #include "driver.h"
 #include "../VideoDriver/water_video.h"
 #include <unistd.h>
+#include <sys/ioctl.h>
+#include <stdio.h>
 
-void WaterDriver::writeBoundary(BoundaryInRow boundary) {
-    int water_video_fd;
-    static const char filename[] = "/dev/vga_ball";
-    if ( (water_video_fd = open(filename, O_RDWR)) == -1) {
-        fprintf(stderr, "could not open %s\n", filename);
-        return -1;
-    }
+int shift=0;
 
-    if (ioctl(water_video_fd, WATER_VIDEO_WRITE_COORDINATE, &boundary)) {
+void WaterDriver::writeBoundary(int videoFd, BoundaryInRow boundary) {
+    water_video_arg_boundary arg;
+    arg.boundary=boundary;
+    shift=1-shift;
+    arg.shift=shift;
+
+    //water_video_arg_boundary writeTemp=boundary;
+    if (ioctl(videoFd, WATER_VIDEO_WRITE_BOUNDARY, &arg)) {
         perror("ioctl(WATER_VIDEO_SET_COORDINATE) failed");
         return;
     }

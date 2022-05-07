@@ -6,13 +6,14 @@
 #define WATER_RAID_DRIVER_H
 
 #include "common_data_structure.h"
+#include "../VideoDriver/water_video.h"
 #include "sprite.h"
 #include "airplane.h"
 
 class WaterDriver{
 public:
     // video
-    static void writeBoundary(BoundaryInRow boundary);
+    static void writeBoundary(int videoFd, BoundaryInRow boundary);
     static void writeSpritePosition(Position position);
     static void writeBulletPosition(Position position);
     static void writePlanePosition(Position position);

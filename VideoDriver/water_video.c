@@ -33,7 +33,7 @@
 #include <linux/uaccess.h>
 #include "water_video.h"
 
-#define DRIVER_NAME "water_video"
+#define DRIVER_NAME "vga_ball"
 
 /* Device registers */
 // #define BG_RED(x) (x)
@@ -44,6 +44,7 @@
 #define BOUNDARY1(x) ((x)+2)
 #define BOUNDARY2(x) ((x)+4)
 #define BOUNDARY3(x) ((x)+6)
+#define SHIFT(x) ((x)+8)
 // index of sprites starting from x+8
 
 
@@ -53,8 +54,8 @@
 struct water_video_dev {
 	struct resource res; /* Resource: our registers */
 	void __iomem *virtbase; /* Where registers can be accessed in memory */
-  	water_video_arg_boundary boundary;
-      water_video_arg_position position;
+  	water_video_arg_boundary argBoundary;
+      water_video_arg_position argPosition;
 } dev;
 
 /*
@@ -69,26 +70,27 @@ struct water_video_dev {
 // 	dev.background = *background;
 // }
 
-static void write_boundary(water_video_arg_boundary *boundary)
+static void write_boundary(water_video_arg_boundary *arg)
 {
-    iowrite16(boundary->river1_left, BOUNDARY0(dev.virtbase) );
-    iowrite16(boundary->river1_right, BOUNDARY1(dev.virtbase) );
-    iowrite16(boundary->river2_left, BOUNDARY2(dev.virtbase) );
-    iowrite16(boundary->river2_right, BOUNDARY3(dev.virtbase) );
-    dev.boundary = *boundary;
+    iowrite16(arg->boundary.river1_left, BOUNDARY0(dev.virtbase) );
+    iowrite16(arg->boundary.river1_right, BOUNDARY1(dev.virtbase) );
+    iowrite16(arg->boundary.river2_left, BOUNDARY2(dev.virtbase) );
+    iowrite16(arg->boundary.river2_right, BOUNDARY3(dev.virtbase) );
+    iowrite8(arg->shift, SHIFT(dev.virtbase));
+    dev.argBoundary = *arg;
 }
 
 /*
  * Write 16 bits for each location variable
  * Assumes digit is in range and the device information has been set up
  */
-static void write_coordinate(water_video_arg_position *position)
+static void write_position(water_video_arg_position *arg)
 {
-	iowrite16(position->x, dev.virtbase+8+position->index*6 );
-	iowrite16(position->y, dev.virtbase+8+position->index*6+2 );
-    iowrite16(position->type, dev.virtbase+8+position->index*6+4 );
+	iowrite16(arg->pos.x, dev.virtbase+10+arg->index*6 );
+	iowrite16(arg->pos.y, dev.virtbase+10+arg->index*6+2 );
+    iowrite16(arg->type, dev.virtbase+10+arg->index*6+4 );
 
-    dev.position = *position;
+    dev.argPosition = *arg;
 }
 
 /*
@@ -120,7 +122,7 @@ static long water_video_ioctl(struct file *f, unsigned int cmd, unsigned long ar
         if (copy_from_user(&argPosition, (water_video_arg_position *) arg,
                           sizeof(argPosition)))
             return -EACCES;
-            write_coordinate(&argPosition);
+            write_position(&argPosition);
             break;
 
 	// case WATER_VIDEO_READ_BACKGROUND:
@@ -156,7 +158,6 @@ static struct miscdevice water_video_misc_device = {
  */
 static int __init water_video_probe(struct platform_device *pdev)
 {
-        water_video_coordinate_t initial = { 0xff, 0xf0 };
 	int ret;
 
 	/* Register ourselves as a misc device: creates /dev/water_video */
@@ -182,9 +183,6 @@ static int __init water_video_probe(struct platform_device *pdev)
 		ret = -ENOMEM;
 		goto out_release_mem_region;
 	}
-        
-	/* Set an initial coordinate */
-        write_coordinate(&initial);
 
 	return 0;
 
@@ -207,7 +205,7 @@ static int water_video_remove(struct platform_device *pdev)
 /* Which "compatible" string(s) to search for in the Device Tree */
 #ifdef CONFIG_OF
 static const struct of_device_id water_video_of_match[] = {
-	{ .compatible = "csee4840,water_video-1.0" },
+	{ .compatible = "csee4840,vga_ball-1.0" },
 	{},
 };
 MODULE_DEVICE_TABLE(of, water_video_of_match);

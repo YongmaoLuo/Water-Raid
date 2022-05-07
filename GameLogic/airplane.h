@@ -34,7 +34,7 @@ public:
     void addFuel(char fuel);
     Position getPos();
     void setPos(Position);
-    int receivePos(const char inputDevice[]);
+    int receivePos(int xboxFd,const char inputDevice[]);
     Airplane(char type, char fuel, Position pos, Shape shape, char scores, bool isCrash);
 
     char getType(){

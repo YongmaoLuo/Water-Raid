@@ -10,6 +10,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 include_directories(.)
 include_directories(GameLogic)
+include_directories(VideoDriver)
 
 add_executable(Water_Raid
-        GameLogic/main.cpp GameLogic/airplane.cpp GameLogic/driver.cpp)
+        GameLogic/main.cpp GameLogic/airplane.cpp GameLogic/driver.cpp GameLogic/game_scenario.cpp)

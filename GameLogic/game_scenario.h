@@ -23,8 +23,8 @@ private:
     short screenHeader;
 
 public:
-    BoundaryInRow boundaries[240];/* background register */
-    void updateBackground();
+    BoundaryInRow boundaries[480];/* background register */
+    void updateBackground(int videoFd);
     GameScenario(short minimumWidth, short maximumWidth, short frequency);
 
     BoundaryInRow get_boundaries(){

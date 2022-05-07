@@ -8,7 +8,10 @@
 // 	unsigned char red, green, blue;
 // } vga_ball_color_t;
 
-typedef struct BoundaryInRow water_video_arg_boundary;
+typedef struct{
+    BoundaryInRow boundary;
+    short shift;
+}water_video_arg_boundary;
 typedef struct{
     Position pos;
     short type;

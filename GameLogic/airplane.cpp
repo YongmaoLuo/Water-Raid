@@ -4,10 +4,11 @@
 
 #include "airplane.h"
 #include <pthread.h>
-#include <fcntl.h>
-#include <unistd.h>
+
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #define XBOX_BUTTON_B 305
 #define XBOX_BUTTON_X 307
@@ -78,14 +79,10 @@ void Airplane::setPos(Position change){
     return;
 }
 
-int Airplane::receivePos(const char inputDevice[]) {
-    int xbox_fd;
-    if ((xbox_fd = open(inputDevice, O_RDWR)) == -1) {
-        fprintf(stderr,"could not open %s\n", inputDevice);
-        return -1;
-    }
+int Airplane::receivePos(int xboxFd,const char inputDevice[]) {
+
     inputEvent tempInput;
-    read(xbox_fd, &tempInput, 24);
+    read(xboxFd, &tempInput, 24);
     if (tempInput.code == XBOX_BUTTON_X && tempInput.value==1) {
         Position tempPos = getPos();
         tempPos.x -= 1;
@@ -94,7 +91,6 @@ int Airplane::receivePos(const char inputDevice[]) {
         Position tempPos = getPos();
         tempPos.x += 1;
         setPos(tempPos);
-        close(xbox_fd);
         return 0;
     }
 }
