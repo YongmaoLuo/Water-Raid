@@ -21,21 +21,20 @@ typedef struct {
 
 class Airplane{
 private:
-    pthread_mutex_t mutexPos;
+    //pthread_mutex_t mutexPos;
     char type;
     Position pos;
     Shape shape;
-    bool isCrash;
 public:
     short scores,fuel;
     void Fire(Bullet bullet);
     void Move(int speed);
-    bool isCrashed(BoundaryInRow boundary, std::vector<EnemyPlane> enemyPlanes, std::vector<Battleship> battles);
+    //bool isCrashed(BoundaryInRow boundary, std::vector<EnemyPlane> enemyPlanes, std::vector<Battleship> battles);
     void addFuel(char fuel);
     Position getPos();
     void setPos(Position);
     int receivePos(int xboxFd,const char inputDevice[]);
-    Airplane(char type, char fuel, Position pos, Shape shape, char scores, bool isCrash);
+    Airplane(char type, char fuel, Position pos, Shape shape, char scores);
 
     char getType(){
         return this->type;
@@ -47,15 +46,14 @@ public:
         return this->scores;
     }
     Airplane(){
-        mutexPos= PTHREAD_MUTEX_INITIALIZER;
+        //mutexPos= PTHREAD_MUTEX_INITIALIZER;
         type=0;
         fuel=100;
-        pos.x=300;
-        pos.y=300;
+        pos.x=320;
+        pos.y=480;
         scores=0;
         shape.length=3;
         shape.width=5;
-        isCrash= false;
     }
 };
 

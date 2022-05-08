@@ -16,6 +16,7 @@
 #define XBOX_BUTTON_Y 308
 
 //bool Airplane::isCrashed(BoundaryInRow boundary, std::vector<EnemyPlane> enemyPlanes, std::vector<Battleship> battles){
+//    bool isCrash=false;
 //    // collide the boundary
 //    if(boundary.river2_left!=0)
 //        if(pos.x<=boundary.river1_left|| pos.x+shape.width>=boundary.river1_right&& this->pos.x<boundary.river2_left||
@@ -62,20 +63,20 @@ void Airplane::Fire(Bullet bullet){
 }
 
 Airplane::Airplane(char type, char fuel, Position pos, Shape shape, char scores, bool isCrash): type(type), fuel(fuel), pos(pos),shape(shape),scores(scores),isCrash(isCrash){
-    mutexPos= PTHREAD_MUTEX_INITIALIZER;
+    //mutexPos= PTHREAD_MUTEX_INITIALIZER;
 }
 
 Position Airplane::getPos() {
-    pthread_mutex_lock(&mutexPos);
+    //pthread_mutex_lock(&mutexPos);
     Position result=pos;
-    pthread_mutex_unlock(&mutexPos);
+    //pthread_mutex_unlock(&mutexPos);
     return result;
 }
 
 void Airplane::setPos(Position change){
-    pthread_mutex_lock(&mutexPos);
+    //pthread_mutex_lock(&mutexPos);
     pos=change;
-    pthread_mutex_unlock(&mutexPos);
+    //pthread_mutex_unlock(&mutexPos);
     return;
 }
 
