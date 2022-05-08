@@ -17,8 +17,18 @@
 #include <fcntl.h>
 
 
-#define MAX_SPRITES_NUM 8
-#define MAX_BULLET_NUM 5
+// type of different sprite
+#define SPRITE_PLANE 0
+#define SPRITE_HELI 1
+#define SPRITE_BATTLE 2
+#define SPRITE_FUEL 3
+#define SPRITE_BULLET 4
+#define SPRITE_EXPLODE 5
+#define SPRITE_BALLOON 6
+
+// center coordinate related to upper left corner
+#define SPRITE_X 16
+#define SPRITE_Y 16
 
 int main(){
 //    Shape bulletSP = {2, 5};
@@ -65,12 +75,48 @@ int main(){
     clock_t execute=clock();
     gameScenario.setChangeClock();
     while(1){
-        if(double(clock()-execute)/CLOCKS_PER_SEC>=duration){
-            execute=clock();
-            gameScenario.updateBackground(videoFd);
-        }
+        WaterDriver::initBackground();
 
+        // wait the button on the xbox controller to be pressed
+        /* wait to be finished */
+
+        // the plane enter the screen
+        Position tempPos; tempPos.x=320; tempPos.y=(480<<1)+1;
+        airplane.setPos(tempPos);
+        while(airplane.getPos().y>(300<<1)+1){
+            WaterDriver::writePosition(videoFd,airplane.getPos(),SPRITE_PLANE,0);
+            tempPos=airplane.getPos();
+            tempPos.y-=2;
+            airplane.setPos(tempPos);
+            usleep(40000);
+        }
+        while(1){
+            if(double(clock()-execute)/CLOCKS_PER_SEC>=duration){
+                execute=clock();
+                gameScenario.updateBackground(videoFd);
+                // determine if the plane has crashed
+                // plane is always located at y=300
+                BoundaryInRow boundaryAheadOfPlane=gameScenario.boundaries[gameScenario.getScreenHeader()+180-SPRITE_Y];
+                if(boundaryAheadOfPlane.river2_left==0){
+                    if(boundaryAheadOfPlane.river1_left>=airplane.getPos().x||
+                       boundaryAheadOfPlane.river1_right<=airplane.getPos().x){
+                        // crashed
+                        // plane disappear
+                        tempPos.y=0;
+                        tempPos.x=0;
+                        airplane.setPos(tempPos);
+                        WaterDriver::writePosition(videoFd,airplane.getPos(),SPRITE_PLANE,0);
+                        // create explosion effect
+
+                        break;
+                    }
+                }
+            }
+
+        }
     }
+
+
 
     return 0;
 }

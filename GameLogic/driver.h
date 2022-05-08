@@ -13,17 +13,14 @@
 class WaterDriver{
 public:
     // video
+    static void initBackground();
     static void writeBoundary(int videoFd, BoundaryInRow boundary);
-    static void writeSpritePosition(Position position);
-    static void writeBulletPosition(Position position);
-    static void writePlanePosition(Position position);
-    static void writeFuel(int fuel);
-    static void writeScore(int score);
+    static void writePosition(int videoFd,Position position,int type, int index);
+    static void writeFuel(int videoFd,int fuel);
+    static void writeScore(int videoFd,int score);
     // audio
 
-    //control device
-    static int readPosition();
-    static int readFire();
+
 };
 
 #endif //WATER_RAID_DRIVER_H

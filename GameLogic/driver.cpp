@@ -15,11 +15,74 @@ void WaterDriver::writeBoundary(int videoFd, BoundaryInRow boundary) {
     shift=1-shift;
     arg.shift=shift;
 
-    //water_video_arg_boundary writeTemp=boundary;
     if (ioctl(videoFd, WATER_VIDEO_WRITE_BOUNDARY, &arg)) {
-        perror("ioctl(WATER_VIDEO_SET_COORDINATE) failed");
+        perror("ioctl(WATER_VIDEO_WRITE_BOUNDARY) failed");
         return;
     }
 }
 
-void WaterDriver::writePlanePosition(Position position) {}
+void WaterDriver::writePosition(int videoFd,Position position,int type, int index) {
+    water_video_arg_position arg;
+    arg.pos=position;
+    arg.type=type;
+    arg.index=index;
+
+    if (ioctl(videoFd, WATER_VIDEO_WRITE_POSITION, &arg)) {
+        perror("ioctl(WATER_VIDEO_WRITE_POSITION) failed");
+        return;
+    }
+
+}
+
+void WaterDriver::writePlanePlanePosition(int videoFd, int x) {
+    water_video_arg_position arg;
+    arg.pos.x=x;
+    arg.pos.y=300;
+    arg.index=0;
+    arg.type=0;
+
+    if (ioctl(videoFd, WATER_VIDEO_WRITE_POSITION, &arg)) {
+        perror("ioctl(WATER_VIDEO_WRITE_POSITION) failed");
+        return;
+    }
+}
+
+void WaterDriver::writeFuel(int videoFd, int fuel) {
+    water_video_arg_fuel arg;
+    arg.fuel=fuel;
+
+    if (ioctl(videoFd, WATER_VIDEO_WRITE_FUEL, &arg)) {
+        perror("ioctl(WATER_VIDEO_WRITE_FUEL) failed");
+        return;
+    }
+}
+
+void WaterDriver::writeScore(int videoFd, int score) {
+    water_video_arg_score arg;
+    arg.score=score;
+
+    if (ioctl(videoFd, WATER_VIDEO_WRITE_SCORE, &arg)) {
+        perror("ioctl(WATER_VIDEO_SET_SCORE) failed");
+        return;
+    }
+}
+
+void WaterDriver::initBackground() {
+    water_video_arg_init arg;
+    arg.scorePos.x=480;
+    arg.scorePos.y=(440 << 1) + 1;
+    arg.digit1Pos.x=525;
+    arg.digit1Pos.y=(440 << 1) + 1;
+    arg.digit2Pos.x=550;
+    arg.digit2Pos.y=(440 << 1) + 1;
+    arg.digit3Pos.x=575;
+    arg.digit3Pos.y=(440 << 1) + 1;
+    arg.fuelPos.x=320;
+    arg.fuelPos.y=(440 << 1) + 1;
+    arg.indicatorPos.x=320;
+    arg.indicatorPos.y=(438 << 1) + 1;
+    if (ioctl(videoFd, WATER_VIDEO_INIT,&arg)) {
+        perror("ioctl(WATER_VIDEO_INIT) failed");
+        return;
+    }
+}

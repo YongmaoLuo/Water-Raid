@@ -278,3 +278,7 @@ double GameScenario::getFrequency(){
 void GameScenario::setChangeClock() {
     change=clock();
 }
+
+int GameScenario::getScreenHeader() {
+    return screenHeader;
+}

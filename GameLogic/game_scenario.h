@@ -31,6 +31,7 @@ public:
     void updateBackground(int videoFd);
     double getFrequency();
     void setChangeClock();
+    int getScreenHeader();
     GameScenario(short minimumWidth, short maximumWidth, short frequency);
 
     BoundaryInRow get_boundaries(){
