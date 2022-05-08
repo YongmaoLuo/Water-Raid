@@ -31,51 +31,12 @@
 #define SPRITE_Y 16
 
 // the struct used to store different kinds of sprites
-struct {
-    struct child{
-        short type;
-        union{
-            Bullet *bullet;
-            Battleship *battleship;
-            FuelTank *fuelTank;
-            EnemyPlane *enemyPlane;
-        }u;
-    };
-
-    std::vector<child> children;
-    int maximumSize;
-
-    void addChild(Bullet *bullet){
-        child ch;
-        ch.type=SPRITE_BULLET;
-        ch.u.bullet=bullet;
-        children.push_back(ch);
-    }
-
-    void addChild(Battleship *battleship){
-        child ch;
-        ch.type=SPRITE_BATTLE;
-        ch.u.battleship=battleship;
-        children.push_back(ch);
-    }
-
-    void addChild(FuelTank *fuelTank){
-        child ch;
-        ch.type=SPRITE_FUEL;
-        ch.u.fuelTank=fuelTank;
-        children.push_back(ch);
-    }
-
-    void addChild(EnemyPlane *enemyPlane){
-        child ch;
-        ch.type=SPRITE_HELI;
-        ch.u.enemyPlane=enemyPlane;
-        children.push_back(ch);
-    }
-}SpritePointerList;
 
 int main(){
-    SpritePointerList.maximumSize=8; // we can show at most 9 sprites containing the plane
+    vector<Bullet> bulletList;
+    vector<Battleship> battleList;
+    vector<EnemyPlane> enemyList;
+    vector<FuelTank> fuelTankList;
     Position tempPos; tempPos.x=320; tempPos.y=(480<<1)+1;
     Shape tempShape; tempShape.width=16;tempShape.length=16;
     Airplane airplane = Airplane(SPRITE_PLANE,80,tempPos,tempShape,0);
@@ -117,25 +78,7 @@ int main(){
                 // determine if the plane has crashed
                 // plane is always located at y=300
                 BoundaryInRow boundaryAheadOfPlane=gameScenario.boundaries[gameScenario.getScreenHeader()+180-SPRITE_Y];
-                if(boundaryAheadOfPlane.river2_left==0){
-                    if(boundaryAheadOfPlane.river1_left>=airplane.getPos().x-SPRITE_X||
-                       boundaryAheadOfPlane.river1_right<=airplane.getPos().x+SPRITE_X){
-                        // crashed8
-                        // plane disappear
-                        tempPos.y=0;
-                        tempPos.x=0;
-                        WaterDriver::writePosition(videoFd,tempPos,SPRITE_PLANE,0);
-                        // create explosion effect
-                        WaterDriver::writePosition(videoFd,airplane.getPos(),SPRITE_EXPLODE,0);
-                        airplane.setPos(tempPos);
-                        break;
-                    }
-                }else{
-                    if(boundaryAheadOfPlane.river2_left>airplane.getPos().x&&
-                    boundaryAheadOfPlane.river1_left>=airplane.getPos().x-SPRITE_X||
-                       boundaryAheadOfPlane.river1_right<=airplane.getPos().x+SPRITE_X||
-                       boundaryAheadOfPlane.river2_left>)
-                }
+
             }
 
         }

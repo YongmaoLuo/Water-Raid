@@ -15,6 +15,7 @@ private:
     char score;
 
 public:
+    int index;
     void checkIfHit(vector<Bullet> bullets, short &score);
 
     EnemyPlane(char type, char hitPoint, char id, const Shape &sp, bool isDestroy, const Position &pos, char score);

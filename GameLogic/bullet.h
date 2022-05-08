@@ -15,8 +15,10 @@ private:
     bool isCrashed;
 
 
+
 public:
     Position pos;
+    short index;
 
     const Shape &getSp() const {
         return sp;
