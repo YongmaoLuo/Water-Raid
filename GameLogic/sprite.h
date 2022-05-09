@@ -18,6 +18,7 @@ protected:
     char hitPoint;
     char id;
     Shape sp;
+    Position pos;
 
     void generate(BoundaryInRow boundary);
 
@@ -30,7 +31,7 @@ protected:
 public:
     bool isDestroy;
 
-    Position pos;
+
 
     Sprite(char type, char hitPoint, char id, const Shape &sp, bool isDestroy, const Position &pos) : type(type),
                                                                                                   hitPoint(hitPoint),
@@ -46,13 +47,18 @@ public:
         Sprite::isDestroy = isDestroy;
     }
 
-    const Position &getPos() const {
+    const Position getPos() const {
         return pos;
     }
 
     void setPos(const Position &pos) {
         Sprite::pos = pos;
     }
+
+    Shape getShape(){
+        return sp;
+    }
+
 };
 
 #endif //WATER_RAID_SPRITE_H

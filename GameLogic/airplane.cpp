@@ -4,6 +4,7 @@
 
 #include "airplane.h"
 #include <pthread.h>
+#include "driver.h"
 
 
 #include <stdio.h>
@@ -15,83 +16,142 @@
 #define XBOX_BUTTON_A 304
 #define XBOX_BUTTON_Y 308
 
-bool Airplane::isCrashed(BoundaryInRow boundary, std::vector<EnemyPlane> enemyPlanes, std::vector<Battleship> battles){
-    bool isCrash=false;
+#define SPRITE_BULLET 4
+#define SPRITE_EXPLODE 5
+#define SPRITE_FUEL 3
+
+bool Airplane::isCrashed(int videoFd,BoundaryInRow boundary,
+                                 std::vector<EnemyPlane> enemyPlaneList,
+                                 std::vector<Battleship> battleList){
+
     // collide the boundary
-    if(boundaryAheadOfPlane.river2_left==0){
-        if(boundaryAheadOfPlane.river1_left>=airplane.getPos().x-SPRITE_X||
-           boundaryAheadOfPlane.river1_right<=airplane.getPos().x+SPRITE_X){
-            // crashed8
+    if(boundary.river2_left==0){
+        if(boundary.river1_left>=pos.x-shape.width||
+           boundary.river1_right<=pos.x+shape.width){
             // plane disappear
+            Position tempPos;
             tempPos.y=0;
             tempPos.x=0;
-            WaterDriver::writePosition(videoFd,tempPos,SPRITE_PLANE,0);
+            WaterDriver::writePosition(videoFd,tempPos,type,0);
             // create explosion effect
-            WaterDriver::writePosition(videoFd,airplane.getPos(),SPRITE_EXPLODE,0);
-            airplane.setPos(tempPos);
-            break;
+            WaterDriver::writePosition(videoFd,pos,SPRITE_EXPLODE,0);
+            pos=tempPos;
+            return true;
         }
     }else{
-        if(boundaryAheadOfPlane.river2_left>airplane.getPos().x&&
-           boundaryAheadOfPlane.river1_left>=airplane.getPos().x-SPRITE_X||
-           boundaryAheadOfPlane.river1_right<=airplane.getPos().x+SPRITE_X||
-           boundaryAheadOfPlane.river2_left>)
+        if(boundary.river2_left>pos.x&&
+           boundary.river1_left>=pos.x-shape.width||
+           boundary.river2_left>pos.x&&
+           boundary.river1_right<=pos.x+shape.width||
+           boundary.river2_left>=pos.x-shape.width||
+           boundary.river2_right<=pos.x+shape.width){
+            // crashed when there are 2 rivers
+            // plane disappear
+            Position tempPos;
+            tempPos.y=0;
+            tempPos.x=0;
+            WaterDriver::writePosition(videoFd,tempPos,type,0);
+            // create explosion effect
+            WaterDriver::writePosition(videoFd,pos,SPRITE_EXPLODE,0);
+            pos=tempPos;
+            return true;
+        }
     }
 
-
-
-
-
-
-
-
-
-
-    if(boundary.river2_left!=0)
-        if(pos.x<=boundary.river1_left|| pos.x+shape.width>=boundary.river1_right&& this->pos.x<boundary.river2_left||
-           pos.x+shape.width>=boundary.river2_right){
-            isCrash=true;
-            pos.y|=~0x1; // set y[0] to be 1
-        }
-        else
-        if(pos.x<=boundary.river1_left|| pos.x+shape.width>=boundary.river1_right){
-            isCrash=true;
-            this->pos.y|=~0x1; // set y[0] to be 1
-            return isCrash;
-        }
-
     // collide the enemy planes
-    for(int i=0;i<enemyPlanes.size();i++){
-        if(pos.y>=enemyPlanes[i].getPos().y&&pos.x<=enemyPlanes[i].getPos().x+enemyPlanes[i].sp.width&&pos.x>=enemyPlanes[i].getPos().x){
-            isCrash=true;
-            pos.y|=~0x1; // set y[0] to be 1
-            return isCrash;
+    for(int i=0;i<enemyPlaneList.size();i++){
+        if(pos.y-shape.length>=enemyPlaneList[i].getPos().y+enemyPlaneList[i].getShape().length&&
+        !(pos.x+shape.width<enemyPlaneList[i].getPos().x-enemyPlaneList[i].getShape().width)&&
+        !(pos.x-shape.width>enemyPlaneList[i].getPos().x+enemyPlaneList[i].getShape().width)){
+            Position tempPos;
+            tempPos.y=0;
+            tempPos.x=0;
+            WaterDriver::writePosition(videoFd,tempPos,type,0);
+            // create explosion effect
+            WaterDriver::writePosition(videoFd,pos,SPRITE_EXPLODE,0);
+            pos=tempPos;
+            return true;
         }
     }
     //collide the battleships
-    for(int i=0;i<battles.size();i++){
-        if(pos.y>=battles[i].getPos().y&&pos.x<=battles[i].getPos().x+battles[i].sp.width&&pos.x>=battles[i].getPos().x){
-            isCrash=true;
-            pos.y|=~0x1; // set y[0] to be 1
-            return isCrash;
+    for(int i=0;i<battleList.size();i++){
+        if(pos.y-shape.length>=battleList[i].getPos().y+battleList[i].getShape().length&&
+           !(pos.x+shape.width<battleList[i].getPos().x-battleList[i].getShape().width)&&
+           !(pos.x-shape.width>battleList[i].getPos().x+battleList[i].getShape().width)){
+            Position tempPos;
+            tempPos.y=0;
+            tempPos.x=0;
+            WaterDriver::writePosition(videoFd,tempPos,type,0);
+            // create explosion effect
+            WaterDriver::writePosition(videoFd,pos,SPRITE_EXPLODE,0);
+            pos=tempPos;
+            return true;
         }
     }
-    return isCrash;
+
+    return false;
 }
 
-void Airplane::addFuel(char fuel){
+void Airplane::addFuel(int videoFd,std::vector<FuelTank> &fuelTankList){
+    for(int i=0;i<fuelTankList.size();i++){
+        if(pos.y-shape.length>=fuelTankList[i].getPos().y+fuelTankList[i].getShape().length&&
+           !(pos.x+shape.width<fuelTankList[i].getPos().x-fuelTankList[i].getShape().width)&&
+           !(pos.x-shape.width>fuelTankList[i].getPos().x+fuelTankList[i].getShape().width)){
+            // collide with fuelTank
+            if(fuel+10<=80)
+                fuel+=10;
+            else
+                fuel=80;
+            WaterDriver::writeFuel(videoFd,fuel);
+            Position tempPos;tempPos.y=0;
+            // remove the fuelTank
+            WaterDriver::writePosition(videoFd,tempPos,SPRITE_FUEL,fuelTankList[i].index);
+            fuelTankList.erase(fuelTankList.begin()+i);
+            break;
+        }
+    }
     this->fuel += fuel;
+    WaterDriver::writeFuel(videoFd,this->fuel);
 }
 
-void Airplane::Move(int speed) {
-    pos.x+=speed*0.01;
+void Airplane::reduceFuel(int videoFd) {
+    fuel-=1;
+    WaterDriver::writeFuel(videoFd,fuel);
 }
 
-void Airplane::Fire(Bullet bullet){
-    bullet.setPosition(pos);
+void Airplane::fire(int xboxFd,int videoFd,vector<Bullet> &bulletList){
+
+    inputEvent tempInput;
+    read(xboxFd, &tempInput, 24);
+    if (tempInput.code == XBOX_BUTTON_Y && tempInput.value==1) {
+        // press the button to emit bullet
+        int numOfBullets;
+        if(numOfBullets=bulletList.size()==3)
+            return;
+        char temp[3]; // 1, 2, 3
+        if(numOfBullets>0){
+            memset(temp,0,sizeof(temp));
+            for(vector<Bullet>::iterator it=bulletList.begin();it!=bulletList.end();it++){
+                temp[it->index-1]=1;
+            }
+        }
+
+        for(int i=0;i<3;i++){
+            if(temp[i]=0){
+                Shape sp;sp.width=1;sp.length=5;
+                Position tempPos; tempPos.x=pos.x; tempPos.y=pos.y-sp.length;
+                Bullet bullet=Bullet(SPRITE_BULLET,sp,tempPos);
+                bulletList.push_back(bullet);
+                WaterDriver::writePosition(videoFd,tempPos,SPRITE_BULLET,i+1);
+                break;
+            }
+        }
+    }
+
 }
 
-Airplane::Airplane(char type, char fuel, Position pos, Shape shape, char scores, bool isCrash): type(type), fuel(fuel), pos(pos),shape(shape),scores(scores),isCrash(isCrash){
+Airplane::Airplane(char type, char fuel, Position pos, Shape shape, char scores):
+type(type), fuel(fuel), pos(pos),shape(shape),scores(scores){
     //mutexPos= PTHREAD_MUTEX_INITIALIZER;
 }
 
@@ -109,7 +169,7 @@ void Airplane::setPos(Position change){
     return;
 }
 
-int Airplane::receivePos(int xboxFd,const char inputDevice[]) {
+int Airplane::receivePos(int xboxFd, int videoFd, const char inputDevice[]) {
 
     inputEvent tempInput;
     read(xboxFd, &tempInput, 24);
@@ -123,4 +183,5 @@ int Airplane::receivePos(int xboxFd,const char inputDevice[]) {
         setPos(tempPos);
         return 0;
     }
+    WaterDriver::writePosition(videoFd,pos,type,0);
 }

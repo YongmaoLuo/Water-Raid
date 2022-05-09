@@ -23,7 +23,6 @@
 #define SPRITE_BATTLE 2
 #define SPRITE_FUEL 3
 #define SPRITE_BULLET 4
-#define SPRITE_EXPLODE 5
 #define SPRITE_BALLOON 6
 
 // center coordinate related to upper left corner
@@ -45,7 +44,11 @@ int main(){
 
     static const char xbox[] = "/dev/input/event0";
     static const char waterVideo[]="/dev/vga_ball";
-    int videoFd;
+    int videoFd,xboxFd;
+
+    if((xboxFd== open(xbox,O_RDWR))==-1){
+        fprintf(stderr,"could not open %s\n",xbox);
+    }
 
     if ((videoFd = open(waterVideo, O_RDWR)) == -1) {
         fprintf(stderr,"could not open %s\n", waterVideo);
@@ -55,6 +58,7 @@ int main(){
 
     double duration=1/gameScenario.getFrequency();
     clock_t execute=clock();
+    clock_t reduceFuelClock=clock();
     gameScenario.setChangeClock();
     while(1){
         WaterDriver::initBackground();
@@ -75,9 +79,26 @@ int main(){
             if(double(clock()-execute)/CLOCKS_PER_SEC>=duration){
                 execute=clock();
                 gameScenario.updateBackground(videoFd);
+
+                //receive control signal from xbox
+                airplane.receivePos(xboxFd,videoFd,xbox);
+
                 // determine if the plane has crashed
                 // plane is always located at y=300
                 BoundaryInRow boundaryAheadOfPlane=gameScenario.boundaries[gameScenario.getScreenHeader()+180-SPRITE_Y];
+                bool isCrashed=airplane.isCrashed(videoFd,boundaryAheadOfPlane,enemyList,battleList);
+                if(isCrashed)
+                    break;
+                // if the plane bumped into the fuel tank
+                airplane.addFuel(videoFd,fuelTankList);
+
+                // check if the airplane is about to emit a bullet
+                airplane.fire(videoFd,bulletList);
+
+                // reduce fuel
+                if(double(clock()-reduceFuelClock)/CLOCKS_PER_SEC>=1){
+                    airplane.reduceFuel(videoFd);
+                }
 
             }
 
