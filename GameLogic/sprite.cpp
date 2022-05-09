@@ -30,54 +30,54 @@ void Sprite::generate(BoundaryInRow boundary) {
     this->pos.y = 100;
 }
 
-void Sprite::move(BoundaryInRow boundary short minimumWidth) {
-
-    srand(time(0));
-
-    //Attention: minimumWidth is the minimum width of every branch of the river
-    short forward = this->pos.x + minimumWidth;
-    short backward = this->pos.x - minimumWidth;
-
-    if (boundary.river2_left == 0) {
-        if (rand() % 2) {
-            if (forward <= boundary.river1_right)
-                this->pos.x = forward;
-            else
-                this->pos.x = backward;
-        } else {
-            if (backward >= boundary.river1_left)
-                this->pos.x = backward;
-            else
-                this->pos.x = forward;
-        }
-    } else {
-        if (this->getPos().x <= boundary.river1_right) {
-            if (rand() % 2) {
-                if (forward <= boundary.river1_right)
-                    this->pos.x = forward;
-                else
-                    this->pos.x = boundary.river2_left + minimumWidth;
-            } else {
-                if (backward >= boundary.river1_left)
-                    this->pos.x = backward;
-                else
-                    this->pos.x = forward;
-            }
-        } else {
-            if (rand() % 2) {
-                if (forward <= boundary.river2_right)
-                    this->pos.x = forward;
-                else
-                    this->pos.x = backward;
-            } else {
-                if (backward >= boundary.river2_left)
-                    this->pos.x = backward;
-                else
-                    this->pos.x = boundary.river1_right - minimumWidth;
-            }
-        }
-    }
-}
+//void Sprite::move(BoundaryInRow boundary short minimumWidth) {
+//
+//    srand(time(0));
+//
+//    //Attention: minimumWidth is the minimum width of every branch of the river
+//    short forward = this->pos.x + minimumWidth;
+//    short backward = this->pos.x - minimumWidth;
+//
+//    if (boundary.river2_left == 0) {
+//        if (rand() % 2) {
+//            if (forward <= boundary.river1_right)
+//                this->pos.x = forward;
+//            else
+//                this->pos.x = backward;
+//        } else {
+//            if (backward >= boundary.river1_left)
+//                this->pos.x = backward;
+//            else
+//                this->pos.x = forward;
+//        }
+//    } else {
+//        if (this->getPos().x <= boundary.river1_right) {
+//            if (rand() % 2) {
+//                if (forward <= boundary.river1_right)
+//                    this->pos.x = forward;
+//                else
+//                    this->pos.x = boundary.river2_left + minimumWidth;
+//            } else {
+//                if (backward >= boundary.river1_left)
+//                    this->pos.x = backward;
+//                else
+//                    this->pos.x = forward;
+//            }
+//        } else {
+//            if (rand() % 2) {
+//                if (forward <= boundary.river2_right)
+//                    this->pos.x = forward;
+//                else
+//                    this->pos.x = backward;
+//            } else {
+//                if (backward >= boundary.river2_left)
+//                    this->pos.x = backward;
+//                else
+//                    this->pos.x = boundary.river1_right - minimumWidth;
+//            }
+//        }
+//    }
+//}
 
 void Sprite::disappear(char id, vector<Sprite> sprites) {
     for(int i = 0; i < sprites.size(); i++)

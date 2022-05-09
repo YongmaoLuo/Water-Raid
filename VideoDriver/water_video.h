@@ -38,6 +38,6 @@ typedef struct {
 #define WATER_VIDEO_WRITE_POSITION _IOR(WATER_VIDEO_MAGIC, 2, water_video_arg_position *)
 #define WATER_VIDEO_WRITE_FUEL _IOR(WATER_VIDEO_MAGIC, 3, water_video_arg_fuel *)
 #define WATER_VIDEO_WRITE_SCORE _IOR(WATER_VIDEO_MAGIC, 4, water_video_arg_score *)
-#define WATER_VIDEO_INIT _IOR(WATER_VIDEO_MAGIC, 4, water_video_arg_init *)
+#define WATER_VIDEO_INIT _IOR(WATER_VIDEO_MAGIC, 5, water_video_arg_init *)
 
 #endif

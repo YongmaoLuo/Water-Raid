@@ -34,19 +34,6 @@ void WaterDriver::writePosition(int videoFd,Position position,int type, int inde
 
 }
 
-void WaterDriver::writePlanePlanePosition(int videoFd, int x) {
-    water_video_arg_position arg;
-    arg.pos.x=x;
-    arg.pos.y=300;
-    arg.index=0;
-    arg.type=0;
-
-    if (ioctl(videoFd, WATER_VIDEO_WRITE_POSITION, &arg)) {
-        perror("ioctl(WATER_VIDEO_WRITE_POSITION) failed");
-        return;
-    }
-}
-
 void WaterDriver::writeFuel(int videoFd, int fuel) {
     water_video_arg_fuel arg;
     arg.fuel=fuel;
@@ -67,7 +54,7 @@ void WaterDriver::writeScore(int videoFd, int score) {
     }
 }
 
-void WaterDriver::initBackground() {
+void WaterDriver::initBackground(int videoFd) {
     water_video_arg_init arg;
     arg.scorePos.x=480;
     arg.scorePos.y=(440 << 1) + 1;

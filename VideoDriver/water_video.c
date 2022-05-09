@@ -110,16 +110,17 @@ static void writePosition(water_video_arg_position *arg)
 
 static void writeFuel(water_video_arg_fuel *arg)
 {
-    iowrite16(320-FUELGAUGEHALFLENGTH+arg->fuel, FUELGAUGEX(dev.virtbase) );
+    iowrite16(320-FUELGAUGEHALFLENGTH+arg->fuel, INDICATORX(dev.virtbase) );
     dev.argFuel = *arg;
 }
 
 static void writeScore(water_video_arg_score *arg)
 {
     short score=arg->score;
-    for(int i=0;i<3;i++){
+    int i;
+    for(i=0;i<3;i++){
         iowrite16(score%10, DIGIT1IMG(dev.virtbase)+i*6 );
-        score/=10
+        score/=10;
     }
     dev.argScore = *arg;
 }
@@ -153,6 +154,7 @@ static long water_video_ioctl(struct file *f, unsigned int cmd, unsigned long ar
     water_video_arg_position argPosition;
     water_video_arg_fuel argFuel;
     water_video_arg_score argScore;
+    water_video_arg_init argInit;
 
 	switch (cmd) {
 	// case water_video_WRITE_BACKGROUND:
@@ -182,7 +184,7 @@ static long water_video_ioctl(struct file *f, unsigned int cmd, unsigned long ar
                 writeFuel(&argFuel);
                 break;
         case WATER_VIDEO_WRITE_SCORE:
-            if (copy_from_user(&argFuel, (water_video_arg_score *) arg,
+            if (copy_from_user(&argScore, (water_video_arg_score *) arg,
                                sizeof(argScore)))
                 return -EACCES;
             writeScore(&argScore);
@@ -253,9 +255,6 @@ static int __init water_video_probe(struct platform_device *pdev)
 		ret = -ENOMEM;
 		goto out_release_mem_region;
 	}
-
-    // initialization
-    initBackground();
 
 	return 0;
 

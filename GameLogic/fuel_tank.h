@@ -16,7 +16,7 @@ private:
 
 public:
     short index;
-    void checkIfHit(vector<Bullet> bullets, short &fuel);
+//    void checkIfHit(vector<Bullet> bullets, short &fuel);
 
     FuelTank(char type, char hitPoint, char id, const Shape &sp, bool isDestroy, const Position &pos, char fuelVolume);
 };

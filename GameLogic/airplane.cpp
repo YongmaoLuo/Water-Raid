@@ -3,13 +3,14 @@
 //
 
 #include "airplane.h"
-#include <pthread.h>
+
 #include "driver.h"
-
-
 #include <stdio.h>
-#include <stdlib.h>
+
+
+#include <fcntl.h>
 #include <unistd.h>
+#include <string.h>
 
 #define XBOX_BUTTON_B 305
 #define XBOX_BUTTON_X 307
@@ -19,6 +20,52 @@
 #define SPRITE_BULLET 4
 #define SPRITE_EXPLODE 5
 #define SPRITE_FUEL 3
+
+#define MAXFUEL 75
+#define MINFUEL 5
+
+bool Airplane::isCrashed(int videoFd, BoundaryInRow boundary) {
+    // collide the boundary
+    if(boundary.river2_left==0){
+        if((boundary.river1_left>=pos.x-shape.width)||
+                (boundary.river1_right<=pos.x+shape.width)){
+            // plane disappear
+            Position tempPos;
+            tempPos.y=0;
+            tempPos.x=0;
+            WaterDriver::writePosition(videoFd,tempPos,type,0);
+            // create explosion effect
+            WaterDriver::writePosition(videoFd,pos,SPRITE_EXPLODE,0);
+            pos=tempPos;
+            return true;
+        }
+    }else{
+        if((boundary.river2_left>pos.x&&
+           boundary.river1_left>=pos.x-shape.width)||
+                (boundary.river2_left>pos.x&&
+           boundary.river1_right<=pos.x+shape.width)||
+                (boundary.river2_left<pos.x&&
+                boundary.river2_left>=pos.x-shape.width)||
+                (boundary.river2_left<pos.x&&
+                boundary.river2_right<=pos.x+shape.width)){
+            printf("river1 left:%d",boundary.river1_left);
+                printf("river1 right:%d",boundary.river1_right);
+                printf("river2 left:%d",boundary.river2_left);
+                printf("river2 right:%d",boundary.river2_right);
+            // crashed when there are 2 rivers
+            // plane disappear
+            Position tempPos;
+            tempPos.y=0;
+            tempPos.x=0;
+            WaterDriver::writePosition(videoFd,tempPos,type,0);
+            // create explosion effect
+            WaterDriver::writePosition(videoFd,pos,SPRITE_EXPLODE,0);
+            pos=tempPos;
+            return true;
+        }
+    }
+    return false;
+}
 
 bool Airplane::isCrashed(int videoFd,BoundaryInRow boundary,
                                  std::vector<EnemyPlane> enemyPlaneList,
@@ -98,10 +145,10 @@ void Airplane::addFuel(int videoFd,std::vector<FuelTank> &fuelTankList){
            !(pos.x+shape.width<fuelTankList[i].getPos().x-fuelTankList[i].getShape().width)&&
            !(pos.x-shape.width>fuelTankList[i].getPos().x+fuelTankList[i].getShape().width)){
             // collide with fuelTank
-            if(fuel+10<=80)
+            if(fuel+10<=MAXFUEL)
                 fuel+=10;
             else
-                fuel=80;
+                fuel=MAXFUEL;
             WaterDriver::writeFuel(videoFd,fuel);
             Position tempPos;tempPos.y=0;
             // remove the fuelTank
@@ -114,9 +161,15 @@ void Airplane::addFuel(int videoFd,std::vector<FuelTank> &fuelTankList){
     WaterDriver::writeFuel(videoFd,this->fuel);
 }
 
-void Airplane::reduceFuel(int videoFd) {
-    fuel-=1;
-    WaterDriver::writeFuel(videoFd,fuel);
+int Airplane::reduceFuel(int videoFd) {
+    if(fuel>MINFUEL){
+        fuel-=1;
+        WaterDriver::writeFuel(videoFd,fuel);
+        return 0;
+    }else{
+        return -1;
+    }
+
 }
 
 void Airplane::fire(int xboxFd,int videoFd,vector<Bullet> &bulletList){
@@ -169,19 +222,36 @@ void Airplane::setPos(Position change){
     return;
 }
 
-int Airplane::receivePos(int xboxFd, int videoFd, const char inputDevice[]) {
+bool buttonXOn=false,buttonBOn=false;
+
+int Airplane::receivePos(int xboxFd, int videoFd) {
 
     inputEvent tempInput;
+    int flags= fcntl(xboxFd,F_GETFL,0);
+    fcntl(xboxFd,F_SETFL,flags|O_NONBLOCK);
     read(xboxFd, &tempInput, 24);
     if (tempInput.code == XBOX_BUTTON_X && tempInput.value==1) {
+        buttonXOn=true;
+    } else if(tempInput.code == XBOX_BUTTON_X && tempInput.value==0){
+        buttonXOn=false;
+    }else if (tempInput.code == XBOX_BUTTON_B && tempInput.value==1) {
+        buttonBOn=true;
+    }else if(tempInput.code == XBOX_BUTTON_B && tempInput.value==0){
+        buttonBOn=false;
+    }
+
+    if(buttonXOn){
         Position tempPos = getPos();
         tempPos.x -= 1;
         setPos(tempPos);
-    } else if (tempInput.code == XBOX_BUTTON_B && tempInput.value==1) {
+        WaterDriver::writePosition(videoFd,pos,type,0);
+    }
+
+    if(buttonBOn){
         Position tempPos = getPos();
         tempPos.x += 1;
         setPos(tempPos);
-        return 0;
+        WaterDriver::writePosition(videoFd,pos,type,0);
     }
-    WaterDriver::writePosition(videoFd,pos,type,0);
+
 }

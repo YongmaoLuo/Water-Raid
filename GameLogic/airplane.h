@@ -28,14 +28,15 @@ private:
 public:
     short scores,fuel;
     void fire(int xboxFd,int videoFd,vector<Bullet> &bulletList);
+    bool isCrashed(int videoFd,BoundaryInRow boundary);
     bool isCrashed(int videoFd,BoundaryInRow boundary,
                    std::vector<EnemyPlane> enemyPlaneList,
                    std::vector<Battleship> battleList);
     void addFuel(int videoFd,std::vector<FuelTank> &fuelTankList);
-    void reduceFuel(int videoFd);
+    int reduceFuel(int videoFd);
     Position getPos();
     void setPos(Position);
-    int receivePos(int xboxFd,int videoFd,const char inputDevice[]);
+    int receivePos(int xboxFd,int videoFd);
     Airplane(char type, char fuel, Position pos, Shape shape, char scores);
 
     char getType(){
