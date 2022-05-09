@@ -100,3 +100,7 @@ void Sprite::disappear() {
     this->pos.y |=~0x1;
 }
 
+Shape Sprite::getShape() {
+    return sp;
+}
+

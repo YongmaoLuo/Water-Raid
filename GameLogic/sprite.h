@@ -17,9 +17,9 @@ protected:
     char type;
     char hitPoint;
     Shape sp;
-    short index;
 
 public:
+    short index;
     bool isDestroy;
 
     Position pos;
@@ -44,6 +44,8 @@ public:
         return pos;
     }
 
+    Shape getShape();
+
     void setPos(const Position &pos) {
         Sprite::pos = pos;
     }
@@ -59,8 +61,6 @@ public:
     void disappear();
 
     void move(BoundaryInRow boundary, short minimumWidth);
-
-    virtual void checkIfHit(vector<Bullet> bullets, short &);
 };
 
 #endif //WATER_RAID_SPRITE_H

@@ -30,6 +30,10 @@ public:
         Bullet::sp = sp;
     }
 
+    Shape getShape(){
+        return sp;
+    }
+
     const Position &getPosition() const {
         return pos;
     }

@@ -18,6 +18,7 @@ public:
     void checkIfHit(vector<Bullet> &bullets, short &fuel);
 
     FuelTank(char type, char hitPoint, const Shape &sp, bool isDestroy, char fuelVolume, short index);
+
 };
 
 #endif //WATER_RAID_FUEL_TANK_H

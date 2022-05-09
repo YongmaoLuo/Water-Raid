@@ -18,6 +18,7 @@ public:
     void checkIfHit(vector<Bullet> &bullets, short &score);
 
     EnemyPlane(char type, char hitPoint, const Shape &sp, bool isDestroy, char score, short index);
+
 };
 
 #endif //WATER_RAID_ENEMY_PLANE_H

@@ -3,11 +3,11 @@
 //
 
 #include "bullet.h"
-#include "bullet.cpp"
 
 #include "game_scenario.h"
 
 #include "battleship.h"
+#include "enemy_plane.h"
 #include "airplane.h"
 #include "driver.h"
 #include "common_data_structure.h"
@@ -63,6 +63,8 @@ int main() {
     clock_t execute=clock();
     clock_t reduceFuelClock=clock();
     gameScenario.setChangeClock();
+
+
     while(1) {
 
         gameScenario.initBackground(videoFd);
@@ -125,7 +127,7 @@ int main() {
                     int temp = airplane.reduceFuel(videoFd);
                     if (temp == -1)
                         break;
-               }
+                }
 //                BoundaryInRow boundaryAheadOfPlane = gameScenario.boundaries[gameScenario.getScreenHeader() + 180 -
 //                                                                             SPRITE_Y];
                 //bullet fly
@@ -297,8 +299,8 @@ int main() {
                             BoundaryInRow boundaryGenerateInRow = gameScenario.boundaries[
                                     gameScenario.getScreenHeader() + (rand() % (480 - gameScenario.getScreenHeader()))];
                             fuelTank.generate(boundaryGenerateInRow, (gameScenario.getScreenHeader() + (rand() %
-                                                                                                          (480 -
-                                                                                                           gameScenario.getScreenHeader() - airplane.getPos().y))));
+                                                                                                        (480 -
+                                                                                                         gameScenario.getScreenHeader() - airplane.getPos().y))));
                             WaterDriver::writePosition(videoFd, fuelTank.getPos(), SPRITE_FUEL,
                                                        fuelTank.getIndex());
                             break;
@@ -309,8 +311,6 @@ int main() {
 
         }
     }
-
-
     return 0;
 }
 
