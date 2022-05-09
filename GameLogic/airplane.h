@@ -27,13 +27,16 @@ private:
     Shape shape;
 public:
     short scores,fuel;
-    void Fire(Bullet bullet);
-    void Move(int speed);
-    //bool isCrashed(BoundaryInRow boundary, std::vector<EnemyPlane> enemyPlanes, std::vector<Battleship> battles);
-    void addFuel(char fuel);
+    void fire(int xboxFd,int videoFd,vector<Bullet> &bulletList);
+    bool isCrashed(int videoFd,BoundaryInRow boundary);
+    bool isCrashed(int videoFd,BoundaryInRow boundary,
+                   std::vector<EnemyPlane> enemyPlaneList,
+                   std::vector<Battleship> battleList);
+    void addFuel(int videoFd,std::vector<FuelTank> &fuelTankList);
+    int reduceFuel(int videoFd);
     Position getPos();
     void setPos(Position);
-    int receivePos(int xboxFd,const char inputDevice[]);
+    int receivePos(int xboxFd,int videoFd);
     Airplane(char type, char fuel, Position pos, Shape shape, char scores);
 
     char getType(){

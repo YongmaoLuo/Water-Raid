@@ -22,17 +22,18 @@ private:
     double frequency; // how many lines the plane flies over per second
     short screenHeader;
     short states;
-    short singleRiverWidth;
+    int singleRiverWidth;
     bool firstTimeDouble;
     clock_t change;
 
 public:
     BoundaryInRow boundaries[480];/* background register */
     void updateBackground(int videoFd);
+    void initBackground(int videoFd);
     double getFrequency();
     void setChangeClock();
     int getScreenHeader();
-    GameScenario(short minimumWidth, short maximumWidth, short frequency);
+    GameScenario(int videoFd,short minimumWidth, short maximumWidth, short frequency);
 
     BoundaryInRow get_boundaries(){
         BoundaryInRow temp;

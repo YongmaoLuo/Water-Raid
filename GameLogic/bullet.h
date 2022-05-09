@@ -45,7 +45,7 @@ public:
 
     bool getIsCrashed() const;
 
-    Bullet(char type, const Shape &sp, bool isCrashed, const Position &pos);
+    Bullet(char type, const Shape &sp, const Position &pos);
 
     void fly();
 
