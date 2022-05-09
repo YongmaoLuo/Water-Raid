@@ -16,27 +16,21 @@ class Sprite
 protected:
     char type;
     char hitPoint;
-    char id;
     Shape sp;
-
-    void generate(BoundaryInRow boundary);
-
-    void disappear(char id, vector<Sprite> sprites);
-
-    void move(BoundaryInRow boundary);
-
-    virtual void checkIfHit(vector<Bullet> bullets, short &);
+    short index;
 
 public:
     bool isDestroy;
 
     Position pos;
 
-    Sprite(char type, char hitPoint, char id, const Shape &sp, bool isDestroy, const Position &pos) : type(type),
+    Sprite(char type, char hitPoint, const Shape &sp, bool isDestroy, short index) : type(type),
                                                                                                   hitPoint(hitPoint),
-                                                                                                  id(id), sp(sp),
+                                                                                                  sp(sp),
                                                                                                   isDestroy(isDestroy),
-                                                                                                  pos(pos) {}
+                                                                                                  index(index){}
+
+
 
     bool getIsDestroy() const {
         return isDestroy;
@@ -53,6 +47,20 @@ public:
     void setPos(const Position &pos) {
         Sprite::pos = pos;
     }
+
+    void generate(BoundaryInRow boundary, short y);
+
+    short getIndex() const {
+        return index;
+    }
+
+    //start from 4 to 8
+
+    void disappear();
+
+    void move(BoundaryInRow boundary, short minimumWidth);
+
+    virtual void checkIfHit(vector<Bullet> bullets, short &);
 };
 
 #endif //WATER_RAID_SPRITE_H

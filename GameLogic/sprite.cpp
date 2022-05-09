@@ -9,54 +9,45 @@
 
 using namespace std;
 
-void Sprite::generate(BoundaryInRow boundary) {
+void Sprite::generate(BoundaryInRow boundary, short y) {
 
     srand(time(0));
-
-    if (boundary.river2_left == 0) {
-        short new_pos_x = (rand() % (boundary.river1_right - boundary.river1_left)) + boundary.river1_left;
-        this->pos.x = new_pos_x;
-    } else {
-        if (rand() % 2) {
+    if (this->type == 3 || this->type == 4) {
+        if (boundary.river2_left == 0) {
             short new_pos_x = (rand() % (boundary.river1_right - boundary.river1_left)) + boundary.river1_left;
             this->pos.x = new_pos_x;
         } else {
-            short new_pos_x = (rand() % (boundary.river2_right - boundary.river2_left)) + boundary.river2_left;
-            this->pos.x = new_pos_x;
+            if (rand() % 2) {
+                short new_pos_x = (rand() % (boundary.river1_right - boundary.river1_left)) + boundary.river1_left;
+                this->pos.x = new_pos_x;
+            } else {
+                short new_pos_x = (rand() % (boundary.river2_right - boundary.river2_left)) + boundary.river2_left;
+                this->pos.x = new_pos_x;
+            }
         }
+    } else {
+        short new_pos_x = rand() % 640;
+        this->pos.x = new_pos_x;
     }
 
-    //hard code the y coordinate of its born position to 100
-    this->pos.y = 100;
+    this->pos.y = y;
 }
 
-void Sprite::move(BoundaryInRow boundary short minimumWidth) {
+void Sprite::move(BoundaryInRow boundary, short minimumWidth) {
 
     srand(time(0));
-
-    //Attention: minimumWidth is the minimum width of every branch of the river
     short forward = this->pos.x + minimumWidth;
     short backward = this->pos.x - minimumWidth;
 
-    if (boundary.river2_left == 0) {
-        if (rand() % 2) {
-            if (forward <= boundary.river1_right)
-                this->pos.x = forward;
-            else
-                this->pos.x = backward;
-        } else {
-            if (backward >= boundary.river1_left)
-                this->pos.x = backward;
-            else
-                this->pos.x = forward;
-        }
-    } else {
-        if (this->getPos().x <= boundary.river1_right) {
+    if (this->type == 3 || this->type == 4) {
+        //Attention: minimumWidth is the minimum width of every branch of the river
+
+        if (boundary.river2_left == 0) {
             if (rand() % 2) {
                 if (forward <= boundary.river1_right)
                     this->pos.x = forward;
                 else
-                    this->pos.x = boundary.river2_left + minimumWidth;
+                    this->pos.x = backward;
             } else {
                 if (backward >= boundary.river1_left)
                     this->pos.x = backward;
@@ -64,27 +55,48 @@ void Sprite::move(BoundaryInRow boundary short minimumWidth) {
                     this->pos.x = forward;
             }
         } else {
-            if (rand() % 2) {
-                if (forward <= boundary.river2_right)
-                    this->pos.x = forward;
-                else
-                    this->pos.x = backward;
+            if (this->getPos().x <= boundary.river1_right) {
+                if (rand() % 2) {
+                    if (forward <= boundary.river1_right)
+                        this->pos.x = forward;
+                    else
+                        this->pos.x = boundary.river2_left + minimumWidth;
+                } else {
+                    if (backward >= boundary.river1_left)
+                        this->pos.x = backward;
+                    else
+                        this->pos.x = forward;
+                }
             } else {
-                if (backward >= boundary.river2_left)
-                    this->pos.x = backward;
-                else
-                    this->pos.x = boundary.river1_right - minimumWidth;
+                if (rand() % 2) {
+                    if (forward <= boundary.river2_right)
+                        this->pos.x = forward;
+                    else
+                        this->pos.x = backward;
+                } else {
+                    if (backward >= boundary.river2_left)
+                        this->pos.x = backward;
+                    else
+                        this->pos.x = boundary.river1_right - minimumWidth;
+                }
             }
+        }
+    } else {
+        if (rand() % 2) {
+            if (forward <= 640 - this->sp.width)
+                this->pos.x = forward;
+            else
+                this->pos.x = backward;
+        } else {
+            if (backward >= 0)
+                this->pos.x = backward;
+            else
+                this->pos.x = forward;
         }
     }
 }
 
-void Sprite::disappear(char id, vector<Sprite> sprites) {
-    for(int i = 0; i < sprites.size(); i++)
-    {
-        if(sprites[i].id == id){
-            sprites[i].pos.y |=~0x1;
-        }
-    }
+void Sprite::disappear() {
+    this->pos.y |=~0x1;
 }
 

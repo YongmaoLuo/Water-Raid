@@ -5,7 +5,7 @@
 using namespace std;
 
 void Bullet::fly() {
-    this->pos.y -= 1;
+    this->pos.y -= 4;
 }
 
 Bullet::Bullet(char type, const Shape &sp, bool isCrashed, const Position &pos) : type(type), sp(sp),
@@ -13,4 +13,8 @@ Bullet::Bullet(char type, const Shape &sp, bool isCrashed, const Position &pos) 
 
 bool Bullet::getIsCrashed() const {
     return isCrashed;
+}
+
+short Bullet::getIndex() const {
+    return index;
 }

@@ -13,10 +13,9 @@ private:
     char score;
 
 public:
-    short index;
-    void checkIfHit(vector<Bullet> bullets, short &);
+    void checkIfHit(vector<Bullet> &bullets, short &);
 
-    Battleship(char type, char hitPoint, char id, const Shape &sp, bool isDestroy, const Position &pos, char score);
+    Battleship(char type, char hitPoint, const Shape &sp, bool isDestroy, char score, short index);
 };
 
 #endif //WATER_RAID_BATTLESHIP_H

@@ -15,10 +15,9 @@ private:
     char score;
 
 public:
-    int index;
-    void checkIfHit(vector<Bullet> bullets, short &score);
+    void checkIfHit(vector<Bullet> &bullets, short &score);
 
-    EnemyPlane(char type, char hitPoint, char id, const Shape &sp, bool isDestroy, const Position &pos, char score);
+    EnemyPlane(char type, char hitPoint, const Shape &sp, bool isDestroy, char score, short index);
 };
 
 #endif //WATER_RAID_ENEMY_PLANE_H

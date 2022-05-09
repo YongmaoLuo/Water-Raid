@@ -20,6 +20,8 @@ public:
     Position pos;
     short index;
 
+    short getIndex() const;
+
     const Shape &getSp() const {
         return sp;
     }

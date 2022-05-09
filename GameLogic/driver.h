@@ -13,7 +13,7 @@
 class WaterDriver{
 public:
     // video
-    static void initBackground();
+    static void initBackground(int videoFd);
     static void writeBoundary(int videoFd, BoundaryInRow boundary);
     static void writePosition(int videoFd,Position position,int type, int index);
     static void writeFuel(int videoFd,int fuel);

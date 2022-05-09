@@ -13,4 +13,5 @@ include_directories(GameLogic)
 include_directories(VideoDriver)
 
 add_executable(Water_Raid
-        GameLogic/main.cpp GameLogic/airplane.cpp GameLogic/driver.cpp GameLogic/game_scenario.cpp)
+        GameLogic/main.cpp GameLogic/driver.cpp GameLogic/game_scenario.cpp
+        GameLogic/sprite.cpp GameLogic/enemy_plane.cpp GameLogic/fuel_tank.cpp GameLogic/battleship.cpp GameLogic/bullet.cpp)

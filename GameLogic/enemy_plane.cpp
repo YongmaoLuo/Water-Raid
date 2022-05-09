@@ -6,13 +6,15 @@
 #include "bullet.h"
 
 
-void EnemyPlane::checkIfHit(vector<Bullet> bullets, short &score) {
+void EnemyPlane::checkIfHit(vector<Bullet> &bullets, short &score) {
     for (int i = 0; i < bullets.size(); i++) {
-        if (bullets[i].getPosition().x >= this->getPos().x &&
-            bullets[i].getPosition().x <= (this->getPos().x + this->sp.width) && bullets[i].getPosition().y ==
+        if (bullets[i].getPosition().x >= (this->getPos().x - this->sp.width)   &&
+            bullets[i].getPosition().x <= (this->getPos().x + this->sp.width) && (bullets[i].getPosition().y - bullets[i].getSp().length) ==
                                                                                  (this->getPos().y +
                                                                                   this->sp.length)){
             this->hitPoint--;
+            bullets[i].setCrash();
+
             if(this->hitPoint == 0){
                 this->setIsDestroy(true);
                 score+=this->score;
@@ -21,6 +23,6 @@ void EnemyPlane::checkIfHit(vector<Bullet> bullets, short &score) {
     }
 }
 
-EnemyPlane::EnemyPlane(char type, char hitPoint, char id, const Shape &sp, bool isDestroy, const Position &pos,
-                       char score) : Sprite(type, hitPoint, id, sp, isDestroy, pos), score(score) {}
+EnemyPlane::EnemyPlane(char type, char hitPoint, const Shape &sp, bool isDestroy,
+                       char score, short index) : Sprite(type, hitPoint, sp, isDestroy, index), score(score) {}
 
