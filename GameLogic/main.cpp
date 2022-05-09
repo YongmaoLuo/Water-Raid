@@ -40,6 +40,7 @@ int main() {
     vector<Bullet> bulletList;
     vector<Battleship> battleList;
     vector<EnemyPlane> enemyList;
+    vector<short> spriteIndexList = {4,5,6,7,8};
     vector<FuelTank> fuelTankList;
     Airplane airplane;
 
