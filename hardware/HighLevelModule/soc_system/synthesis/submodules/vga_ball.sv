@@ -31,6 +31,14 @@ module vga_ball(input logic        clk,
 	        input logic 	   reset,
 		input logic [15:0] writedata,
 		input logic 	   write,
+
+		input left_chan_ready,
+		input right_chan_ready,
+		output logic [15:0] sample_data_l,
+		output logic sample_valid_l,
+		output logic [15:0] sample_data_r,
+		output logic sample_valid_r,
+
 		input 		   chipselect,
 		input logic [5:0]  address,
 
@@ -156,8 +164,13 @@ module vga_ball(input logic        clk,
    logic [9:0]     indicator_y;
 
    logic	   isSprite;
-   logic	   isMusic;
+   logic	   isMusic;  //remove
    logic [1:0]	   whichClip;
+
+//audio
+   logic shootRegister;
+   logic hitRegister;
+   logic explodeRegister;
 
 //   logic 	   reset_mem;
 //   logic	   reset_mem_prev;
@@ -260,7 +273,7 @@ module vga_ball(input logic        clk,
 
    logic [3:0]     indicator_out;
    logic [9:0]     indicator_address;
-   logic [9:0]	   indicator_address_LATCHED;
+   logic [9:0]	   indicator_addresindicator_ys_LATCHED;
 
    plane_ROM 		plane_ROM(.address(plane_address_LATCHED), .clock(clk),.q(plane_out));
    chopper_ROM 		chopper_ROM(.address(chopper_address_LATCHED),.clock(clk),.q(chopper_out));	
@@ -388,6 +401,9 @@ module vga_ball(input logic        clk,
 	 6'd44 : fuelgauge_y		<= writedata[9:0];
 	 6'd45 : indicator_x		<= writedata[9:0];
 	 6'd46 : indicator_y		<= writedata[9:0];
+	 6'd46 : shootRegister		<= writedata;
+	 6'd46 : hitRegister		<= writedata;
+	 6'd46 : explodeRegister	<= writedata;
 
 
        endcase
@@ -1193,6 +1209,81 @@ module vga_ball(input logic        clk,
 		current_color = 0;
       end
    end
+
+
+	reg [11:0] counter;
+	logic flag1;
+	logic flag2;
+	logic flag3;
+
+	reg	[10:0]  address1;
+	wire	[15:0]  q1;
+
+	shoot audio1(.address(address1), .clock(clk), .q(q1)); //1653
+
+	
+	reg	[10:0]  address2;
+	wire	[15:0]  q2;
+	hit  audio2(.address(address2), .clock(clk), .q(q2));//1235
+
+	reg	[12:0]  address3;
+	wire	[15:0]  q3;
+	bomb audio3(.address(address3), .clock(clk), .q(q3));//5832
+	
+
+always_ff @(posedge clk) begin
+		if(reset) begin
+			//counter <= 0;
+			sample_valid_l <= 0; sample_valid_r <= 0;
+	
+			address3 <= 0;
+			address1 <= 0;
+			address2 <= 0;
+		end
+
+		else if( left_chan_ready == 1 && right_chan_ready == 1) begin 
+			if (shootRegister == 1 && address1 < 1650 ) begin
+				address1 <= address1 + 1;
+			end
+			else if (shootRegister == 1 && address1 >= 1650) begin
+				address1 <= 0;
+			end
+			else if (shootRegister == 0) begin
+				address1 <= 0;
+			end
+			else if (hitRegister == 1 && address2 < 1233 ) begin
+				address2 <= address2 + 1;
+			end
+			else if (hitRegister == 1 && address2 >= 1233) begin
+				address2 <= 0;
+			end
+			else if (shootRegister == 0) begin
+				address2 <= 0;
+			end
+			else if (explodeRegister == 1 && address3 < 5830 ) begin
+				address3 <= address3 + 1;
+
+			end
+			else if (explodeRegister == 1 && address3 >= 5830) begin
+				address3 <= 0;
+			end
+			else if (explodeRegister == 0) begin
+				address3 <= 0;
+			end
+
+			sample_valid_l <= 1;
+			sample_valid_r <= 1;
+	
+			if (explodeRegister || shootRegister || hitRegister) begin
+				sample_data_l <= q1 + q2 + q3;
+				sample_data_r <= q1 + q2 + q3;   //all sound effects at address 0 are 0
+			end
+
+		end
+
+end
+
+
 	       
 endmodule
 

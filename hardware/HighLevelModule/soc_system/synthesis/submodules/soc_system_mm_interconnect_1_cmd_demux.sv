@@ -27,8 +27,8 @@
 
 // ------------------------------------------
 // Generation parameters:
-//   output_name:         soc_system_mm_interconnect_0_cmd_demux
-//   ST_DATA_W:           159
+//   output_name:         soc_system_mm_interconnect_1_cmd_demux
+//   ST_DATA_W:           112
 //   ST_CHANNEL_W:        2
 //   NUM_OUTPUTS:         1
 //   VALID_WIDTH:         1
@@ -40,13 +40,13 @@
 // 15610 - Warning: Design contains x input pin(s) that do not drive logic
 //------------------------------------------
 
-module soc_system_mm_interconnect_0_cmd_demux
+module soc_system_mm_interconnect_1_cmd_demux
 (
     // -------------------
     // Sink
     // -------------------
     input  [1-1      : 0]   sink_valid,
-    input  [159-1    : 0]   sink_data, // ST_DATA_W=159
+    input  [112-1    : 0]   sink_data, // ST_DATA_W=112
     input  [2-1 : 0]   sink_channel, // ST_CHANNEL_W=2
     input                         sink_startofpacket,
     input                         sink_endofpacket,
@@ -56,7 +56,7 @@ module soc_system_mm_interconnect_0_cmd_demux
     // Sources 
     // -------------------
     output reg                      src0_valid,
-    output reg [159-1    : 0] src0_data, // ST_DATA_W=159
+    output reg [112-1    : 0] src0_data, // ST_DATA_W=112
     output reg [2-1 : 0] src0_channel, // ST_CHANNEL_W=2
     output reg                      src0_startofpacket,
     output reg                      src0_endofpacket,
