@@ -1,4 +1,4 @@
-/* * Device driver for the VGA video generator
+/* * Video and Audio driver for the Water Raid Project
  *
  * A Platform device implemented using the misc subsystem
  *
@@ -14,8 +14,6 @@
  * "make" to build
  * insmod water_video.ko
  *
- * Check code style with
- * checkpatch.pl --file --no-tree water_video.c
  */
 
 #include <linux/module.h>
@@ -33,7 +31,7 @@
 #include <linux/uaccess.h>
 #include "water_video.h"
 
-#define DRIVER_NAME "vga_ball"
+#define DRIVER_NAME "water_video"
 
 /* Device registers */
 #define BOUNDARY0(x) (x)
@@ -56,6 +54,9 @@
 #define FUELGAUGEY(x) ((x) + 88)
 #define INDICATORX(x) ((x) + 90)
 #define INDICATORY(x) ((x) + 92)
+#define SHOOTAUDIO(x) ((x)+94)
+#define HITAUDIO(x) ((x)+96)
+#define EXPLODEAUDIO(x) ((x)+98)
 
 #define FUELGAUGEHALFLENGTH 40
 
@@ -70,6 +71,7 @@ struct water_video_dev {
       water_video_arg_fuel argFuel;
       water_video_arg_score argScore;
       water_video_arg_init argInit;
+      water_audio_arg argAudio;
 } dev;
 
 /*
@@ -143,6 +145,16 @@ static void initBackground(water_video_arg_init *arg){
     iowrite16(arg->indicatorPos.y, INDICATORY(dev.virtbase));
 }
 
+static void playAudio(water_audio_arg *arg){
+
+    iowrite16(1, SHOOTAUDIO(dev.virtbase)+arg->index*2);
+}
+
+static void stopAudio(water_audio_arg *arg){
+
+    iowrite16(0, SHOOTAUDIO(dev.virtbase)+arg->index*2);
+}
+
 /*
  * Handle ioctl() calls from userspace:
  * Read or write the segments on single digits.
@@ -155,6 +167,7 @@ static long water_video_ioctl(struct file *f, unsigned int cmd, unsigned long ar
     water_video_arg_fuel argFuel;
     water_video_arg_score argScore;
     water_video_arg_init argInit;
+    water_audio_arg argAudio;
 
 	switch (cmd) {
 	// case water_video_WRITE_BACKGROUND:
@@ -194,6 +207,18 @@ static long water_video_ioctl(struct file *f, unsigned int cmd, unsigned long ar
                                sizeof(argInit)))
                 return -EACCES;
             initBackground(&argInit);
+            break;
+        case WATER_AUDIO_PLAY:
+            if (copy_from_user(&argAudio, (water_video_arg_init *) arg,
+                               sizeof(argAudio)))
+                return -EACCES;
+            playAudio(&argAudio);
+            break;
+        case WATER_AUDIO_STOP:
+            if (copy_from_user(&argAudio, (water_video_arg_init *) arg,
+                               sizeof(argAudio)))
+                return -EACCES;
+            stopAudio(&argAudio);
             break;
 
 

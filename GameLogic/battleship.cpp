@@ -7,7 +7,7 @@
 void Battleship::checkIfHit(vector<Bullet> &bullets, short &score) {
     for (int i = 0; i < bullets.size(); i++) {
         if (bullets[i].getPosition().x >= (this->getPos().x - this->sp.width) &&
-            bullets[i].getPosition().x <= (this->getPos().x + this->sp.width) && (bullets[i].getPosition().y - bullets[i].getSp().length) ==
+            bullets[i].getPosition().x <= (this->getPos().x + this->sp.width) && (bullets[i].getPosition().y - bullets[i].getSp().length) <=
                                                                                  (this->getPos().y +
                                                                                   this->sp.length)){
             this->hitPoint--;
