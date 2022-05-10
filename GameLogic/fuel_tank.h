@@ -15,9 +15,9 @@ private:
     char fuelVolume;
 
 public:
-    void checkIfHit(vector<Bullet> &bullets, short &fuel);
+    void checkIfHit(vector<Bullet> &bullets);
 
-    FuelTank(char type, char hitPoint, const Shape &sp, bool isDestroy, char fuelVolume, short index);
+    FuelTank(char type, char hitPoint, const Shape &sp, bool isDestroy, char fuelVolume, short index, bool canMove);
 
 };
 

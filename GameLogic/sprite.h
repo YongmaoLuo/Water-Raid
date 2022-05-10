@@ -17,6 +17,8 @@ protected:
     char type;
     char hitPoint;
     Shape sp;
+    bool left;
+    bool canMove;
 
 public:
     short index;
@@ -24,11 +26,11 @@ public:
 
     Position pos;
 
-    Sprite(char type, char hitPoint, const Shape &sp, bool isDestroy, short index) : type(type),
+    Sprite(char type, char hitPoint, const Shape &sp, bool isDestroy, short index, bool canMove) : type(type),
                                                                                                   hitPoint(hitPoint),
                                                                                                   sp(sp),
                                                                                                   isDestroy(isDestroy),
-                                                                                                  index(index){}
+                                                                                                  index(index),canMove(canMove){}
 
 
 

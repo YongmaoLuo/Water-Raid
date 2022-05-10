@@ -13,9 +13,9 @@ private:
     char score;
 
 public:
-    void checkIfHit(vector<Bullet> &bullets, short &);
+    void checkIfHit(vector<Bullet> &bullets,int videoFd, int &planeScore);
 
-    Battleship(char type, char hitPoint, const Shape &sp, bool isDestroy, char score, short index);
+    Battleship(char type, char hitPoint, const Shape &sp, bool isDestroy, char score, short index,bool canMove);
 };
 
 #endif //WATER_RAID_BATTLESHIP_H

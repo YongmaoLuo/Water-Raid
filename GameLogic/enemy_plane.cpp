@@ -4,9 +4,10 @@
 
 #include "enemy_plane.h"
 #include "bullet.h"
+#include "driver.h"
 
 
-void EnemyPlane::checkIfHit(vector<Bullet> &bullets, short &score) {
+void EnemyPlane::checkIfHit(vector<Bullet> &bullets,int videoFd, int &planeScore) {
     for (int i = 0; i < bullets.size(); i++) {
         if (bullets[i].getPosition().x >= (this->getPos().x - this->sp.width)   &&
             bullets[i].getPosition().x <= (this->getPos().x + this->sp.width) && (bullets[i].getPosition().y - bullets[i].getSp().length) <=
@@ -17,12 +18,13 @@ void EnemyPlane::checkIfHit(vector<Bullet> &bullets, short &score) {
 
             if(this->hitPoint == 0){
                 this->setIsDestroy(true);
-                score+=this->score;
+                planeScore+= score;
+                WaterDriver::writeScore(videoFd,planeScore);
             }
         }
     }
 }
 
 EnemyPlane::EnemyPlane(char type, char hitPoint, const Shape &sp, bool isDestroy,
-                       char score, short index) : Sprite(type, hitPoint, sp, isDestroy, index), score(score) {}
+                       char score, short index,bool canMove) : Sprite(type, hitPoint, sp, isDestroy, index,canMove), score(score) {}
 

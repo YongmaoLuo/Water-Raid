@@ -3,7 +3,7 @@
 //
 #include "fuel_tank.h"
 
-void FuelTank::checkIfHit(vector<Bullet> &bullets, short &fuel) {
+void FuelTank::checkIfHit(vector<Bullet> &bullets) {
     for (int i = 0; i < bullets.size(); i++) {
         if (bullets[i].getPosition().x >= (this->getPos().x - this->sp.width) &&
             bullets[i].getPosition().x <= (this->getPos().x + this->sp.width) && (bullets[i].getPosition().y - bullets[i].getSp().length)<=
@@ -13,11 +13,10 @@ void FuelTank::checkIfHit(vector<Bullet> &bullets, short &fuel) {
             bullets[i].setCrash();
             if(this->hitPoint == 0){
                 this->setIsDestroy(true);
-                fuel = fuel + this->fuelVolume;
             }
         }
     }
 }
 
 FuelTank::FuelTank(char type, char hitPoint, const Shape &sp, bool isDestroy,
-                   char fuelVolume, short index) : Sprite(type, hitPoint, sp, isDestroy, index), fuelVolume(fuelVolume) {}
+                   char fuelVolume, short index,bool canMove) : Sprite(type, hitPoint, sp, isDestroy, index,canMove), fuelVolume(fuelVolume) {}

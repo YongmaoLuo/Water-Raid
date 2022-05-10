@@ -121,7 +121,7 @@ static void writeScore(water_video_arg_score *arg)
     short score=arg->score;
     int i;
     for(i=0;i<3;i++){
-        iowrite16(score%10, DIGIT1IMG(dev.virtbase)+i*6 );
+        iowrite16(score%10, DIGIT3IMG(dev.virtbase)-i*6 );
         score/=10;
     }
     dev.argScore = *arg;
@@ -148,10 +148,6 @@ static void initBackground(water_video_arg_init *arg){
 static void playAudio(water_audio_arg *arg){
 
     iowrite16(1, SHOOTAUDIO(dev.virtbase)+arg->index*2);
-}
-
-static void stopAudio(water_audio_arg *arg){
-
     iowrite16(0, SHOOTAUDIO(dev.virtbase)+arg->index*2);
 }
 
@@ -213,12 +209,6 @@ static long water_video_ioctl(struct file *f, unsigned int cmd, unsigned long ar
                                sizeof(argAudio)))
                 return -EACCES;
             playAudio(&argAudio);
-            break;
-        case WATER_AUDIO_STOP:
-            if (copy_from_user(&argAudio, (water_video_arg_init *) arg,
-                               sizeof(argAudio)))
-                return -EACCES;
-            stopAudio(&argAudio);
             break;
 
 

@@ -15,9 +15,9 @@ private:
     char score;
 
 public:
-    void checkIfHit(vector<Bullet> &bullets, short &score);
+    void checkIfHit(vector<Bullet> &bullets,int videoFd, int &planeScore);
 
-    EnemyPlane(char type, char hitPoint, const Shape &sp, bool isDestroy, char score, short index);
+    EnemyPlane(char type, char hitPoint, const Shape &sp, bool isDestroy, char score, short index,bool canMove);
 
 };
 

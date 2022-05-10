@@ -7,12 +7,18 @@
 #include<iostream>
 #include<vector>
 
+#define SPRITE_PLANE 0
+#define SPRITE_HELI 1
+#define SPRITE_BATTLE 2
+#define SPRITE_FUEL 3
+#define SPRITE_BALLOON 6
+
 using namespace std;
 
 void Sprite::generate(BoundaryInRow boundary, short y) {
 
     srand(time(0));
-    if (this->type == 3 || this->type == 4) {
+    if (this->type == SPRITE_FUEL || this->type == SPRITE_BATTLE) {
         if (boundary.river2_left == 0) {
             short new_pos_x = (rand() % (boundary.river1_right - boundary.river1_left)) + boundary.river1_left;
             this->pos.x = new_pos_x;
@@ -25,7 +31,7 @@ void Sprite::generate(BoundaryInRow boundary, short y) {
                 this->pos.x = new_pos_x;
             }
         }
-    } else {
+    } else if(this->type==SPRITE_HELI) {
         short new_pos_x = rand() % 640;
         this->pos.x = new_pos_x;
     }
@@ -35,65 +41,73 @@ void Sprite::generate(BoundaryInRow boundary, short y) {
 
 void Sprite::move(BoundaryInRow boundary, short minimumWidth) {
 
-    srand(time(0));
-    short forward = this->pos.x + this->getShape().length + minimumWidth;
-    short backward = this->pos.x - this->getShape().length - minimumWidth;
+    if(this->canMove== false){
+        return;
+    }
 
-    if (this->type == 3 || this->type == 4) {
+    srand(time(0));
+    short forward = this->pos.x  + minimumWidth;
+    short backward = this->pos.x - minimumWidth;
+
+    if (this->type == SPRITE_FUEL || this->type == SPRITE_BATTLE) {
         //Attention: minimumWidth is the minimum width of every branch of the river
 
         if (boundary.river2_left == 0) {
-            if (rand() % 2) {
-                if (forward <= boundary.river1_right)
-                    this->pos.x = forward;
-                else
-                    this->pos.x = backward;
-            } else {
-                if (backward >= boundary.river1_left)
-                    this->pos.x = backward;
-                else
-                    this->pos.x = forward;
+            if(pos.x<=boundary.river1_left&&left){
+                left=false;
+            }else if(pos.x>=boundary.river1_right&&!left){
+                left=true;
+            }
+
+            if(left){
+                pos.x=backward;
+            }else{
+                pos.x=forward;
             }
         } else {
-            if (this->getPos().x <= boundary.river1_right) {
-                if (rand() % 2) {
-                    if (forward <= boundary.river1_right)
-                        this->pos.x = forward;
-                    else
-                        this->pos.x = boundary.river2_left + minimumWidth;
-                } else {
-                    if (backward >= boundary.river1_left)
-                        this->pos.x = backward;
-                    else
-                        this->pos.x = forward;
+            if (this->getPos().x < (boundary.river1_right+boundary.river2_left)/2) {
+                // on left river
+                if(pos.x<=boundary.river1_left&&left){
+                    left=false;
+                }else if(pos.x>=boundary.river1_right&&!left){
+                    left=true;
+                }
+
+                if(left){
+                    pos.x=backward;
+                }else{
+                    pos.x=forward;
                 }
             } else {
-                if (rand() % 2) {
-                    if (forward <= boundary.river2_right)
-                        this->pos.x = forward;
-                    else
-                        this->pos.x = backward;
-                } else {
-                    if (backward >= boundary.river2_left)
-                        this->pos.x = backward;
-                    else
-                        this->pos.x = boundary.river1_right - minimumWidth;
+                // on right river
+                if(pos.x<=boundary.river2_left&&left){
+                    left=false;
+                }else if(pos.x>=boundary.river2_right&&!left){
+                    left=true;
+                }
+
+                if(left){
+                    pos.x=backward;
+                }else{
+                    pos.x=forward;
                 }
             }
         }
-    } else {
-        if (rand() % 2) {
-            if (forward <= 640 - this->sp.width)
-                this->pos.x = forward;
-            else
-                this->pos.x = backward;
-        } else {
-            if (backward >= 0)
-                this->pos.x = backward;
-            else
-                this->pos.x = forward;
+    } else if(this->type==SPRITE_HELI) {
+        // helicopter can fly through the whole screen
+        if(pos.x>=640-sp.width&&!left){
+            left= true;
+        }else if(pos.x<=sp.width){
+            left= false;
+        }
+
+        if(left){
+            pos.x=backward;
+        }else{
+            pos.x=forward;
         }
     }
+
 }
 
 void Sprite::disappear() {

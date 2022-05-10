@@ -28,12 +28,13 @@ private:
     inputEvent tempInput;
     bool buttonXOn,buttonBOn;
 public:
-    short scores,fuel;
+    int scores,fuel;
     void fire(int xboxFd,int videoFd,vector<Bullet> &bulletList);
     bool isCrashed(int videoFd,BoundaryInRow boundary);
-    bool isCrashed(int videoFd,BoundaryInRow boundary,
+    bool isCrashed(int videoFd,
                    std::vector<EnemyPlane> enemyPlaneList,
                    std::vector<Battleship> battleList);
+    void addScore(int videoFd,int score);
     void addFuel(int videoFd,std::vector<FuelTank> &fuelTankList);
     int reduceFuel(int videoFd);
     Position getPos();

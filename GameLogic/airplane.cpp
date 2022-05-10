@@ -24,6 +24,10 @@
 #define MAXFUEL 75
 #define MINFUEL 5
 
+#define SHOOT_AUDIO 0
+#define HIT_AUDIO 1
+#define EXPLODE_AUDIO 2
+
 bool Airplane::isCrashed(int videoFd, BoundaryInRow boundary) {
     // collide the boundary
     if(boundary.river2_left==0){
@@ -67,47 +71,14 @@ bool Airplane::isCrashed(int videoFd, BoundaryInRow boundary) {
     return false;
 }
 
-bool Airplane::isCrashed(int videoFd,BoundaryInRow boundary,
+bool Airplane::isCrashed(int videoFd,
                                  std::vector<EnemyPlane> enemyPlaneList,
                                  std::vector<Battleship> battleList){
 
-    // collide the boundary
-    if(boundary.river2_left==0){
-        if(boundary.river1_left>=pos.x-shape.width||
-           boundary.river1_right<=pos.x+shape.width){
-            // plane disappear
-            Position tempPos;
-            tempPos.y=0;
-            tempPos.x=0;
-            WaterDriver::writePosition(videoFd,tempPos,type,0);
-            // create explosion effect
-            WaterDriver::writePosition(videoFd,pos,SPRITE_EXPLODE,0);
-            pos=tempPos;
-            return true;
-        }
-    }else{
-        if(boundary.river2_left>pos.x&&
-           boundary.river1_left>=pos.x-shape.width||
-           boundary.river2_left>pos.x&&
-           boundary.river1_right<=pos.x+shape.width||
-           boundary.river2_left>=pos.x-shape.width||
-           boundary.river2_right<=pos.x+shape.width){
-            // crashed when there are 2 rivers
-            // plane disappear
-            Position tempPos;
-            tempPos.y=0;
-            tempPos.x=0;
-            WaterDriver::writePosition(videoFd,tempPos,type,0);
-            // create explosion effect
-            WaterDriver::writePosition(videoFd,pos,SPRITE_EXPLODE,0);
-            pos=tempPos;
-            return true;
-        }
-    }
-
     // collide the enemy planes
     for(int i=0;i<enemyPlaneList.size();i++){
-        if(pos.y-shape.length>=enemyPlaneList[i].getPos().y+enemyPlaneList[i].getShape().length&&
+        if(pos.y-shape.length<=enemyPlaneList[i].getPos().y+enemyPlaneList[i].getShape().length&&
+        pos.y+shape.length>=enemyPlaneList[i].getPos().y-enemyPlaneList[i].getShape().length&&
         !(pos.x+shape.width<enemyPlaneList[i].getPos().x-enemyPlaneList[i].getShape().width)&&
         !(pos.x-shape.width>enemyPlaneList[i].getPos().x+enemyPlaneList[i].getShape().width)){
             Position tempPos;
@@ -122,7 +93,8 @@ bool Airplane::isCrashed(int videoFd,BoundaryInRow boundary,
     }
     //collide the battleships
     for(int i=0;i<battleList.size();i++){
-        if(pos.y-shape.length>=battleList[i].getPos().y+battleList[i].getShape().length&&
+        if(pos.y-shape.length<=battleList[i].getPos().y+battleList[i].getShape().length&&
+        pos.y+shape.length>=battleList[i].getPos().y-battleList[i].getShape().length&&
            !(pos.x+shape.width<battleList[i].getPos().x-battleList[i].getShape().width)&&
            !(pos.x-shape.width>battleList[i].getPos().x+battleList[i].getShape().width)){
             Position tempPos;
@@ -141,7 +113,8 @@ bool Airplane::isCrashed(int videoFd,BoundaryInRow boundary,
 
 void Airplane::addFuel(int videoFd,std::vector<FuelTank> &fuelTankList){
     for(int i=0;i<fuelTankList.size();i++){
-        if(pos.y-shape.length>=fuelTankList[i].getPos().y+fuelTankList[i].getShape().length&&
+        if(pos.y-shape.length<=fuelTankList[i].getPos().y+fuelTankList[i].getShape().length&&
+                pos.y+shape.length>=fuelTankList[i].getPos().y-fuelTankList[i].getShape().length&&
            !(pos.x+shape.width<fuelTankList[i].getPos().x-fuelTankList[i].getShape().width)&&
            !(pos.x-shape.width>fuelTankList[i].getPos().x+fuelTankList[i].getShape().width)){
             // collide with fuelTank
@@ -179,6 +152,7 @@ void Airplane::fire(int xboxFd,int videoFd,vector<Bullet> &bulletList){
         int numOfBullets=bulletList.size();
         if(numOfBullets==3)
             return;
+        WaterDriver::playAudio(videoFd,SHOOT_AUDIO);
         char temp[4]; // 1, 2, 3
         memset(temp,0,sizeof(temp));
         printf("number of bullets: %d\n",numOfBullets);
@@ -261,4 +235,14 @@ void Airplane::calPos(int videoFd) {
         setPos(tempPos);
         WaterDriver::writePosition(videoFd,pos,type,0);
     }
+}
+
+void Airplane::addScore(int videoFd,int score) {
+    int tempScores=this->scores+score;
+    if(tempScores>999){
+        this->scores=999;
+    }else{
+        this->scores=tempScores;
+    }
+    WaterDriver::writeScore(videoFd, this->scores);
 }
