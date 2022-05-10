@@ -1,1 +1,1 @@
-create_clock -period 20.0 [get_pins -compatibility_mode *|fpga_interfaces|clocks_resets|h2f_user1_clk]
+create_clock -period 10.0 [get_pins -compatibility_mode *|fpga_interfaces|clocks_resets|h2f_user1_clk]

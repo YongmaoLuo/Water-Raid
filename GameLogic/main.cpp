@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include<ctime>
+#include <ctime>
 #include<iostream>
 
 // type of different sprite
@@ -96,7 +96,7 @@ int main() {
                 gameScenario.updateBackground(videoFd);
 
                 //receive control signal from xbox
-//                airplane.receivePos(xboxFd, videoFd);
+                //airplane.receivePos(xboxFd, videoFd);
 
                 // determine if the plane has crashed
                 // plane is always located at y=300

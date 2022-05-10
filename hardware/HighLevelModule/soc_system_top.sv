@@ -6,8 +6,8 @@
 //
 // Permission:
 //
-//   Terasic grants permission to use and modify this code for use
-//   in synthesis for all Terasic Development Boards and Altera
+//   Terasic grants permission to use and modify this code for use in
+//   synthesis for all Terasic Development Boards and Altera
 //   Development Kits made by Terasic.  Other use of this code,
 //   including the selling ,duplication, or modification of any
 //   portion is strictly prohibited.
@@ -268,14 +268,29 @@ module soc_system_top(
      .hps_hps_io_gpio_inst_GPIO54  ( HPS_KEY ),
      .hps_hps_io_gpio_inst_GPIO61  ( HPS_GSENSOR_INT ),
 
-     .vga_r (VGA_R),
-     .vga_g (VGA_G),
-     .vga_b (VGA_B),
-     .vga_clk (VGA_CLK),
-     .vga_hs (VGA_HS),
-     .vga_vs (VGA_VS),
-     .vga_blank_n (VGA_BLANK_N),
-     .vga_sync_n (VGA_SYNC_N)
+.vga_r (VGA_R),
+.vga_g (VGA_G),
+.vga_b (VGA_B),
+.vga_clk (VGA_CLK),
+.vga_hs (VGA_HS),
+.vga_vs (VGA_VS),
+.vga_blank_n (VGA_BLANK_N),
+.vga_sync_n (VGA_SYNC_N),
+
+
+    //.audio_0_avalon_left_channel_sink_data            (aud_sample_data),
+    //.audio_0_avalon_left_channel_sink_valid           (aud_sample_valid),
+    //.audio_0_avalon_left_channel_sink_ready           (aud_left_chan),
+    //.audio_0_avalon_right_channel_sink_data           (aud_sample_data),
+    //.audio_0_avalon_right_channel_sink_valid          (aud_sample_valid),
+    //.audio_0_avalon_right_channel_sink_ready          (aud_right_chan),
+    .audio_0_external_interface_BCLK                  (AUD_BCLK),
+    .audio_0_external_interface_DACDAT                (AUD_DACDAT),
+    .audio_0_external_interface_DACLRCK               (AUD_DACLRCK),
+    .audio_pll_0_audio_clk_clk                        (AUD_XCK),
+    .audio_and_video_config_0_external_interface_SDAT (FPGA_I2C_SDAT),
+    .audio_and_video_config_0_external_interface_SCLK (FPGA_I2C_SCLK)  
+     
   );
 
    // The following quiet the "no driver" warnings for output
@@ -285,11 +300,11 @@ module soc_system_top(
    assign ADC_DIN = SW[0];
    assign ADC_SCLK = SW[0];
    
-   assign AUD_ADCLRCK = SW[1] ? SW[0] : 1'bZ;
-   assign AUD_BCLK = SW[1] ? SW[0] : 1'bZ;
-   assign AUD_DACDAT = SW[0];
-   assign AUD_DACLRCK = SW[1] ? SW[0] : 1'bZ;
-   assign AUD_XCK = SW[0];      
+   //assign AUD_ADCLRCK = SW[1] ? SW[0] : 1'bZ;
+   //assign AUD_BCLK = SW[1] ? SW[0] : 1'bZ;
+   //assign AUD_DACDAT = SW[0];
+   //assign AUD_DACLRCK = SW[1] ? SW[0] : 1'bZ;
+   //assign AUD_XCK = SW[0];      
 
    assign DRAM_ADDR = { 13{ SW[0] } };
    assign DRAM_BA = { 2{ SW[0] } };
@@ -299,8 +314,8 @@ module soc_system_top(
 
    assign FAN_CTRL = SW[0];
 
-   assign FPGA_I2C_SCLK = SW[0];
-   assign FPGA_I2C_SDAT = SW[1] ? SW[0] : 1'bZ;
+ //  assign FPGA_I2C_SCLK = SW[0];
+//   assign FPGA_I2C_SDAT = SW[1] ? SW[0] : 1'bZ;
 
    assign GPIO_0 = SW[1] ? { 36{ SW[0] } } : 36'bZ;
    assign GPIO_1 = SW[1] ? { 36{ SW[0] } } : 36'bZ;
@@ -312,7 +327,7 @@ module soc_system_top(
    assign HEX4 = { 7{ SW[5] } };
    assign HEX5 = { 7{ SW[6] } };
 
-   assign IRDA_TXD = SW[0];
+//   assign IRDA_TXD = SW[0];
 
    assign LEDR = { 10{SW[7]} };
 
@@ -321,8 +336,10 @@ module soc_system_top(
    assign PS2_DAT = SW[1] ? SW[0] : 1'bZ;
    assign PS2_DAT2 = SW[1] ? SW[0] : 1'bZ;
 
-   assign TD_RESET_N = SW[0];
+  // assign TD_RESET_N = SW[0];
 
-
-							          
+  // assign {VGA_R, VGA_G, VGA_B} = { 24{ SW[0] } };
+  // assign {VGA_BLANK_N, VGA_CLK,
+//	   VGA_HS, VGA_SYNC_N, VGA_VS} = { 5{ SW[0] } };
+						          
 endmodule
