@@ -44,7 +44,7 @@ public:
 
     void setCrash(){
         isCrashed = true;
-        this->pos.y |=~0x1;
+        this->pos.y = 0;
     }
 
     bool getIsCrashed() const;
