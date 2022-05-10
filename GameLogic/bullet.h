@@ -6,6 +6,14 @@
 #define WATER_RAID_BULLET_H
 
 #include "common_data_structure.h"
+#include <vector>
+
+#define SPRITE_PLANE 0
+#define SPRITE_HELI 1
+#define SPRITE_BATTLE 2
+#define SPRITE_FUEL 3
+#define SPRITE_BULLET 4
+#define SPRITE_BALLOON 6
 
 class Bullet
 {
@@ -51,7 +59,7 @@ public:
 
     Bullet(char type, const Shape &sp, const Position &pos);
 
-    void fly();
+    static void fly(int videoFd,std::vector<Bullet> &);
 
 };
 

@@ -31,12 +31,13 @@
 #define SPRITE_Y 15
 
 #define MINIMUM_RIVER_WIDTH 50
-using namespace std;
 #define MAXFUEL 75
 
 #define SHOOT_AUDIO 0
 #define HIT_AUDIO 1
 #define EXPLODE_AUDIO 2
+
+using namespace std;
 
 // the struct used to store different kinds of sprites
 
@@ -131,29 +132,21 @@ int main() {
                 }
 
                 //bullet fly
-                for (int i = 0; i < bulletList.size(); i++)
-                {
-                    bulletList[i].fly();
-                    if (bulletList[i].pos.y == (0 << 1) + 1){
-                        bulletList[i].setCrash();
-                        WaterDriver::writePosition(videoFd, bulletList[i].getPosition(), SPRITE_BULLET,
-                                                   bulletList[i].getIndex());
-                        bulletList.erase(bulletList.begin()+i);
-                    }
-                }
+                Bullet::fly(videoFd,bulletList);
+
 
                 //enemy plane fly
                 for (int i = 0; i < enemyList.size(); i++)
                 {
                     enemyList[i].pos.y += 2;
-                    if(enemyList[i].pos.y == (480 << 1) + 1){
+                    if(enemyList[i].pos.y <= (480 << 1) + 1){
                         enemyList[i].disappear();
                         WaterDriver::writePosition(videoFd, enemyList[i].getPos(), SPRITE_HELI,
                                                    enemyList[i].getIndex());
                         spriteIndexList.push_back(enemyList[i].getIndex());
                         enemyList.erase(enemyList.begin()+i);
                     } else{
-                        enemyList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() -enemyList[i].getPos().y + 480 + SPRITE_Y) % 480], MINIMUM_RIVER_WIDTH);
+                        enemyList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() -enemyList[i].getPos().y + 480 + SPRITE_Y) % 480], 5);
                         WaterDriver::writePosition(videoFd, enemyList[i].getPos(), SPRITE_HELI,
                                                    enemyList[i].getIndex());
                     }
@@ -163,14 +156,14 @@ int main() {
                 for (int i = 0; i < battleList.size(); i++)
                 {
                     battleList[i].pos.y += 2;
-                    if(battleList[i].pos.y ==  (480 << 1) + 1){
+                    if(battleList[i].pos.y <=  (480 << 1) + 1){
                         battleList[i].disappear();
                         WaterDriver::writePosition(videoFd, battleList[i].getPos(), SPRITE_BATTLE,
                                                    battleList[i].getIndex());
                         spriteIndexList.push_back(battleList[i].getIndex());
                         battleList.erase(battleList.begin()+i);
                     } else{
-                        battleList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - battleList[i].getPos().y + 480 + SPRITE_Y) % 480], MINIMUM_RIVER_WIDTH);
+                        battleList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - battleList[i].getPos().y + 480 + SPRITE_Y) % 480], 5);
                         WaterDriver::writePosition(videoFd, battleList[i].getPos(), SPRITE_BATTLE,
                                                    battleList[i].getIndex());
                     }
@@ -187,7 +180,7 @@ int main() {
                         spriteIndexList.push_back(fuelTankList[i].getIndex());
                         fuelTankList.erase(fuelTankList.begin()+i);
                     } else{
-                        fuelTankList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - fuelTankList[i].getPos().y + 480 + SPRITE_Y) % 480], MINIMUM_RIVER_WIDTH);
+                        fuelTankList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - fuelTankList[i].getPos().y + 480 + SPRITE_Y) % 480], 5);
                         WaterDriver::writePosition(videoFd, fuelTankList[i].getPos(), SPRITE_FUEL,
                                                    fuelTankList[i].getIndex());
                     }
