@@ -8,7 +8,6 @@
 #include "common_data_structure.h"
 #include "../VideoDriver/water_video.h"
 
-
 class WaterDriver{
 public:
     // video

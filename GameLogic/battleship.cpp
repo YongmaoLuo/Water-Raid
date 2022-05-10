@@ -22,23 +22,23 @@ void Battleship::checkIfHit(vector<Bullet> &bullets,int videoFd, int &planeScore
     }
 }
 
-void Battleship::movement(int videoFd, vector<Battleship> &battleList, vector<short> &spriteIndexList,
-                          GameScenario gameScenario) {
-    for (int i = 0; i < battleList.size(); i++)
-    {
-        battleList[i].pos.y += 2;
-        if(battleList[i].pos.y <=  (480 << 1) + 1){
-            battleList[i].disappear();
-            WaterDriver::writePosition(videoFd, battleList[i].getPos(), SPRITE_BATTLE,
-                                       battleList[i].getIndex());
-            spriteIndexList.push_back(battleList[i].getIndex());
-            battleList.erase(battleList.begin()+i);
-        } else{
-            battleList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - battleList[i].getPos().y + 480 + SPRITE_Y) % 480], 5);
-            WaterDriver::writePosition(videoFd, battleList[i].getPos(), SPRITE_BATTLE,
-                                       battleList[i].getIndex());
-        }
-    }
-}
+//void Battleship::movement(int videoFd, vector<Battleship> &battleList, vector<short> &spriteIndexList,
+//                          GameScenario gameScenario) {
+//    for (int i = 0; i < battleList.size(); i++)
+//    {
+//        battleList[i].pos.y += 2;
+//        if(battleList[i].pos.y <=  (480 << 1) + 1){
+//            battleList[i].disappear();
+//            WaterDriver::writePosition(videoFd, battleList[i].getPos(), SPRITE_BATTLE,
+//                                       battleList[i].getIndex());
+//            spriteIndexList.push_back(battleList[i].getIndex());
+//            battleList.erase(battleList.begin()+i);
+//        } else{
+//            battleList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - battleList[i].getPos().y + 480 + SPRITE_Y) % 480], 5);
+//            WaterDriver::writePosition(videoFd, battleList[i].getPos(), SPRITE_BATTLE,
+//                                       battleList[i].getIndex());
+//        }
+//    }
+//}
 Battleship::Battleship(char type, char hitPoint, const Shape &sp, bool isDestroy,
                        char score, short index,bool canMove) : Sprite(type, hitPoint, sp, isDestroy, index,canMove), score(score) {}
