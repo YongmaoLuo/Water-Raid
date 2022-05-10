@@ -110,8 +110,6 @@ int main() {
                         (gameScenario.getScreenHeader() -300+480 + SPRITE_Y) % 480];
 
                 isCrashed = airplane.isCrashed(videoFd, boundaryAheadOfPlane) || airplane.isCrashed(videoFd,enemyList,battleList);
-                isCrashed = airplane.isCrashed(videoFd, boundaryAheadOfPlane) || airplane.isCrashed(videoFd,enemyList,battleList);
-                isCrashed = airplane.isCrashed(videoFd, boundaryAheadOfPlane) || airplane.isCrashed(videoFd,enemyList,battleList);
                 if (isCrashed){
                     WaterDriver::playAudio(videoFd,EXPLODE_AUDIO);
                     usleep(40000);
@@ -136,57 +134,14 @@ int main() {
                 //bullet fly
                 Bullet::fly(videoFd,bulletList);
 
-
                 //enemy plane fly
-                for (int i = 0; i < enemyList.size(); i++)
-                {
-                    enemyList[i].pos.y += 2;
-                    if(enemyList[i].pos.y <= (480 << 1) + 1){
-                        enemyList[i].disappear();
-                        WaterDriver::writePosition(videoFd, enemyList[i].getPos(), SPRITE_HELI,
-                                                   enemyList[i].getIndex());
-                        spriteIndexList.push_back(enemyList[i].getIndex());
-                        enemyList.erase(enemyList.begin()+i);
-                    } else{
-                        enemyList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() -enemyList[i].getPos().y + 480 + SPRITE_Y) % 480], 5);
-                        WaterDriver::writePosition(videoFd, enemyList[i].getPos(), SPRITE_HELI,
-                                                   enemyList[i].getIndex());
-                    }
-                }
+                EnemyPlane::fly(videoFd, enemyList, spriteIndexList, gameScenario);
 
                 //battleship move
-                for (int i = 0; i < battleList.size(); i++)
-                {
-                    battleList[i].pos.y += 2;
-                    if(battleList[i].pos.y <=  (480 << 1) + 1){
-                        battleList[i].disappear();
-                        WaterDriver::writePosition(videoFd, battleList[i].getPos(), SPRITE_BATTLE,
-                                                   battleList[i].getIndex());
-                        spriteIndexList.push_back(battleList[i].getIndex());
-                        battleList.erase(battleList.begin()+i);
-                    } else{
-                        battleList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - battleList[i].getPos().y + 480 + SPRITE_Y) % 480], 5);
-                        WaterDriver::writePosition(videoFd, battleList[i].getPos(), SPRITE_BATTLE,
-                                                   battleList[i].getIndex());
-                    }
-                }
+                Battleship::movement(videoFd, battleList, spriteIndexList, gameScenario);
 
                 //fuel tank move
-                for (int i = 0; i < fuelTankList.size(); i++)
-                {
-                    fuelTankList[i].pos.y += 2;
-                    if(fuelTankList[i].pos.y ==  (480 << 1) + 1){
-                        fuelTankList[i].disappear();
-                        WaterDriver::writePosition(videoFd, fuelTankList[i].getPos(), SPRITE_FUEL,
-                                                   fuelTankList[i].getIndex());
-                        spriteIndexList.push_back(fuelTankList[i].getIndex());
-                        fuelTankList.erase(fuelTankList.begin()+i);
-                    } else{
-                        fuelTankList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - fuelTankList[i].getPos().y + 480 + SPRITE_Y) % 480], 5);
-                        WaterDriver::writePosition(videoFd, fuelTankList[i].getPos(), SPRITE_FUEL,
-                                                   fuelTankList[i].getIndex());
-                    }
-                }
+                FuelTank::movement(videoFd, fuelTankList, spriteIndexList, gameScenario);
 
                 //check the enemy plane to see if hit
                 for (int i = 0; i < enemyList.size(); i++)
