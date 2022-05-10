@@ -25,6 +25,8 @@ private:
     char type;
     Position pos;
     Shape shape;
+    inputEvent tempInput;
+    bool buttonXOn,buttonBOn;
 public:
     short scores,fuel;
     void fire(int xboxFd,int videoFd,vector<Bullet> &bulletList);
@@ -36,7 +38,8 @@ public:
     int reduceFuel(int videoFd);
     Position getPos();
     void setPos(Position);
-    int receivePos(int xboxFd,int videoFd);
+    void receivePos(int xboxFd,int videoFd);
+    void calPos(int videoFd);
     Airplane(char type, char fuel, Position pos, Shape shape, char scores);
 
     char getType(){

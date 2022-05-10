@@ -174,28 +174,31 @@ int Airplane::reduceFuel(int videoFd) {
 
 void Airplane::fire(int xboxFd,int videoFd,vector<Bullet> &bulletList){
 
-    inputEvent tempInput;
-    read(xboxFd, &tempInput, 24);
     if (tempInput.code == XBOX_BUTTON_Y && tempInput.value==1) {
         // press the button to emit bullet
-        int numOfBullets;
-        if(numOfBullets=bulletList.size()==3)
+        int numOfBullets=bulletList.size();
+        if(numOfBullets==3)
             return;
-        char temp[3]; // 1, 2, 3
+        char temp[4]; // 1, 2, 3
+        memset(temp,0,sizeof(temp));
+        printf("number of bullets: %d\n",numOfBullets);
         if(numOfBullets>0){
-            memset(temp,0,sizeof(temp));
             for(vector<Bullet>::iterator it=bulletList.begin();it!=bulletList.end();it++){
-                temp[it->index-1]=1;
+                temp[it->index]=1;
+                printf("it index: %d\n",it->index);
             }
         }
+        
 
-        for(int i=0;i<3;i++){
-            if(temp[i]=0){
+        for(int i=1;i<=3;i++){
+            if(temp[i]==0){
                 Shape sp;sp.width=1;sp.length=5;
-                Position tempPos; tempPos.x=pos.x; tempPos.y=pos.y-sp.length;
+                Position tempPos; tempPos.x=pos.x; tempPos.y=pos.y-sp.length*2;
                 Bullet bullet=Bullet(SPRITE_BULLET,sp,tempPos);
+                bullet.index=i;
                 bulletList.push_back(bullet);
-                WaterDriver::writePosition(videoFd,tempPos,SPRITE_BULLET,i+1);
+                WaterDriver::writePosition(videoFd,tempPos,SPRITE_BULLET,i);
+                printf("index: %d\n",i);
                 break;
             }
         }
@@ -206,6 +209,7 @@ void Airplane::fire(int xboxFd,int videoFd,vector<Bullet> &bulletList){
 Airplane::Airplane(char type, char fuel, Position pos, Shape shape, char scores):
 type(type), fuel(fuel), pos(pos),shape(shape),scores(scores){
     //mutexPos= PTHREAD_MUTEX_INITIALIZER;
+    buttonBOn=buttonXOn= false;
 }
 
 Position Airplane::getPos() {
@@ -222,14 +226,18 @@ void Airplane::setPos(Position change){
     return;
 }
 
-bool buttonXOn=false,buttonBOn=false;
 
-int Airplane::receivePos(int xboxFd, int videoFd) {
 
-    inputEvent tempInput;
+void Airplane::receivePos(int xboxFd, int videoFd) {
+
     int flags= fcntl(xboxFd,F_GETFL,0);
     fcntl(xboxFd,F_SETFL,flags|O_NONBLOCK);
     read(xboxFd, &tempInput, 24);
+
+
+}
+
+void Airplane::calPos(int videoFd) {
     if (tempInput.code == XBOX_BUTTON_X && tempInput.value==1) {
         buttonXOn=true;
     } else if(tempInput.code == XBOX_BUTTON_X && tempInput.value==0){
@@ -242,16 +250,15 @@ int Airplane::receivePos(int xboxFd, int videoFd) {
 
     if(buttonXOn){
         Position tempPos = getPos();
-        tempPos.x -= 1;
+        tempPos.x -= 2;
         setPos(tempPos);
         WaterDriver::writePosition(videoFd,pos,type,0);
     }
 
     if(buttonBOn){
         Position tempPos = getPos();
-        tempPos.x += 1;
+        tempPos.x += 2;
         setPos(tempPos);
         WaterDriver::writePosition(videoFd,pos,type,0);
     }
-
 }

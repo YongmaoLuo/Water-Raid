@@ -19,7 +19,8 @@ public:
     static void writeFuel(int videoFd,int fuel);
     static void writeScore(int videoFd,int score);
     // audio
-
+    static void playAudio(int audioFd,int index);
+    static void stopAudio(int audioFd,int index);
 
 };
 

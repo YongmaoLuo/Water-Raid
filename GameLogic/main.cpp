@@ -27,12 +27,16 @@
 #define SPRITE_BALLOON 6
 
 // center coordinate related to upper left corner
-#define SPRITE_X 16
-#define SPRITE_Y 16
+#define SPRITE_X 15
+#define SPRITE_Y 15
 
 #define MINIMUM_RIVER_WIDTH 50
 using namespace std;
 #define MAXFUEL 75
+
+#define SHOOT_AUDIO 0
+#define HIT_AUDIO 1
+#define EXPLODE_AUDIO 2
 
 // the struct used to store different kinds of sprites
 
@@ -45,7 +49,7 @@ int main() {
     Airplane airplane;
 
     static const char xbox[] = "/dev/input/event0";
-    static const char waterVideo[]="/dev/vga_ball";
+    static const char waterVideo[]="/dev/water_video";
     int videoFd,xboxFd;
 
     if((xboxFd= open(xbox,O_RDWR))==-1){
@@ -76,7 +80,7 @@ int main() {
         bool isCrashed;
         Position tempPos;
         tempPos.x = 320;
-        tempPos.y = (480 << 1) + 1;
+        tempPos.y = (400 << 1) + 1;
         Shape tempShape;
         tempShape.width = SPRITE_X;
         tempShape.length = SPRITE_Y;
@@ -97,29 +101,26 @@ int main() {
 
                 //receive control signal from xbox
                 airplane.receivePos(xboxFd, videoFd);
+                airplane.calPos(videoFd);
 
                 // determine if the plane has crashed
                 // plane is always located at y=300
                 BoundaryInRow boundaryAheadOfPlane = gameScenario.boundaries[
-                        (gameScenario.getScreenHeader() + 180 - SPRITE_Y) % 480];
+                        (gameScenario.getScreenHeader() -300+480 + SPRITE_Y) % 480];
 
-//                printf("river1 left:%d",boundaryAheadOfPlane.river1_left);
-//                printf("river1 right:%d",boundaryAheadOfPlane.river1_right);
-//                printf("river2 left:%d",boundaryAheadOfPlane.river2_left);
-//                printf("river2 right:%d",boundaryAheadOfPlane.river2_right);
-
-//                for(int i=0;i<4;i++){
-//                    printf("boundary1 left:%d\n",boundaryAheadOfPlane.river1_left);
-//                    printf("")
-//                }
                 isCrashed = airplane.isCrashed(videoFd, boundaryAheadOfPlane);
-                if (isCrashed)
+                if (isCrashed){
+                    WaterDriver::playAudio(videoFd,EXPLODE_AUDIO);
+                    usleep(40000);
+                    WaterDriver::stopAudio(videoFd,EXPLODE_AUDIO);
                     break;
+                }
 //                // if the plane bumped into the fuel tank
 //                airplane.addFuel(videoFd,fuelTankList);
 //
 //                // check if the airplane is about to emit a bullet
-//                airplane.fire(xboxFd,videoFd,bulletList);
+                airplane.fire(xboxFd,videoFd,bulletList);
+                //printf("bullet list size: %d\n",bulletList.size());
 //
 //                // reduce fuel
                 if ((clock() - reduceFuelClock) / CLOCKS_PER_SEC >= 1) {
@@ -128,8 +129,7 @@ int main() {
                     if (temp == -1)
                         break;
                 }
-//                BoundaryInRow boundaryAheadOfPlane = gameScenario.boundaries[gameScenario.getScreenHeader() + 180 -
-//                                                                             SPRITE_Y];
+
                 //bullet fly
                 for (int i = 0; i < bulletList.size(); i++)
                 {
@@ -141,8 +141,8 @@ int main() {
                         bulletList.erase(bulletList.begin()+i);
                     }
                 }
-
-                //enemy plane fly
+//
+//                //enemy plane fly
                 for (int i = 0; i < enemyList.size(); i++)
                 {
                     enemyList[i].pos.y += 1;
@@ -158,8 +158,8 @@ int main() {
                                                    enemyList[i].getIndex());
                     }
                 }
-
-                //battleship move
+//
+//                //battleship move
                 for (int i = 0; i < battleList.size(); i++)
                 {
                     battleList[i].pos.y += 1;
@@ -176,7 +176,7 @@ int main() {
                     }
                 }
 
-                //fuel tank move
+//                //fuel tank move
                 for (int i = 0; i < fuelTankList.size(); i++)
                 {
                     fuelTankList[i].pos.y += 1;
@@ -193,7 +193,7 @@ int main() {
                     }
                 }
 
-                //check the enemy plane to see if hit
+//                //check the enemy plane to see if hit
                 for (int i = 0; i < enemyList.size(); i++)
                 {
                     enemyList[i].checkIfHit(bulletList, airplane.scores);
@@ -209,8 +209,8 @@ int main() {
                         enemyList.erase(enemyList.begin()+i);
                     }
                 }
-
-                //check the battleship to see if hit
+//
+//                //check the battleship to see if hit
                 for (int i = 0; i < battleList.size(); i++)
                 {
                     battleList[i].checkIfHit(bulletList, airplane.scores);
@@ -227,7 +227,7 @@ int main() {
                     }
                 }
 
-                //check the fuel tank to see if hit
+//                //check the fuel tank to see if hit
                 for (int i = 0; i < fuelTankList.size(); i++)
                 {
                     fuelTankList[i].checkIfHit(bulletList, airplane.fuel);
@@ -244,7 +244,7 @@ int main() {
                     }
                 }
 
-                // update bullet (for aimed)
+//                // update bullet (for aimed)
                 for (int i = 0; i < bulletList.size(); i++)
                 {
                     if (bulletList[i].getIsCrashed()){
@@ -253,7 +253,7 @@ int main() {
                         bulletList.erase(bulletList.begin()+i);
                     }
                 }
-                //if possible, randomly generate sprite
+//                //if possible, randomly generate sprite
                 while (!spriteIndexList.empty()) {
                     switch (rand() % 3) {
                         case 0: {    //for generate enemy plane

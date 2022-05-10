@@ -53,7 +53,7 @@ void GameScenario::updateBackground(int videoFd) {
 
             switch (states) {
                 case INCREASE_WIDTH:
-                    printf("INCREASE WIDTH\n");
+                    //printf("INCREASE WIDTH\n");
                     //while(counter<5){
                         //if(double(clock()-execute)/CLOCKS_PER_SEC>=duration){// run at the setup frequency
                             //execute=clock();
@@ -107,7 +107,7 @@ void GameScenario::updateBackground(int videoFd) {
                     //}
                     break;
                 case DECREASE_WIDTH:
-                    printf("DECREASE WIDTH\n");
+                    //printf("DECREASE WIDTH\n");
 //                    while(counter<5) {
 //                        if(double(clock()-execute)>=duration){
 //                            execute=clock();
@@ -160,7 +160,7 @@ void GameScenario::updateBackground(int videoFd) {
 //                    }
                     break;
                 case DOUBLE_RIVER:
-                    printf("DOUBLE_RIVER\n");
+                    //printf("DOUBLE_RIVER\n");
                     //if(boundaries[screenHeader].river2_left==0){ // now we only have one river
                         if(firstTimeDouble){
                             singleRiverWidth=boundaries[screenHeader].river1_right-boundaries[screenHeader].river1_left;
@@ -242,7 +242,7 @@ void GameScenario::updateBackground(int videoFd) {
 //                    }
                     break;
                 case SINGLE_RIVER:
-                    printf("SINGLE_RIVER\n");
+                    //printf("SINGLE_RIVER\n");
                     if(boundaries[screenHeader].river2_left!=0){ // now we have two rivers
 
                             if (boundaries[screenHeader].river2_left-boundaries[screenHeader].river1_right>0){

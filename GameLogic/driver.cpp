@@ -73,3 +73,23 @@ void WaterDriver::initBackground(int videoFd) {
         return;
     }
 }
+
+void WaterDriver::playAudio(int audioFd, int index) {
+    water_audio_arg arg;
+    arg.index=index;
+
+    if (ioctl(audioFd, WATER_AUDIO_PLAY, &arg)) {
+        perror("ioctl(WATER_VIDEO_SET_SCORE) failed");
+        return;
+    }
+
+}
+void WaterDriver::stopAudio(int audioFd, int index) {
+    water_audio_arg arg;
+    arg.index=index;
+
+    if (ioctl(audioFd, WATER_AUDIO_STOP, &arg)) {
+        perror("ioctl(WATER_VIDEO_SET_SCORE) failed");
+        return;
+    }
+}
