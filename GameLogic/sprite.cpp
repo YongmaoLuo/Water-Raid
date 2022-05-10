@@ -37,6 +37,8 @@ void Sprite::generate(BoundaryInRow boundary, short y) {
     }
 
     this->pos.y = (y << 1) + 1;
+    printf("%d, %d, %d, %d\n", boundary.river1_left, boundary.river1_right, boundary.river2_left, boundary.river2_right);
+    printf("%d, %d\n", pos.x, pos.y);
 }
 
 void Sprite::move(BoundaryInRow boundary, short minimumWidth) {
@@ -107,7 +109,8 @@ void Sprite::move(BoundaryInRow boundary, short minimumWidth) {
             pos.x=forward;
         }
     }
-
+    printf("%d, %d, %d, %d\n", boundary.river1_left, boundary.river1_right, boundary.river2_left, boundary.river2_right);
+    printf("%d, %d\n", pos.x, pos.y);
 }
 
 void Sprite::disappear() {
