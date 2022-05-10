@@ -108,7 +108,7 @@ int main() {
                 gameScenario.updateBackground(videoFd);
 
                 //receive control signal from xbox
-                airplane.receivePos(xboxFd, videoFd);
+                airplane.receiveFromXbox(xboxFd, videoFd);
                 airplane.calPos(videoFd);
 
                 // determine if the plane has crashed
@@ -122,7 +122,7 @@ int main() {
                     break;
                 }
 //                // if the plane bumped into the fuel tank
-//                airplane.addFuel(videoFd,fuelTankList);
+                airplane.addFuel(videoFd,fuelTankList);
 //
 //                // check if the airplane is about to emit a bullet
                 airplane.fire(xboxFd,videoFd,bulletList);
