@@ -19,6 +19,7 @@ public:
 
     EnemyPlane(char type, char hitPoint, const Shape &sp, bool isDestroy, char score, short index);
 
+    static void fly(int videoFd,vector<EnemyPlane> &enemyList, vector<short> &spriteIndexList, GameScenario gameScenario);
 };
 
 #endif //WATER_RAID_ENEMY_PLANE_H

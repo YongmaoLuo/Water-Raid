@@ -53,10 +53,10 @@ int main() {
     static const char waterVideo[]="/dev/water_video";
     int videoFd,xboxFd;
 
-    if((xboxFd= open(xbox,O_RDWR))==-1){
-        fprintf(stderr,"could not open %s\n",xbox);
-        return -1;
-    }
+//    if((xboxFd= open(xbox,O_RDWR))==-1){
+//        fprintf(stderr,"could not open %s\n",xbox);
+//        return -1;
+//    }
 
     if ((videoFd = open(waterVideo, O_RDWR)) == -1) {
         fprintf(stderr, "could not open %s\n", waterVideo);
@@ -101,7 +101,7 @@ int main() {
                 gameScenario.updateBackground(videoFd);
 
                 //receive control signal from xbox
-                airplane.receivePos(xboxFd, videoFd);
+                //airplane.receivePos(xboxFd, videoFd);
                 airplane.calPos(videoFd);
 
                 // determine if the plane has crashed
@@ -120,7 +120,7 @@ int main() {
 //                airplane.addFuel(videoFd,fuelTankList);
 //
 //                // check if the airplane is about to emit a bullet
-                airplane.fire(xboxFd,videoFd,bulletList);
+                //airplane.fire(xboxFd,videoFd,bulletList);
                 //printf("bullet list size: %d\n",bulletList.size());
 //
 //                // reduce fuel
@@ -134,57 +134,14 @@ int main() {
                 //bullet fly
                 Bullet::fly(videoFd,bulletList);
 
-
                 //enemy plane fly
-                for (int i = 0; i < enemyList.size(); i++)
-                {
-                    enemyList[i].pos.y += 2;
-                    if(enemyList[i].pos.y <= (480 << 1) + 1){
-                        enemyList[i].disappear();
-                        WaterDriver::writePosition(videoFd, enemyList[i].getPos(), SPRITE_HELI,
-                                                   enemyList[i].getIndex());
-                        spriteIndexList.push_back(enemyList[i].getIndex());
-                        enemyList.erase(enemyList.begin()+i);
-                    } else{
-                        enemyList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() -enemyList[i].getPos().y + 480 + SPRITE_Y) % 480], 5);
-                        WaterDriver::writePosition(videoFd, enemyList[i].getPos(), SPRITE_HELI,
-                                                   enemyList[i].getIndex());
-                    }
-                }
+                EnemyPlane::fly(videoFd, enemyList, spriteIndexList, gameScenario);
 
                 //battleship move
-                for (int i = 0; i < battleList.size(); i++)
-                {
-                    battleList[i].pos.y += 2;
-                    if(battleList[i].pos.y <=  (480 << 1) + 1){
-                        battleList[i].disappear();
-                        WaterDriver::writePosition(videoFd, battleList[i].getPos(), SPRITE_BATTLE,
-                                                   battleList[i].getIndex());
-                        spriteIndexList.push_back(battleList[i].getIndex());
-                        battleList.erase(battleList.begin()+i);
-                    } else{
-                        battleList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - battleList[i].getPos().y + 480 + SPRITE_Y) % 480], 5);
-                        WaterDriver::writePosition(videoFd, battleList[i].getPos(), SPRITE_BATTLE,
-                                                   battleList[i].getIndex());
-                    }
-                }
+                Battleship::movement(videoFd, battleList, spriteIndexList, gameScenario);
 
                 //fuel tank move
-                for (int i = 0; i < fuelTankList.size(); i++)
-                {
-                    fuelTankList[i].pos.y += 2;
-                    if(fuelTankList[i].pos.y ==  (480 << 1) + 1){
-                        fuelTankList[i].disappear();
-                        WaterDriver::writePosition(videoFd, fuelTankList[i].getPos(), SPRITE_FUEL,
-                                                   fuelTankList[i].getIndex());
-                        spriteIndexList.push_back(fuelTankList[i].getIndex());
-                        fuelTankList.erase(fuelTankList.begin()+i);
-                    } else{
-                        fuelTankList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - fuelTankList[i].getPos().y + 480 + SPRITE_Y) % 480], 5);
-                        WaterDriver::writePosition(videoFd, fuelTankList[i].getPos(), SPRITE_FUEL,
-                                                   fuelTankList[i].getIndex());
-                    }
-                }
+                FuelTank::movement(videoFd, fuelTankList, spriteIndexList, gameScenario);
 
                 //check the enemy plane to see if hit
                 for (int i = 0; i < enemyList.size(); i++)
