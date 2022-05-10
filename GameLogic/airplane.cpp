@@ -67,47 +67,13 @@ bool Airplane::isCrashed(int videoFd, BoundaryInRow boundary) {
     return false;
 }
 
-bool Airplane::isCrashed(int videoFd,BoundaryInRow boundary,
+bool Airplane::isCrashed(int videoFd,
                                  std::vector<EnemyPlane> enemyPlaneList,
                                  std::vector<Battleship> battleList){
 
-    // collide the boundary
-    if(boundary.river2_left==0){
-        if(boundary.river1_left>=pos.x-shape.width||
-           boundary.river1_right<=pos.x+shape.width){
-            // plane disappear
-            Position tempPos;
-            tempPos.y=0;
-            tempPos.x=0;
-            WaterDriver::writePosition(videoFd,tempPos,type,0);
-            // create explosion effect
-            WaterDriver::writePosition(videoFd,pos,SPRITE_EXPLODE,0);
-            pos=tempPos;
-            return true;
-        }
-    }else{
-        if(boundary.river2_left>pos.x&&
-           boundary.river1_left>=pos.x-shape.width||
-           boundary.river2_left>pos.x&&
-           boundary.river1_right<=pos.x+shape.width||
-           boundary.river2_left>=pos.x-shape.width||
-           boundary.river2_right<=pos.x+shape.width){
-            // crashed when there are 2 rivers
-            // plane disappear
-            Position tempPos;
-            tempPos.y=0;
-            tempPos.x=0;
-            WaterDriver::writePosition(videoFd,tempPos,type,0);
-            // create explosion effect
-            WaterDriver::writePosition(videoFd,pos,SPRITE_EXPLODE,0);
-            pos=tempPos;
-            return true;
-        }
-    }
-
     // collide the enemy planes
     for(int i=0;i<enemyPlaneList.size();i++){
-        if(pos.y-shape.length>=enemyPlaneList[i].getPos().y+enemyPlaneList[i].getShape().length&&
+        if(pos.y-shape.length<=enemyPlaneList[i].getPos().y+enemyPlaneList[i].getShape().length&&
         !(pos.x+shape.width<enemyPlaneList[i].getPos().x-enemyPlaneList[i].getShape().width)&&
         !(pos.x-shape.width>enemyPlaneList[i].getPos().x+enemyPlaneList[i].getShape().width)){
             Position tempPos;
@@ -122,7 +88,7 @@ bool Airplane::isCrashed(int videoFd,BoundaryInRow boundary,
     }
     //collide the battleships
     for(int i=0;i<battleList.size();i++){
-        if(pos.y-shape.length>=battleList[i].getPos().y+battleList[i].getShape().length&&
+        if(pos.y-shape.length<=battleList[i].getPos().y+battleList[i].getShape().length&&
            !(pos.x+shape.width<battleList[i].getPos().x-battleList[i].getShape().width)&&
            !(pos.x-shape.width>battleList[i].getPos().x+battleList[i].getShape().width)){
             Position tempPos;
@@ -141,7 +107,7 @@ bool Airplane::isCrashed(int videoFd,BoundaryInRow boundary,
 
 void Airplane::addFuel(int videoFd,std::vector<FuelTank> &fuelTankList){
     for(int i=0;i<fuelTankList.size();i++){
-        if(pos.y-shape.length>=fuelTankList[i].getPos().y+fuelTankList[i].getShape().length&&
+        if(pos.y-shape.length<=fuelTankList[i].getPos().y+fuelTankList[i].getShape().length&&
            !(pos.x+shape.width<fuelTankList[i].getPos().x-fuelTankList[i].getShape().width)&&
            !(pos.x-shape.width>fuelTankList[i].getPos().x+fuelTankList[i].getShape().width)){
             // collide with fuelTank
@@ -157,7 +123,6 @@ void Airplane::addFuel(int videoFd,std::vector<FuelTank> &fuelTankList){
             break;
         }
     }
-    this->fuel += fuel;
     WaterDriver::writeFuel(videoFd,this->fuel);
 }
 
@@ -174,7 +139,7 @@ int Airplane::reduceFuel(int videoFd) {
 
 void Airplane::fire(int xboxFd,int videoFd,vector<Bullet> &bulletList){
 
-    if (tempInput.code == XBOX_BUTTON_Y && tempInput.value==1) {
+    if (xboxInput.code == XBOX_BUTTON_Y && xboxInput.value==1) {
         // press the button to emit bullet
         int numOfBullets=bulletList.size();
         if(numOfBullets==3)
@@ -228,23 +193,30 @@ void Airplane::setPos(Position change){
 
 
 
-void Airplane::receivePos(int xboxFd, int videoFd) {
+void Airplane::receiveFromXbox(int xboxFd, int videoFd) {
 
+    InputEvent tempInput;
     int flags= fcntl(xboxFd,F_GETFL,0);
     fcntl(xboxFd,F_SETFL,flags|O_NONBLOCK);
     read(xboxFd, &tempInput, 24);
+    if(tempInput.code==XBOX_BUTTON_B||
+    tempInput.code==XBOX_BUTTON_X||
+    tempInput.code==XBOX_BUTTON_A||
+    tempInput.code==XBOX_BUTTON_Y){
+        xboxInput=tempInput;
+    }
 
 
 }
 
 void Airplane::calPos(int videoFd) {
-    if (tempInput.code == XBOX_BUTTON_X && tempInput.value==1) {
+    if (xboxInput.code == XBOX_BUTTON_X && xboxInput.value==1) {
         buttonXOn=true;
-    } else if(tempInput.code == XBOX_BUTTON_X && tempInput.value==0){
+    } else if(xboxInput.code == XBOX_BUTTON_X && xboxInput.value==0){
         buttonXOn=false;
-    }else if (tempInput.code == XBOX_BUTTON_B && tempInput.value==1) {
+    }else if (xboxInput.code == XBOX_BUTTON_B && xboxInput.value==1) {
         buttonBOn=true;
-    }else if(tempInput.code == XBOX_BUTTON_B && tempInput.value==0){
+    }else if(xboxInput.code == XBOX_BUTTON_B && xboxInput.value==0){
         buttonBOn=false;
     }
 

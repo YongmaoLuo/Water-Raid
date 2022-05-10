@@ -17,7 +17,7 @@ typedef struct {
     unsigned short type;
     unsigned short code;
     unsigned int value;
-}inputEvent;
+}InputEvent;
 
 class Airplane{
 private:
@@ -25,20 +25,20 @@ private:
     char type;
     Position pos;
     Shape shape;
-    inputEvent tempInput;
+    InputEvent xboxInput;
     bool buttonXOn,buttonBOn;
 public:
     short scores,fuel;
     void fire(int xboxFd,int videoFd,vector<Bullet> &bulletList);
     bool isCrashed(int videoFd,BoundaryInRow boundary);
-    bool isCrashed(int videoFd,BoundaryInRow boundary,
+    bool isCrashed(int videoFd,
                    std::vector<EnemyPlane> enemyPlaneList,
                    std::vector<Battleship> battleList);
     void addFuel(int videoFd,std::vector<FuelTank> &fuelTankList);
     int reduceFuel(int videoFd);
     Position getPos();
     void setPos(Position);
-    void receivePos(int xboxFd,int videoFd);
+    void receiveFromXbox(int xboxFd,int videoFd);
     void calPos(int videoFd);
     Airplane(char type, char fuel, Position pos, Shape shape, char scores);
 

@@ -53,7 +53,7 @@ int main() {
     static const char waterVideo[]="/dev/water_video";
     int videoFd,xboxFd;
 
-    if((xboxFd= open(xbox,O_RDWR))==-1){
+    if((xboxFd= open(xbox,O_RDONLY))==-1){
         fprintf(stderr,"could not open %s\n",xbox);
         return -1;
     }
@@ -101,7 +101,7 @@ int main() {
                 gameScenario.updateBackground(videoFd);
 
                 //receive control signal from xbox
-                airplane.receivePos(xboxFd, videoFd);
+                airplane.receiveFromXbox(xboxFd, videoFd);
                 airplane.calPos(videoFd);
 
                 // determine if the plane has crashed
@@ -109,7 +109,9 @@ int main() {
                 BoundaryInRow boundaryAheadOfPlane = gameScenario.boundaries[
                         (gameScenario.getScreenHeader() -300+480 + SPRITE_Y) % 480];
 
-                isCrashed = airplane.isCrashed(videoFd, boundaryAheadOfPlane);
+                isCrashed = airplane.isCrashed(videoFd, boundaryAheadOfPlane) || airplane.isCrashed(videoFd,enemyList,battleList);
+                isCrashed = airplane.isCrashed(videoFd, boundaryAheadOfPlane) || airplane.isCrashed(videoFd,enemyList,battleList);
+                isCrashed = airplane.isCrashed(videoFd, boundaryAheadOfPlane) || airplane.isCrashed(videoFd,enemyList,battleList);
                 if (isCrashed){
                     WaterDriver::playAudio(videoFd,EXPLODE_AUDIO);
                     usleep(40000);
@@ -117,7 +119,7 @@ int main() {
                     break;
                 }
 //                // if the plane bumped into the fuel tank
-//                airplane.addFuel(videoFd,fuelTankList);
+                airplane.addFuel(videoFd,fuelTankList);
 //
 //                // check if the airplane is about to emit a bullet
                 airplane.fire(xboxFd,videoFd,bulletList);
