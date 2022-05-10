@@ -19,6 +19,7 @@ public:
 
     FuelTank(char type, char hitPoint, const Shape &sp, bool isDestroy, char fuelVolume, short index, bool canMove);
 
+    static void movement(int videoFd,vector<FuelTank> &enemyList, vector<short> &spriteIndexList, GameScenario gameScenario);
 };
 
 #endif //WATER_RAID_FUEL_TANK_H
