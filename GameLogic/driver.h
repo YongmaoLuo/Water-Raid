@@ -11,13 +11,13 @@
 class WaterDriver{
 public:
     // video
-    static void initBackground(int videoFd);
-    static void writeBoundary(int videoFd, BoundaryInRow boundary);
-    static void writePosition(int videoFd,Position position,int type, int index);
-    static void writeFuel(int videoFd,int fuel);
-    static void writeScore(int videoFd,int score);
+    static void initBackground(int videoFd); // set up the fuel gauge and scoreboard
+    static void writeBoundary(int videoFd, BoundaryInRow boundary); // write boundary for each row
+    static void writePosition(int videoFd,Position position,int type, int index); // write position for each sprite
+    static void writeFuel(int videoFd,int fuel); // adjust the indicator of the fuel gauge
+    static void writeScore(int videoFd,int score); // change the scores in the scoreboard
     // audio
-    static void playAudio(int audioFd,int index);
+    static void playAudio(int audioFd,int index); // play audio of different sound effect
 
 };
 
