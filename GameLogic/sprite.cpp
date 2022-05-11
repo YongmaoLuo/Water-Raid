@@ -20,14 +20,17 @@ void Sprite::generate(BoundaryInRow boundary, short y) {
     srand(time(0));
     if (this->type == SPRITE_FUEL || this->type == SPRITE_BATTLE) {
         if (boundary.river2_left == 0) {
-            short new_pos_x = (rand() % (boundary.river1_right - boundary.river1_left)) + boundary.river1_left;
+            short randomNumber = rand() % (boundary.river1_right - boundary.river1_left);
+            short new_pos_x = randomNumber + boundary.river1_left;
             this->pos.x = new_pos_x;
         } else {
             if (rand() % 2) {
-                short new_pos_x = (rand() % (boundary.river1_right - boundary.river1_left)) + boundary.river1_left;
+                short randomNumber = rand() % (boundary.river1_right - boundary.river1_left);
+                short new_pos_x = randomNumber + boundary.river1_left;
                 this->pos.x = new_pos_x;
             } else {
-                short new_pos_x = (rand() % (boundary.river2_right - boundary.river2_left)) + boundary.river2_left;
+                short randomNumber = rand() % (boundary.river2_right - boundary.river2_left);
+                short new_pos_x = randomNumber + boundary.river2_left;
                 this->pos.x = new_pos_x;
             }
         }
@@ -37,8 +40,12 @@ void Sprite::generate(BoundaryInRow boundary, short y) {
     }
 
     this->pos.y = (y << 1) + 1;
-    printf("%d, %d, %d, %d\n", boundary.river1_left, boundary.river1_right, boundary.river2_left, boundary.river2_right);
-    printf("%d, %d\n", pos.x, pos.y);
+
+    if((this->type == SPRITE_FUEL || this->type == SPRITE_BATTLE) && this->pos.x < boundary.river1_left || (this->pos.x > boundary.river1_right && boundary.river2_left == 0) || (this->pos.x > boundary.river2_right && boundary.river2_left != 0)){
+        printf("generate: \n");
+        printf("pos: %d\n", pos.x);
+        printf("move: %d, %d, %d, %d\n", boundary.river1_left, boundary.river1_right, boundary.river2_left, boundary.river2_right);
+    }
 }
 
 void Sprite::move(BoundaryInRow boundary, short minimumWidth) {
@@ -48,69 +55,83 @@ void Sprite::move(BoundaryInRow boundary, short minimumWidth) {
     }
 
     srand(time(0));
-    short forward = this->pos.x  + minimumWidth;
-    short backward = this->pos.x - minimumWidth;
+    short forward = this->pos.x + this->sp.width + minimumWidth;
+    short backward = this->pos.x - this->sp.width - minimumWidth;
 
     if (this->type == SPRITE_FUEL || this->type == SPRITE_BATTLE) {
         //Attention: minimumWidth is the minimum width of every branch of the river
 
         if (boundary.river2_left == 0) {
-            if(pos.x<=boundary.river1_left&&left){
+            if(backward<=boundary.river1_left&&left){
                 left=false;
-            }else if(pos.x>=boundary.river1_right&&!left){
+            }else if(forward>=boundary.river1_right&&!left){
                 left=true;
             }
 
             if(left){
-                pos.x=backward;
+                this->pos.x=backward;
             }else{
-                pos.x=forward;
+                this->pos.x=forward;
+            }
+            if((this->type == SPRITE_FUEL || this->type == SPRITE_BATTLE) && this->pos.x < boundary.river1_left || (this->pos.x > boundary.river1_right && boundary.river2_left == 0) || (this->pos.x > boundary.river2_right && boundary.river2_left != 0)){
+                printf("move: \n");
+                printf("pos: %d\n", this->pos.x);
+                printf("move: %d, %d, %d, %d\n", boundary.river1_left, boundary.river1_right, boundary.river2_left, boundary.river2_right);
             }
         } else {
-            if (this->getPos().x < (boundary.river1_right+boundary.river2_left)/2) {
+            if (this->getPos().x < boundary.river1_right) {
                 // on left river
-                if(pos.x<=boundary.river1_left&&left){
+                if(backward<=boundary.river1_left&&left){
                     left=false;
-                }else if(pos.x>=boundary.river1_right&&!left){
+                }else if(forward>=boundary.river1_right&&!left){
                     left=true;
                 }
 
                 if(left){
-                    pos.x=backward;
+                    this->pos.x=backward;
                 }else{
-                    pos.x=forward;
+                    this->pos.x=forward;
+                }
+                if((this->type == SPRITE_FUEL || this->type == SPRITE_BATTLE) && this->pos.x < boundary.river1_left || (this->pos.x > boundary.river1_right && boundary.river2_left == 0) || (this->pos.x > boundary.river2_right && boundary.river2_left != 0)){
+                    printf("move: \n");
+                    printf("pos: %d\n", this->pos.x);
+                    printf("move: %d, %d, %d, %d\n", boundary.river1_left, boundary.river1_right, boundary.river2_left, boundary.river2_right);
                 }
             } else {
                 // on right river
-                if(pos.x<=boundary.river2_left&&left){
+                if(backward<=boundary.river2_left&&left){
                     left=false;
-                }else if(pos.x>=boundary.river2_right&&!left){
+                }else if(forward>=boundary.river2_right&&!left){
                     left=true;
                 }
 
                 if(left){
-                    pos.x=backward;
+                    this->pos.x=backward;
                 }else{
-                    pos.x=forward;
+                    this->pos.x=forward;
+                }
+                if((this->type == SPRITE_FUEL || this->type == SPRITE_BATTLE) && this->pos.x < boundary.river1_left || (this->pos.x > boundary.river1_right && boundary.river2_left == 0) || (this->pos.x > boundary.river2_right && boundary.river2_left != 0)){
+                    printf("move: \n");
+                    printf("pos: %d\n", this->pos.x);
+                    printf("move: %d, %d, %d, %d\n", boundary.river1_left, boundary.river1_right, boundary.river2_left, boundary.river2_right);
                 }
             }
         }
     } else if(this->type==SPRITE_HELI) {
         // helicopter can fly through the whole screen
-        if(pos.x>=640-sp.width&&!left){
+        if(forward>=640-sp.width&&!left){
             left= true;
-        }else if(pos.x<=sp.width){
+        }else if(backward<=sp.width){
             left= false;
         }
 
         if(left){
-            pos.x=backward;
+            this->pos.x=backward;
         }else{
-            pos.x=forward;
+            this->pos.x=forward;
         }
     }
-    printf("%d, %d, %d, %d\n", boundary.river1_left, boundary.river1_right, boundary.river2_left, boundary.river2_right);
-    printf("%d, %d\n", pos.x, pos.y);
+
 }
 
 void Sprite::disappear() {

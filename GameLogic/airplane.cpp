@@ -111,7 +111,7 @@ bool Airplane::isCrashed(int videoFd,
     return false;
 }
 
-void Airplane::addFuel(int videoFd,std::vector<FuelTank> &fuelTankList){
+void Airplane::addFuel(int videoFd,std::vector<FuelTank> &fuelTankList, std::vector<short> &spriteIndexList){
     for(int i=0;i<fuelTankList.size();i++){
         if(pos.y-shape.length<=fuelTankList[i].getPos().y+fuelTankList[i].getShape().length&&
                 pos.y+shape.length>=fuelTankList[i].getPos().y-fuelTankList[i].getShape().length&&
@@ -126,6 +126,7 @@ void Airplane::addFuel(int videoFd,std::vector<FuelTank> &fuelTankList){
             Position tempPos;tempPos.y=0;
             // remove the fuelTank
             WaterDriver::writePosition(videoFd,tempPos,SPRITE_FUEL,fuelTankList[i].index);
+            spriteIndexList.push_back(fuelTankList[i].getIndex());
             fuelTankList.erase(fuelTankList.begin()+i);
             break;
         }

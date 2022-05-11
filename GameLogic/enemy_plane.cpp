@@ -36,7 +36,7 @@ void EnemyPlane::fly(int videoFd,vector<EnemyPlane> &enemyList, vector<short> &s
             spriteIndexList.push_back(enemyList[i].getIndex());
             enemyList.erase(enemyList.begin()+i);
         } else{
-            enemyList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() -enemyList[i].getPos().y + 480 + SPRITE_Y) % 480], 5);
+            enemyList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() -enemyList[i].getPos().y + 480 + SPRITE_Y) % 480], 50);
             WaterDriver::writePosition(videoFd, enemyList[i].getPos(), SPRITE_HELI,
                                        enemyList[i].getIndex());
         }

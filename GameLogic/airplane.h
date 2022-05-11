@@ -35,7 +35,7 @@ public:
                    std::vector<EnemyPlane> enemyPlaneList,
                    std::vector<Battleship> battleList);
     void addScore(int videoFd,int score);
-    void addFuel(int videoFd,std::vector<FuelTank> &fuelTankList);
+    void addFuel(int videoFd,std::vector<FuelTank> &fuelTankList, std::vector<short> &spriteIndexList);
     int reduceFuel(int videoFd);
     Position getPos();
     void setPos(Position);

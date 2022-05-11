@@ -28,7 +28,7 @@ protected:
     char type;
     char hitPoint;
     Shape sp;
-    bool left;
+    bool left = true;
     bool canMove;
 
 public:
