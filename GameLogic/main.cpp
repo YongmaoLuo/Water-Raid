@@ -70,7 +70,7 @@ int main() {
     clock_t moveClock=clock();
     clock_t counterSurvival;
     gameScenario.setChangeClock();
-
+    bool timeToMove;
     while(1) {
 
         gameScenario.initBackground(videoFd);
@@ -81,6 +81,7 @@ int main() {
         fuelTankList.clear();
         spriteIndexList = {4,5,6,7,8};
         counterSurvival=0;
+        timeToMove= false;
 
 
         // wait the button on the xbox controller to be pressed
@@ -112,6 +113,11 @@ int main() {
 
         while (1) {
             if (double(clock() - execute) / CLOCKS_PER_SEC >= duration) {
+
+                if(double(clock()-moveClock)/CLOCKS_PER_SEC>0.1){
+                    moveClock=clock();
+                    timeToMove=true;
+                }
                 execute = clock();
                 gameScenario.updateBackground(videoFd);
 
@@ -166,7 +172,7 @@ int main() {
 
                         spriteIndexList.push_back(enemyList[i].getIndex());
                         enemyList.erase(enemyList.begin()+i);
-                    } else if(double(clock()-moveClock)/CLOCKS_PER_SEC>0.1){
+                    } else if(timeToMove){
 
                         enemyList[i].move(gameScenario.boundaries[
                                                   (gameScenario.getScreenHeader() - int((enemyList[i].getPos().y -1) >> 1) +
@@ -184,7 +190,7 @@ int main() {
                         battleList[i].disappear();
                         spriteIndexList.push_back(battleList[i].getIndex());
                         battleList.erase(battleList.begin()+i);
-                    } else if(double(clock()-moveClock)/CLOCKS_PER_SEC>0.1){
+                    } else if(timeToMove){
                         battleList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - int((battleList[i].getPos().y - 1) >> 1) + 480 + SPRITE_Y) % 480],
                                            2);
 
@@ -201,7 +207,7 @@ int main() {
                         fuelTankList[i].disappear();
                         spriteIndexList.push_back(fuelTankList[i].getIndex());
                         fuelTankList.erase(fuelTankList.begin()+i);
-                    } else if(double(clock()-moveClock)/CLOCKS_PER_SEC>0.1){
+                    } else if(timeToMove){
                         fuelTankList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - int((fuelTankList[i].getPos().y - 1) >> 1) + 480 + SPRITE_Y) % 480],
                                              2);
                     }
@@ -209,8 +215,8 @@ int main() {
                                                fuelTankList[i].getIndex());
                 }
 
-                if(double(clock()-moveClock)/CLOCKS_PER_SEC>0.1){
-                    moveClock=clock();
+                if(timeToMove){
+                    timeToMove= false;
                 }
 
                 //check the enemy plane to see if hit
@@ -281,9 +287,9 @@ int main() {
                             Shape newShape;
                             newShape.width = SPRITE_X;
                             newShape.length = SPRITE_Y;
-                            bool canMove= true;
+                            bool canMove= false;
                             if(rand()%5==0){
-                                canMove= false;
+                                canMove= true;
                             }
                             EnemyPlane enemyPlane = EnemyPlane(SPRITE_HELI, 1, newShape, false, 2, spriteIndexList[0],
                                                                canMove);
