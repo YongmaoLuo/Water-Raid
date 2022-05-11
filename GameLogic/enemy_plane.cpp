@@ -18,6 +18,8 @@ void EnemyPlane::checkIfHit(vector<Bullet> &bullets,int videoFd, int &planeScore
             this->hitPoint--;
             WaterDriver::playAudio(videoFd,HIT_AUDIO);
             bullets[i].setCrash();
+            WaterDriver::writePosition(videoFd,bullets[i].getPosition(),bullets[i].getType(),bullets[i].getIndex());
+            bullets.erase(bullets.begin()+i);
 
             if(this->hitPoint == 0){
                 this->setIsDestroy(true);

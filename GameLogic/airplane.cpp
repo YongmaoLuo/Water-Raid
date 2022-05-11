@@ -24,9 +24,9 @@
 #define MAXFUEL 75
 #define MINFUEL 5
 
-#define SHOOT_AUDIO 2
+#define SHOOT_AUDIO 0
 #define HIT_AUDIO 1
-#define EXPLODE_AUDIO 0
+#define EXPLODE_AUDIO 2
 
 bool Airplane::isCrashed(int videoFd, BoundaryInRow boundary) {
     // collide the boundary
@@ -155,11 +155,9 @@ void Airplane::fire(int xboxFd,int videoFd,vector<Bullet> &bulletList){
         WaterDriver::playAudio(videoFd,SHOOT_AUDIO);
         char temp[4]; // 1, 2, 3
         memset(temp,0,sizeof(temp));
-        printf("number of bullets: %d\n",numOfBullets);
         if(numOfBullets>0){
             for(vector<Bullet>::iterator it=bulletList.begin();it!=bulletList.end();it++){
                 temp[it->index]=1;
-                printf("it index: %d\n",it->index);
             }
         }
         

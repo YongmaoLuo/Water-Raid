@@ -24,6 +24,7 @@
 #define SPRITE_BATTLE 2
 #define SPRITE_FUEL 3
 #define SPRITE_BULLET 4
+#define SPRITE_EXPLODE 5
 #define SPRITE_BALLOON 6
 
 // center coordinate related to upper left corner
@@ -33,9 +34,9 @@
 #define MINIMUM_RIVER_WIDTH 50
 #define MAXFUEL 75
 
-#define SHOOT_AUDIO 2
+#define SHOOT_AUDIO 0
 #define HIT_AUDIO 1
-#define EXPLODE_AUDIO 0
+#define EXPLODE_AUDIO 2
 
 using namespace std;
 
@@ -116,7 +117,7 @@ int main() {
         bool isCrashed;
         Position tempPos;
         tempPos.x = 320;
-        tempPos.y = (400 << 1) + 1;
+        tempPos.y = (512 << 1) + 1;
         Shape tempShape;
         tempShape.width = SPRITE_X;
         tempShape.length = SPRITE_Y;
@@ -124,7 +125,7 @@ int main() {
         WaterDriver::writeScore(videoFd,0);
 
         // the plane enter the screen
-        while (airplane.getPos().y > (300 << 1) + 1) {
+        while (airplane.getPos().y > (400 << 1) + 1) {
             WaterDriver::writePosition(videoFd, airplane.getPos(), SPRITE_PLANE, 0);
             tempPos = airplane.getPos();
             tempPos.y -= 2;
@@ -153,9 +154,14 @@ int main() {
                 airplane.calPos(videoFd);
 
                 // determine if the plane has crashed
-                // plane is always located at y=300
-                BoundaryInRow boundaryAheadOfPlane = gameScenario.boundaries[
-                        (gameScenario.getScreenHeader() -300+480 + SPRITE_Y) % 480];
+                // plane is always located at y=400
+                BoundaryInRow boundaryAheadOfPlane;
+                if(gameScenario.getScreenHeader() -400 + SPRITE_Y>=0)
+                    boundaryAheadOfPlane = gameScenario.boundaries[
+                        gameScenario.getScreenHeader() -400 + SPRITE_Y];
+                else
+                    boundaryAheadOfPlane = gameScenario.boundaries[
+                            gameScenario.getScreenHeader() -400+480 + SPRITE_Y];
 
                 isCrashed = airplane.isCrashed(videoFd, boundaryAheadOfPlane)|| airplane.isCrashed(videoFd,enemyList,battleList);
                 if (isCrashed){
@@ -175,8 +181,12 @@ int main() {
                     counterSurvival++;
                     reduceFuelClock = clock();
                     int temp = airplane.reduceFuel(videoFd);
-                    if (temp == -1)
+                    if (temp == -1){
+                        tempPos.y=0;
+                        WaterDriver::writePosition(videoFd,tempPos,airplane.getType(),0);
+                        WaterDriver::writePosition(videoFd,airplane.getPos(),SPRITE_EXPLODE,0);
                         break;
+                    }
                 }
 
                 // add survival scores
@@ -190,22 +200,25 @@ int main() {
                 Bullet::fly(videoFd,bulletList);
 
 
-                //enemy plane fly
+                //enemy plane move
                 for (int i = 0; i < enemyList.size(); i++)
                 {
                     enemyList[i].pos.y += 2;
-                    if(enemyList[i].pos.y >= (400 << 1) + 1){
+                    if(enemyList[i].pos.y >= (512 << 1) + 1){
                         enemyList[i].disappear();
-
                         spriteIndexList.push_back(enemyList[i].getIndex());
+                        WaterDriver::writePosition(videoFd,enemyList[i].pos,enemyList[i].getType(),enemyList[i].getIndex());
                         enemyList.erase(enemyList.begin()+i);
                     } else if(timeToMove){
-
-                        enemyList[i].move(gameScenario.boundaries[
+                        if(gameScenario.getScreenHeader() - int((enemyList[i].getPos().y -1) >> 1)>=0){
+                            enemyList[i].move(gameScenario.boundaries[
+                                                      gameScenario.getScreenHeader() - int((enemyList[i].getPos().y -1) >> 1)], 2);
+                        }else
+                            enemyList[i].move(gameScenario.boundaries[
                                                   (gameScenario.getScreenHeader() - int((enemyList[i].getPos().y -1) >> 1) +
-                                                   480 + SPRITE_Y) % 480], 2);
+                                                   480 )], 2);
                     }
-                    WaterDriver::writePosition(videoFd, enemyList[i].getPos(), SPRITE_HELI,
+                    WaterDriver::writePosition(videoFd, enemyList[i].getPos(), enemyList[i].getType(),
                                                enemyList[i].getIndex());
                 }
 
@@ -213,16 +226,21 @@ int main() {
                 for (int i = 0; i < battleList.size(); i++)
                 {
                     battleList[i].pos.y += 2;
-                    if(battleList[i].pos.y >=  (400 << 1) + 1){
+                    if(battleList[i].pos.y >=  (512 << 1) + 1){
                         battleList[i].disappear();
                         spriteIndexList.push_back(battleList[i].getIndex());
+                        WaterDriver::writePosition(videoFd,battleList[i].pos,battleList[i].getType(),battleList[i].getIndex());
                         battleList.erase(battleList.begin()+i);
                     } else if(timeToMove){
-                        battleList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - int((battleList[i].getPos().y - 1) >> 1) + 480 + SPRITE_Y) % 480],
+                        if((gameScenario.getScreenHeader() - int((battleList[i].getPos().y - 1) >> 1) >=0))
+                            battleList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - int((battleList[i].getPos().y - 1) >> 1) )],
+                                               2);
+                        else
+                            battleList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - int((battleList[i].getPos().y - 1) >> 1) + 480) ],
                                            2);
 
                     }
-                    WaterDriver::writePosition(videoFd, battleList[i].getPos(), SPRITE_BATTLE,
+                    WaterDriver::writePosition(videoFd, battleList[i].getPos(), battleList[i].getType(),
                                                battleList[i].getIndex());
                 }
 
@@ -230,15 +248,20 @@ int main() {
                 for (int i = 0; i < fuelTankList.size(); i++)
                 {
                     fuelTankList[i].pos.y += 2;
-                    if(fuelTankList[i].pos.y >=  (400 << 1) + 1){
+                    if(fuelTankList[i].pos.y >=  (512 << 1) + 1){
                         fuelTankList[i].disappear();
                         spriteIndexList.push_back(fuelTankList[i].getIndex());
+                        WaterDriver::writePosition(videoFd,fuelTankList[i].pos,fuelTankList[i].getType(),fuelTankList[i].getIndex());
                         fuelTankList.erase(fuelTankList.begin()+i);
                     } else if(timeToMove){
-                        fuelTankList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - int((fuelTankList[i].getPos().y - 1) >> 1) + 480 + SPRITE_Y) % 480],
+                        if(gameScenario.getScreenHeader() - int((fuelTankList[i].getPos().y - 1) >> 1)>=0)
+                            fuelTankList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - int((fuelTankList[i].getPos().y - 1) >> 1)) ],
                                              2);
+                        else
+                            fuelTankList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - int((fuelTankList[i].getPos().y - 1) >> 1) + 480 )],
+                                                 2);
                     }
-                    WaterDriver::writePosition(videoFd, fuelTankList[i].getPos(), SPRITE_FUEL,
+                    WaterDriver::writePosition(videoFd, fuelTankList[i].getPos(), fuelTankList[i].getType(),
                                                fuelTankList[i].getIndex());
                 }
 
@@ -256,7 +279,7 @@ int main() {
                 {
                     if(enemyList[i].getIsDestroy()){
                         enemyList[i].disappear();
-                        WaterDriver::writePosition(videoFd, enemyList[i].getPos(), SPRITE_HELI,
+                        WaterDriver::writePosition(videoFd, enemyList[i].getPos(), enemyList[i].getType(),
                                                    enemyList[i].getIndex());
                         spriteIndexList.push_back(enemyList[i].getIndex());
                         enemyList.erase(enemyList.begin()+i);
@@ -310,8 +333,8 @@ int main() {
                 //if possible, randomly generate sprite
                 if (!spriteIndexList.empty() && iteration >=35) {
                     iteration = 0;
-                    switch (rand() % 3) {
-                        case 0: {    //for generate enemy plane
+                    switch (rand() % 7) {
+                    case 0: case 6: {    //for generate enemy plane
                             Shape newShape;
                             newShape.width = SPRITE_X;
                             newShape.length = SPRITE_Y;
@@ -322,16 +345,16 @@ int main() {
                             EnemyPlane enemyPlane = EnemyPlane(SPRITE_HELI, 1, newShape, false, 2, spriteIndexList[0],
                                                                canMove);
                             spriteIndexList.erase(spriteIndexList.begin());
-                            enemyList.push_back(enemyPlane);
-                            short randomRow = 16;
-                            short rowIndex = (gameScenario.getScreenHeader() - randomRow + 480 + SPRITE_Y) % 480;
+                            short randomRow = 0;
+                            short rowIndex = (gameScenario.getScreenHeader() - randomRow) % 480;
                             BoundaryInRow boundaryGenerateInRow = gameScenario.boundaries[rowIndex];
                             enemyPlane.generate(boundaryGenerateInRow, randomRow);
+                            enemyList.push_back(enemyPlane);
                             WaterDriver::writePosition(videoFd, enemyPlane.getPos(), SPRITE_HELI,
                                                        enemyPlane.getIndex());
                             break;
                         }
-                        case 1: {   //for generate enemy battleship
+                        case 1: case 4: {   //for generate enemy battleship
                             Shape newShape;
                             newShape.width = SPRITE_X;
                             newShape.length = SPRITE_Y;
@@ -341,11 +364,11 @@ int main() {
                             }
                             Battleship battleship = Battleship(SPRITE_BATTLE, 2, newShape, false, 3, spriteIndexList[0],canMove);
                             spriteIndexList.erase(spriteIndexList.begin());
-                            battleList.push_back(battleship);
-                            short randomRow = 16;
-                            short rowIndex = (gameScenario.getScreenHeader() - randomRow + 480 + SPRITE_Y) % 480;
+                            short randomRow = 0;
+                            short rowIndex = (gameScenario.getScreenHeader() - randomRow) % 480;
                             BoundaryInRow boundaryGenerateInRow = gameScenario.boundaries[rowIndex];
                             battleship.generate(boundaryGenerateInRow, randomRow);
+                            battleList.push_back(battleship);
                             WaterDriver::writePosition(videoFd, battleship.getPos(), SPRITE_BATTLE,
                                                        battleship.getIndex());
                             break;
@@ -361,15 +384,35 @@ int main() {
                             }
                             FuelTank fuelTank = FuelTank(SPRITE_FUEL, 1, newShape, false, 2, spriteIndexList[0],canMove);
                             spriteIndexList.erase(spriteIndexList.begin());
-                            fuelTankList.push_back(fuelTank);
-                            short randomRow = 16;
-                            short rowIndex = (gameScenario.getScreenHeader() - randomRow + 480 + SPRITE_Y) % 480;
+                            short randomRow = 0;
+                            short rowIndex = (gameScenario.getScreenHeader() - randomRow ) % 480;
                             BoundaryInRow boundaryGenerateInRow = gameScenario.boundaries[rowIndex];
                             fuelTank.generate(boundaryGenerateInRow, randomRow);
+                            fuelTankList.push_back(fuelTank);
                             WaterDriver::writePosition(videoFd, fuelTank.getPos(), SPRITE_FUEL,
                                                        fuelTank.getIndex());
                             break;
                         }
+                        case 3:  case 5:  {    //for generate enemy plane
+                                Shape newShape;
+                                newShape.width = SPRITE_X;
+                                newShape.length = SPRITE_Y;
+                                bool canMove= false;
+                                if(rand()%5==0){
+                                    canMove= true;
+                                }
+                                EnemyPlane enemyPlane = EnemyPlane(SPRITE_BALLOON, 1, newShape, false, 2, spriteIndexList[0],
+                                                                   canMove);
+                                spriteIndexList.erase(spriteIndexList.begin());
+                                short randomRow = 0;
+                                short rowIndex = (gameScenario.getScreenHeader() - randomRow) % 480;
+                                BoundaryInRow boundaryGenerateInRow = gameScenario.boundaries[rowIndex];
+                                enemyPlane.generate(boundaryGenerateInRow, randomRow);
+                                enemyList.push_back(enemyPlane);
+                                WaterDriver::writePosition(videoFd, enemyPlane.getPos(), SPRITE_BALLOON,
+                                                           enemyPlane.getIndex());
+                                break;
+                            }
                         printf("size: %d\n",spriteIndexList.size());
                     }
                 }

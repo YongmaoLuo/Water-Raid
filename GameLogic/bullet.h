@@ -55,6 +55,10 @@ public:
         this->pos.y = 0;
     }
 
+    char getType(){
+        return type;
+    }
+
     bool getIsCrashed() const;
 
     Bullet(char type, const Shape &sp, const Position &pos);

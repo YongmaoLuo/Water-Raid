@@ -69,6 +69,10 @@ public:
         return index;
     }
 
+    char getType(){
+        return type;
+    }
+
     //start from 4 to 8
 
     void disappear();
