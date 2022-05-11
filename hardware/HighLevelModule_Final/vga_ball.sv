@@ -77,9 +77,11 @@ module vga_ball(input logic        clk,
    assign boundary_4 = boundary_out[9:0];
 
    logic [3:0]	   current_color; //for sprites
+   logic [3:0] 	   current_color_NONSPRITE;
    logic [3:0]	   current_background; //for background
 
    logic [3:0] 	   current_color_LATCHED;
+   logic [3:0] 	   current_color_NONSPRITE_LATCHED;
    logic [3:0]	   current_background_LATCHED;
 
    logic [3:0] 	   sprite1_color;
@@ -416,7 +418,7 @@ module vga_ball(input logic        clk,
 	if (reset) begin
 	   {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'h00, 8'h00}; //Black
         end 
-        else if(isSprite && current_color_LATCHED != 0) begin
+        else if(isSprite && current_color_LATCHED != 0 && vcount >= 80) begin
 		case(current_color_LATCHED)
 
 			0: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
@@ -437,6 +439,31 @@ module vga_ball(input logic        clk,
 			15: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
 
 		endcase
+	end
+	else if((isScoreboard_LATCHED || isFuelgauge_LATCHED || isIndicator_LATCHED || isDigit1_LATCHED || isDigit2_LATCHED || isDigit3_LATCHED) && current_color_NONSPRITE_LATCHED != 0) begin
+
+		case(current_color_NONSPRITE_LATCHED)
+
+			0: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			1: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'hff, 8'h00}; //Green
+			2: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'h00, 8'hff}; //Blue
+			3: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'h00, 8'h00}; //Red
+			4: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'h00}; //Yellow
+			5: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'hff, 8'hff}; //Cyan
+			6: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'h00, 8'hff}; //Magenta
+			7: {VGA_R, VGA_G, VGA_B} 	<= {8'h80, 8'h80, 8'h80}; //Gray
+			8: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'h00, 8'h00}; //Black
+			9: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'h00}; //White
+			10: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			11: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			12: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			13: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			14: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			15: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+
+		endcase
+
+
 	end
 	else begin
 		case(current_background_LATCHED)
@@ -465,6 +492,7 @@ module vga_ball(input logic        clk,
    always @(posedge clk) begin //latching of some values
 	current_color_LATCHED 		<= current_color;
 	current_background_LATCHED 	<= current_background;
+	current_color_NONSPRITE_LATCHED <= current_color_NONSPRITE;
 	boundary_1_LATCHED 		<= boundary_1;
 	boundary_2_LATCHED 		<= boundary_2;
 	boundary_3_LATCHED 		<= boundary_3;
@@ -1130,7 +1158,7 @@ module vga_ball(input logic        clk,
 	      end
       end
 
-      if(vcount > 400) begin
+      if(vcount < 80) begin
             current_background = 7; //gray
       end
       else if (boundary_3_LATCHED == 0 && boundary_4_LATCHED == 0) begin // 1 River
@@ -1164,24 +1192,29 @@ module vga_ball(input logic        clk,
 
       //priority encoding of sprites
       if (isScoreboard) begin
-		current_color = scoreboard_out;
+		current_color_NONSPRITE = scoreboard_out;
       end
       else if (isFuelgauge && fuelgauge_out != 0) begin
-		current_color = fuelgauge_out;
+		current_color_NONSPRITE = fuelgauge_out;
       end
       else if (isIndicator && indicator_out != 0) begin
-		current_color = indicator_out;
+		current_color_NONSPRITE = indicator_out;
       end
       else if (isDigit1 && digit1_color_LATCHED != 0) begin
-		current_color = digit1_color_LATCHED;
+		current_color_NONSPRITE = digit1_color_LATCHED;
       end
       else if (isDigit2 && digit2_color_LATCHED != 0) begin
-		current_color = digit2_color_LATCHED;
+		current_color_NONSPRITE = digit2_color_LATCHED;
       end
       else if (isDigit3 && digit3_color_LATCHED != 0) begin
-		current_color = digit3_color_LATCHED;
+		current_color_NONSPRITE = digit3_color_LATCHED;
       end
-      else if (isSprite1 && sprite1_color_LATCHED != 0) begin
+      else begin
+		current_color_NONSPRITE = 0;
+      end
+
+
+      if (isSprite1 && sprite1_color_LATCHED != 0) begin
 		current_color = sprite1_color_LATCHED;
       end
       else if(isSprite2 && sprite2_color_LATCHED != 0) begin
