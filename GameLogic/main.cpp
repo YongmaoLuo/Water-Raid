@@ -73,12 +73,38 @@ int main() {
     bool timeToMove;
     while(1) {
 
+        for (int i = 0; i < bulletList.size(); i++){
+            bulletList[i].setCrash();
+            WaterDriver::writePosition(videoFd, bulletList[i].getPosition(), SPRITE_BULLET,
+                                       bulletList[i].getIndex());
+        }
+
+        for (int i = 0; i < battleList.size(); i++){
+            battleList[i].disappear();
+            WaterDriver::writePosition(videoFd, battleList[i].getPos(), SPRITE_BATTLE,
+                                       battleList[i].getIndex());
+        }
+
+        for (int i = 0; i < enemyList.size(); i++){
+            enemyList[i].disappear();
+            WaterDriver::writePosition(videoFd, enemyList[i].getPos(), SPRITE_HELI,
+                                       enemyList[i].getIndex());
+        }
+
+        for (int i = 0; i < fuelTankList.size(); i++){
+            fuelTankList[i].disappear();
+            WaterDriver::writePosition(videoFd, fuelTankList[i].getPos(), SPRITE_FUEL,
+                                       fuelTankList[i].getIndex());
+        }
+
+        bulletList.clear();
+        enemyList.clear();
+        battleList.clear();
+        fuelTankList.clear();
+
         gameScenario.initBackground(videoFd);
         WaterDriver::initBackground(videoFd);
-        bulletList.clear();
-        battleList.clear();
-        enemyList.clear();
-        fuelTankList.clear();
+
         spriteIndexList = {4,5,6,7,8};
         counterSurvival=0;
         timeToMove= false;
@@ -111,6 +137,7 @@ int main() {
             airplane.receiveFromXbox(xboxFd, videoFd);
         }
 
+        int iteration = 35;
         while (1) {
             if (double(clock() - execute) / CLOCKS_PER_SEC >= duration) {
 
@@ -271,17 +298,18 @@ int main() {
                 }
 
                 // update bullet (for aimed)
-                for (int i = 0; i < bulletList.size(); i++)
-                {
-                    if (bulletList[i].getIsCrashed()){
+                for (int i = 0; i < bulletList.size(); i++) {
+                    if (bulletList[i].getIsCrashed()) {
                         WaterDriver::writePosition(videoFd, bulletList[i].getPosition(), SPRITE_BULLET,
                                                    bulletList[i].getIndex());
-                        bulletList.erase(bulletList.begin()+i);
+                        bulletList.erase(bulletList.begin() + i);
                     }
                 }
+                iteration ++;
 
                 //if possible, randomly generate sprite
-                if (!spriteIndexList.empty()) {
+                if (!spriteIndexList.empty() && iteration >=35) {
+                    iteration = 0;
                     switch (rand() % 3) {
                         case 0: {    //for generate enemy plane
                             Shape newShape;
@@ -346,7 +374,6 @@ int main() {
                     }
                 }
             }
-
         }
     }
     return 0;
