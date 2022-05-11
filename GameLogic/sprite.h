@@ -11,8 +11,8 @@
 #define SPRITE_FUEL 3
 #define SPRITE_BULLET 4
 
-#define SPRITE_X 15
-#define SPRITE_Y 15
+#define SPRITE_X 14
+#define SPRITE_Y 14
 
 #include "common_data_structure.h"
 #include "bullet.h"

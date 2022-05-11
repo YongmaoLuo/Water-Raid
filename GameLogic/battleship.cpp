@@ -5,6 +5,8 @@
 #include "battleship.h"
 #include "driver.h"
 
+#define HIT_AUDIO 1
+
 void Battleship::checkIfHit(vector<Bullet> &bullets,int videoFd, int &planeScore) {
     for (int i = 0; i < bullets.size(); i++) {
         if (bullets[i].getPosition().x >= (this->getPos().x - this->sp.width) &&
@@ -12,6 +14,7 @@ void Battleship::checkIfHit(vector<Bullet> &bullets,int videoFd, int &planeScore
                                                                                  (this->getPos().y +
                                                                                   this->sp.length)){
             this->hitPoint--;
+            WaterDriver::playAudio(videoFd,HIT_AUDIO);
             bullets[i].setCrash();
             if(this->hitPoint == 0){
                 this->setIsDestroy(true);

@@ -27,15 +27,15 @@
 #define SPRITE_BALLOON 6
 
 // center coordinate related to upper left corner
-#define SPRITE_X 15
-#define SPRITE_Y 15
+#define SPRITE_X 14
+#define SPRITE_Y 14
 
 #define MINIMUM_RIVER_WIDTH 50
 #define MAXFUEL 75
 
-#define SHOOT_AUDIO 0
+#define SHOOT_AUDIO 2
 #define HIT_AUDIO 1
-#define EXPLODE_AUDIO 2
+#define EXPLODE_AUDIO 0
 
 using namespace std;
 
@@ -63,13 +63,13 @@ int main() {
         return -1;
     }
 
-    GameScenario gameScenario(videoFd,50,640,60);
+    GameScenario gameScenario(videoFd,60,640,60);
     double duration=1/gameScenario.getFrequency();
     clock_t execute=clock();
     clock_t reduceFuelClock=clock();
     clock_t moveClock=clock();
+    clock_t counterSurvival;
     gameScenario.setChangeClock();
-
 
     while(1) {
 
@@ -80,6 +80,7 @@ int main() {
         enemyList.clear();
         fuelTankList.clear();
         spriteIndexList = {4,5,6,7,8};
+        counterSurvival=0;
 
 
         // wait the button on the xbox controller to be pressed
@@ -103,6 +104,12 @@ int main() {
             airplane.setPos(tempPos);
             usleep(5000);
         }
+
+        // wait for user to press button A so we can start the game
+        while(!airplane.startGame()){
+            airplane.receiveFromXbox(xboxFd, videoFd);
+        }
+
         while (1) {
             if (double(clock() - execute) / CLOCKS_PER_SEC >= duration) {
                 execute = clock();
@@ -119,9 +126,10 @@ int main() {
 
                 isCrashed = airplane.isCrashed(videoFd, boundaryAheadOfPlane)|| airplane.isCrashed(videoFd,enemyList,battleList);
                 if (isCrashed){
-//                    WaterDriver::playAudio(videoFd,EXPLODE_AUDIO);
+                    WaterDriver::playAudio(videoFd,EXPLODE_AUDIO);
                     break;
                 }
+
 //                // if the plane bumped into the fuel tank
                 airplane.addFuel(videoFd,fuelTankList,spriteIndexList);
 //
@@ -131,10 +139,18 @@ int main() {
 //
 //                // reduce fuel
                 if ((clock() - reduceFuelClock) / CLOCKS_PER_SEC >= 1) {
+                    counterSurvival++;
                     reduceFuelClock = clock();
                     int temp = airplane.reduceFuel(videoFd);
                     if (temp == -1)
                         break;
+                }
+
+                // add survival scores
+                if(counterSurvival>=2){
+                    counterSurvival=0;
+                    airplane.scores+=1;
+                    WaterDriver::writeScore(videoFd,airplane.scores);
                 }
 
                 //bullet fly
@@ -150,11 +166,11 @@ int main() {
 
                         spriteIndexList.push_back(enemyList[i].getIndex());
                         enemyList.erase(enemyList.begin()+i);
-                    } else if(double(clock()-moveClock)/CLOCKS_PER_SEC>3){
+                    } else if(double(clock()-moveClock)/CLOCKS_PER_SEC>0.1){
 
                         enemyList[i].move(gameScenario.boundaries[
                                                   (gameScenario.getScreenHeader() - int((enemyList[i].getPos().y -1) >> 1) +
-                                                   480 + SPRITE_Y) % 480], 50);
+                                                   480 + SPRITE_Y) % 480], 2);
                     }
                     WaterDriver::writePosition(videoFd, enemyList[i].getPos(), SPRITE_HELI,
                                                enemyList[i].getIndex());
@@ -168,9 +184,9 @@ int main() {
                         battleList[i].disappear();
                         spriteIndexList.push_back(battleList[i].getIndex());
                         battleList.erase(battleList.begin()+i);
-                    } else if(double(clock()-moveClock)/CLOCKS_PER_SEC>3){
+                    } else if(double(clock()-moveClock)/CLOCKS_PER_SEC>0.1){
                         battleList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - int((battleList[i].getPos().y - 1) >> 1) + 480 + SPRITE_Y) % 480],
-                                           50);
+                                           2);
 
                     }
                     WaterDriver::writePosition(videoFd, battleList[i].getPos(), SPRITE_BATTLE,
@@ -185,15 +201,15 @@ int main() {
                         fuelTankList[i].disappear();
                         spriteIndexList.push_back(fuelTankList[i].getIndex());
                         fuelTankList.erase(fuelTankList.begin()+i);
-                    } else if(double(clock()-moveClock)/CLOCKS_PER_SEC>3){
+                    } else if(double(clock()-moveClock)/CLOCKS_PER_SEC>0.1){
                         fuelTankList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - int((fuelTankList[i].getPos().y - 1) >> 1) + 480 + SPRITE_Y) % 480],
-                                             50);
+                                             2);
                     }
                     WaterDriver::writePosition(videoFd, fuelTankList[i].getPos(), SPRITE_FUEL,
                                                fuelTankList[i].getIndex());
                 }
 
-                if(double(clock()-moveClock)/CLOCKS_PER_SEC>3){
+                if(double(clock()-moveClock)/CLOCKS_PER_SEC>0.1){
                     moveClock=clock();
                 }
 
@@ -234,7 +250,7 @@ int main() {
                 //check the fuel tank to see if hit
                 for (int i = 0; i < fuelTankList.size(); i++)
                 {
-                    fuelTankList[i].checkIfHit(bulletList);
+                    fuelTankList[i].checkIfHit(bulletList,videoFd);
                 }
                 //destroy and release the index
                 for (int i = 0; i < fuelTankList.size(); i++)
@@ -273,7 +289,7 @@ int main() {
                                                                canMove);
                             spriteIndexList.erase(spriteIndexList.begin());
                             enemyList.push_back(enemyPlane);
-                            short randomRow = rand() % 200;
+                            short randomRow = 16;
                             short rowIndex = (gameScenario.getScreenHeader() - randomRow + 480 + SPRITE_Y) % 480;
                             BoundaryInRow boundaryGenerateInRow = gameScenario.boundaries[rowIndex];
                             enemyPlane.generate(boundaryGenerateInRow, randomRow);
@@ -292,7 +308,7 @@ int main() {
                             Battleship battleship = Battleship(SPRITE_BATTLE, 2, newShape, false, 3, spriteIndexList[0],canMove);
                             spriteIndexList.erase(spriteIndexList.begin());
                             battleList.push_back(battleship);
-                            short randomRow = rand() % 200;
+                            short randomRow = 16;
                             short rowIndex = (gameScenario.getScreenHeader() - randomRow + 480 + SPRITE_Y) % 480;
                             BoundaryInRow boundaryGenerateInRow = gameScenario.boundaries[rowIndex];
                             battleship.generate(boundaryGenerateInRow, randomRow);
@@ -312,7 +328,7 @@ int main() {
                             FuelTank fuelTank = FuelTank(SPRITE_FUEL, 1, newShape, false, 2, spriteIndexList[0],canMove);
                             spriteIndexList.erase(spriteIndexList.begin());
                             fuelTankList.push_back(fuelTank);
-                            short randomRow = rand() % 200;
+                            short randomRow = 16;
                             short rowIndex = (gameScenario.getScreenHeader() - randomRow + 480 + SPRITE_Y) % 480;
                             BoundaryInRow boundaryGenerateInRow = gameScenario.boundaries[rowIndex];
                             fuelTank.generate(boundaryGenerateInRow, randomRow);

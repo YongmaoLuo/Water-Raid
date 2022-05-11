@@ -2,14 +2,18 @@
 // Created by Frank on 4/4/22.
 //
 #include "fuel_tank.h"
+#include "driver.h"
 
-void FuelTank::checkIfHit(vector<Bullet> &bullets) {
+#define HIT_AUDIO 1
+
+void FuelTank::checkIfHit(vector<Bullet> &bullets,int videoFd) {
     for (int i = 0; i < bullets.size(); i++) {
         if (bullets[i].getPosition().x >= (this->getPos().x - this->sp.width) &&
             bullets[i].getPosition().x <= (this->getPos().x + this->sp.width) && (bullets[i].getPosition().y - bullets[i].getSp().length)<=
                                                                                  (this->getPos().y +
                                                                                   this->sp.length)){
             this->hitPoint--;
+            WaterDriver::playAudio(videoFd,HIT_AUDIO);
             bullets[i].setCrash();
             if(this->hitPoint == 0){
                 this->setIsDestroy(true);

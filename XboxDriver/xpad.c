@@ -969,16 +969,16 @@ static void xpadone_process_packet(struct usb_xpad *xpad, u16 cmd, unsigned char
 
 		if (!(xpad->mapping & MAP_STICKS_TO_NULL)) {
 			/* left stick */
-			input_report_abs(dev, ABS_X,
-					(__s16) le16_to_cpup((__le16 *)(data + 10)));
-			input_report_abs(dev, ABS_Y,
-					~(__s16) le16_to_cpup((__le16 *)(data + 12)));
-
-			/* right stick */
-			input_report_abs(dev, ABS_RX,
-					(__s16) le16_to_cpup((__le16 *)(data + 14)));
-			input_report_abs(dev, ABS_RY,
-					~(__s16) le16_to_cpup((__le16 *)(data + 16)));
+//			input_report_abs(dev, ABS_X,
+//					(__s16) le16_to_cpup((__le16 *)(data + 10)));
+//			input_report_abs(dev, ABS_Y,
+//					~(__s16) le16_to_cpup((__le16 *)(data + 12)));
+//
+//			/* right stick */
+//			input_report_abs(dev, ABS_RX,
+//					(__s16) le16_to_cpup((__le16 *)(data + 14)));
+//			input_report_abs(dev, ABS_RY,
+//					~(__s16) le16_to_cpup((__le16 *)(data + 16)));
 		}
 
 		/* triggers left/right */

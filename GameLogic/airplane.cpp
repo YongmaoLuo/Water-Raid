@@ -24,9 +24,9 @@
 #define MAXFUEL 75
 #define MINFUEL 5
 
-#define SHOOT_AUDIO 0
+#define SHOOT_AUDIO 2
 #define HIT_AUDIO 1
-#define EXPLODE_AUDIO 2
+#define EXPLODE_AUDIO 0
 
 bool Airplane::isCrashed(int videoFd, BoundaryInRow boundary) {
     // collide the boundary
@@ -245,4 +245,11 @@ void Airplane::addScore(int videoFd,int score) {
         this->scores=tempScores;
     }
     WaterDriver::writeScore(videoFd, this->scores);
+}
+
+bool Airplane::startGame() {
+    if(xboxInput.code==XBOX_BUTTON_A&&xboxInput.value==1){
+        return true;
+    }
+    return false;
 }

@@ -15,7 +15,7 @@ private:
     char fuelVolume;
 
 public:
-    void checkIfHit(vector<Bullet> &bullets);
+    void checkIfHit(vector<Bullet> &bullets,int videoFd);
 
     FuelTank(char type, char hitPoint, const Shape &sp, bool isDestroy, char fuelVolume, short index, bool canMove);
 

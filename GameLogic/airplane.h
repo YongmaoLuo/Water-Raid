@@ -41,6 +41,7 @@ public:
     void setPos(Position);
     void receiveFromXbox(int xboxFd,int videoFd);
     void calPos(int videoFd);
+    bool startGame();
     Airplane(char type, char fuel, Position pos, Shape shape, char scores);
 
     char getType(){
