@@ -108,7 +108,7 @@ int main() {
 
         // wait for user to press button A so we can start the game
         while(!airplane.startGame()){
-            airplane.receiveFromXbox(xboxFd, videoFd);
+            airplane.receiveFromXbox(xboxFd);
         }
 
         while (1) {
@@ -122,7 +122,7 @@ int main() {
                 gameScenario.updateBackground(videoFd);
 
                 //receive control signal from xbox
-                airplane.receiveFromXbox(xboxFd, videoFd);
+                airplane.receiveFromXbox(xboxFd);
                 airplane.calPos(videoFd);
 
                 // determine if the plane has crashed

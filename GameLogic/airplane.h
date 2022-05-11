@@ -39,7 +39,7 @@ public:
     int reduceFuel(int videoFd);
     Position getPos();
     void setPos(Position);
-    void receiveFromXbox(int xboxFd,int videoFd);
+    void receiveFromXbox(int xboxFd);
     void calPos(int videoFd);
     bool startGame();
     Airplane(char type, char fuel, Position pos, Shape shape, char scores);

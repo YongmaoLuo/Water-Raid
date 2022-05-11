@@ -202,12 +202,11 @@ void Airplane::setPos(Position change){
 
 
 
-void Airplane::receiveFromXbox(int xboxFd, int videoFd) {
+void Airplane::receiveFromXbox(int xboxFd) {
 
     int flags= fcntl(xboxFd,F_GETFL,0);
     fcntl(xboxFd,F_SETFL,flags|O_NONBLOCK);
     read(xboxFd, &xboxInput, 24);
-
 
 }
 
