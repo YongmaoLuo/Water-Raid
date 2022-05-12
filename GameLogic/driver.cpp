@@ -57,17 +57,17 @@ void WaterDriver::writeScore(int videoFd, int score) {
 void WaterDriver::initBackground(int videoFd) {
     water_video_arg_init arg;
     arg.scorePos.x=480;
-    arg.scorePos.y=(40 << 1) + 1;
+    arg.scorePos.y=(30 << 1) + 1;
     arg.digit1Pos.x=525;
-    arg.digit1Pos.y=(40 << 1) + 1;
+    arg.digit1Pos.y=(30 << 1) + 1;
     arg.digit2Pos.x=550;
-    arg.digit2Pos.y=(40 << 1) + 1;
+    arg.digit2Pos.y=(30 << 1) + 1;
     arg.digit3Pos.x=575;
-    arg.digit3Pos.y=(40 << 1) + 1;
+    arg.digit3Pos.y=(30 << 1) + 1;
     arg.fuelPos.x=320;
-    arg.fuelPos.y=(40 << 1) + 1;
+    arg.fuelPos.y=(30 << 1) + 1;
     arg.indicatorPos.x=320;
-    arg.indicatorPos.y=(38 << 1) + 1;
+    arg.indicatorPos.y=(28 << 1) + 1;
     if (ioctl(videoFd, WATER_VIDEO_INIT,&arg)) {
         perror("ioctl(WATER_VIDEO_INIT) failed");
         return;

@@ -20,6 +20,8 @@
 #define SPRITE_BULLET 4
 #define SPRITE_EXPLODE 5
 #define SPRITE_FUEL 3
+#define PLANE_LEFT 7
+#define PLANE_RIGHT 8
 
 #define MAXFUEL 75
 #define MINFUEL 5
@@ -170,7 +172,6 @@ void Airplane::fire(int xboxFd,int videoFd,vector<Bullet> &bulletList){
                 bullet.index=i;
                 bulletList.push_back(bullet);
                 WaterDriver::writePosition(videoFd,tempPos,SPRITE_BULLET,i);
-                printf("index: %d\n",i);
                 break;
             }
         }
@@ -223,13 +224,13 @@ void Airplane::calPos(int videoFd) {
         Position tempPos = getPos();
         tempPos.x -= 2;
         setPos(tempPos);
-        WaterDriver::writePosition(videoFd,pos,type,0);
-    }
-
-    if(buttonBOn){
+        WaterDriver::writePosition(videoFd,pos,PLANE_LEFT,0);
+    }else if(buttonBOn){
         Position tempPos = getPos();
         tempPos.x += 2;
         setPos(tempPos);
+        WaterDriver::writePosition(videoFd,pos,PLANE_RIGHT,0);
+    }else{
         WaterDriver::writePosition(videoFd,pos,type,0);
     }
 }

@@ -27,9 +27,13 @@
 #define SPRITE_EXPLODE 5
 #define SPRITE_BALLOON 6
 
+
+
 // center coordinate related to upper left corner
-#define SPRITE_X 14
-#define SPRITE_Y 14
+#define SPRITE_X 12
+#define SPRITE_Y 12
+#define AIRPLANE_X 14
+#define AIRPLANE_Y 14
 
 #define MINIMUM_RIVER_WIDTH 50
 #define MAXFUEL 75
@@ -119,8 +123,8 @@ int main() {
         tempPos.x = 320;
         tempPos.y = (512 << 1) + 1;
         Shape tempShape;
-        tempShape.width = SPRITE_X;
-        tempShape.length = SPRITE_Y;
+        tempShape.width = AIRPLANE_X;
+        tempShape.length = AIRPLANE_Y;
         airplane = Airplane(SPRITE_PLANE, MAXFUEL, tempPos, tempShape, 0);
         WaterDriver::writeScore(videoFd,0);
 
@@ -211,10 +215,10 @@ int main() {
                         enemyList.erase(enemyList.begin()+i);
                     } else if(timeToMove){
                         if(gameScenario.getScreenHeader() - int((enemyList[i].getPos().y -1) >> 1)>=0){
-                            enemyList[i].move(gameScenario.boundaries[
+                            enemyList[i].move(videoFd,gameScenario.boundaries[
                                                       gameScenario.getScreenHeader() - int((enemyList[i].getPos().y -1) >> 1)], 2);
                         }else
-                            enemyList[i].move(gameScenario.boundaries[
+                            enemyList[i].move(videoFd,gameScenario.boundaries[
                                                   (gameScenario.getScreenHeader() - int((enemyList[i].getPos().y -1) >> 1) +
                                                    480 )], 2);
                     }
@@ -233,10 +237,10 @@ int main() {
                         battleList.erase(battleList.begin()+i);
                     } else if(timeToMove){
                         if((gameScenario.getScreenHeader() - int((battleList[i].getPos().y - 1) >> 1) >=0))
-                            battleList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - int((battleList[i].getPos().y - 1) >> 1) )],
+                            battleList[i].move(videoFd,gameScenario.boundaries[(gameScenario.getScreenHeader() - int((battleList[i].getPos().y - 1) >> 1) )],
                                                2);
                         else
-                            battleList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - int((battleList[i].getPos().y - 1) >> 1) + 480) ],
+                            battleList[i].move(videoFd,gameScenario.boundaries[(gameScenario.getScreenHeader() - int((battleList[i].getPos().y - 1) >> 1) + 480) ],
                                            2);
 
                     }
@@ -255,10 +259,10 @@ int main() {
                         fuelTankList.erase(fuelTankList.begin()+i);
                     } else if(timeToMove){
                         if(gameScenario.getScreenHeader() - int((fuelTankList[i].getPos().y - 1) >> 1)>=0)
-                            fuelTankList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - int((fuelTankList[i].getPos().y - 1) >> 1)) ],
+                            fuelTankList[i].move(videoFd,gameScenario.boundaries[(gameScenario.getScreenHeader() - int((fuelTankList[i].getPos().y - 1) >> 1)) ],
                                              2);
                         else
-                            fuelTankList[i].move(gameScenario.boundaries[(gameScenario.getScreenHeader() - int((fuelTankList[i].getPos().y - 1) >> 1) + 480 )],
+                            fuelTankList[i].move(videoFd,gameScenario.boundaries[(gameScenario.getScreenHeader() - int((fuelTankList[i].getPos().y - 1) >> 1) + 480 )],
                                                  2);
                     }
                     WaterDriver::writePosition(videoFd, fuelTankList[i].getPos(), fuelTankList[i].getType(),

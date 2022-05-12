@@ -11,8 +11,8 @@
 #define SPRITE_FUEL 3
 #define SPRITE_BULLET 4
 
-#define SPRITE_X 14
-#define SPRITE_Y 14
+#define SPRITE_X 12
+#define SPRITE_Y 12
 
 #include "common_data_structure.h"
 #include "bullet.h"
@@ -28,7 +28,7 @@ protected:
     char type;
     char hitPoint;
     Shape sp;
-    bool left = true;
+    bool left = false;
     bool canMove;
 
 public:
@@ -77,7 +77,7 @@ public:
 
     void disappear();
 
-    void move(BoundaryInRow boundary, short minimumWidth);
+    void move(int videoFd, BoundaryInRow boundary, short minimumWidth);
 };
 
 #endif //WATER_RAID_SPRITE_H
