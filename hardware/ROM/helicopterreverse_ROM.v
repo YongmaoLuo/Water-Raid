@@ -4,7 +4,7 @@
 // MODULE: altsyncram 
 
 // ============================================================
-// File Name: planeright_ROM.v
+// File Name: helicopterreverse_ROM.v
 // Megafunction Name(s):
 // 			altsyncram
 //
@@ -37,7 +37,7 @@
 // synopsys translate_off
 `timescale 1 ps / 1 ps
 // synopsys translate_on
-module planeright_ROM (
+module helicopterreverse_ROM (
 	address,
 	clock,
 	q);
@@ -84,7 +84,7 @@ module planeright_ROM (
 		altsyncram_component.address_aclr_a = "NONE",
 		altsyncram_component.clock_enable_input_a = "BYPASS",
 		altsyncram_component.clock_enable_output_a = "BYPASS",
-		altsyncram_component.init_file = "../Sprites/PlaneRightSprite.mif",
+		altsyncram_component.init_file = "../Sprites/ReverseEnemyHelicopterSprite.mif",
 		altsyncram_component.intended_device_family = "Cyclone V",
 		altsyncram_component.lpm_hint = "ENABLE_RUNTIME_MOD=NO",
 		altsyncram_component.lpm_type = "altsyncram",
@@ -120,7 +120,7 @@ endmodule
 // Retrieval info: PRIVATE: JTAG_ENABLED NUMERIC "0"
 // Retrieval info: PRIVATE: JTAG_ID STRING "NONE"
 // Retrieval info: PRIVATE: MAXIMUM_DEPTH NUMERIC "0"
-// Retrieval info: PRIVATE: MIFfilename STRING "../Sprites/PlaneRightSprite.mif"
+// Retrieval info: PRIVATE: MIFfilename STRING "../Sprites/ReverseEnemyHelicopterSprite.mif"
 // Retrieval info: PRIVATE: NUMWORDS_A NUMERIC "1024"
 // Retrieval info: PRIVATE: RAM_BLOCK_TYPE NUMERIC "2"
 // Retrieval info: PRIVATE: RegAddr NUMERIC "1"
@@ -135,7 +135,7 @@ endmodule
 // Retrieval info: CONSTANT: ADDRESS_ACLR_A STRING "NONE"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_INPUT_A STRING "BYPASS"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_OUTPUT_A STRING "BYPASS"
-// Retrieval info: CONSTANT: INIT_FILE STRING "../Sprites/PlaneRightSprite.mif"
+// Retrieval info: CONSTANT: INIT_FILE STRING "../Sprites/ReverseEnemyHelicopterSprite.mif"
 // Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone V"
 // Retrieval info: CONSTANT: LPM_HINT STRING "ENABLE_RUNTIME_MOD=NO"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "altsyncram"
@@ -153,10 +153,10 @@ endmodule
 // Retrieval info: CONNECT: @address_a 0 0 10 0 address 0 0 10 0
 // Retrieval info: CONNECT: @clock0 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: q 0 0 4 0 @q_a 0 0 4 0
-// Retrieval info: GEN_FILE: TYPE_NORMAL planeright_ROM.v TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL planeright_ROM.inc FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL planeright_ROM.cmp FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL planeright_ROM.bsf FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL planeright_ROM_inst.v FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL planeright_ROM_bb.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL helicopterreverse_ROM.v TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL helicopterreverse_ROM.inc FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL helicopterreverse_ROM.cmp FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL helicopterreverse_ROM.bsf FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL helicopterreverse_ROM_inst.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL helicopterreverse_ROM_bb.v FALSE
 // Retrieval info: LIB_FILE: altera_mf
