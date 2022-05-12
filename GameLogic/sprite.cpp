@@ -13,6 +13,9 @@
 #define SPRITE_FUEL 3
 #define SPRITE_BALLOON 6
 
+#define BOAT_LEFT 9
+#define HELI_LEFT 10
+
 using namespace std;
 
 void Sprite::generate(BoundaryInRow boundary, short y) {
@@ -71,7 +74,7 @@ void Sprite::generate(BoundaryInRow boundary, short y) {
 //    }
 }
 
-void Sprite::move(BoundaryInRow boundary, short minimumWidth) {
+void Sprite::move(int videoFd, BoundaryInRow boundary, short minimumWidth) {
 
     if(this->canMove== false){
         return;
@@ -81,14 +84,18 @@ void Sprite::move(BoundaryInRow boundary, short minimumWidth) {
     short forward = this->pos.x + this->sp.width + minimumWidth;
     short backward = this->pos.x - this->sp.width - minimumWidth;
 
-    if (this->type == SPRITE_FUEL || this->type == SPRITE_BATTLE) {
+    if (this->type == SPRITE_FUEL || this->type == SPRITE_BATTLE || this->type==BOAT_LEFT) {
         //Attention: minimumWidth is the minimum width of every branch of the river
 
         if (boundary.river2_left == 0) {
             if(backward<=boundary.river1_left&&left){
                 left=false;
+                if(this->type==BOAT_LEFT)
+                    this->type=SPRITE_BATTLE;
             }else if(forward>=boundary.river1_right&&!left){
                 left=true;
+                if(this->type==SPRITE_BATTLE)
+                    this->type=BOAT_LEFT;
             }
 
             if(left){
@@ -101,8 +108,12 @@ void Sprite::move(BoundaryInRow boundary, short minimumWidth) {
                 // on left river
                 if(backward<=boundary.river1_left&&left){
                     left=false;
+                    if(this->type==BOAT_LEFT)
+                        this->type=SPRITE_BATTLE;
                 }else if(forward>=boundary.river1_right&&!left){
                     left=true;
+                    if(this->type==SPRITE_BATTLE)
+                        this->type=BOAT_LEFT;
                 }
 
                 if(left){
@@ -114,8 +125,12 @@ void Sprite::move(BoundaryInRow boundary, short minimumWidth) {
                 // on right river
                 if(backward<=boundary.river2_left&&left){
                     left=false;
+                    if(this->type==BOAT_LEFT)
+                        this->type=SPRITE_BATTLE;
                 }else if(forward>=boundary.river2_right&&!left){
                     left=true;
+                    if(this->type==SPRITE_BATTLE)
+                        this->type=BOAT_LEFT;
                 }
 
                 if(left){
@@ -129,8 +144,12 @@ void Sprite::move(BoundaryInRow boundary, short minimumWidth) {
         // helicopter can fly through the whole screen
         if(forward>=640-sp.width&&!left){
             left= true;
+            if(this->type==SPRITE_HELI)
+                this->type=HELI_LEFT;
         }else if(backward<=sp.width){
             left= false;
+            if(this->type==HELI_LEFT)
+                this->type=SPRITE_HELI;
         }
 
         if(left){
