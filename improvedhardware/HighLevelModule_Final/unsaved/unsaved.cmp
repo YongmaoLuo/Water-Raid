@@ -1,0 +1,9 @@
+	component unsaved is
+		port (
+			vga_ball_0_clock_clk   : in std_logic := 'X'; -- clk
+			audio_0_clk_clk        : in std_logic := 'X'; -- clk
+			vga_ball_0_reset_reset : in std_logic := 'X'; -- reset
+			audio_0_reset_reset    : in std_logic := 'X'  -- reset
+		);
+	end component unsaved;
+

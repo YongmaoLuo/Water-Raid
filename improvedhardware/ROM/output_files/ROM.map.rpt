@@ -1,0 +1,215 @@
+Analysis & Synthesis report for ROM
+Thu May 12 00:21:12 2022
+Quartus Prime Version 21.1.0 Build 842 10/21/2021 SJ Lite Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Analysis & Synthesis Summary
+  3. Analysis & Synthesis Settings
+  4. Parallel Compilation
+  5. Analysis & Synthesis Messages
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2021  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and any partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details, at
+https://fpgasoftware.intel.com/eula.
+
+
+
++---------------------------------------------------------------------------+
+; Analysis & Synthesis Summary                                              ;
++-----------------------------+---------------------------------------------+
+; Analysis & Synthesis Status ; Failed - Thu May 12 00:21:12 2022           ;
+; Quartus Prime Version       ; 21.1.0 Build 842 10/21/2021 SJ Lite Edition ;
+; Revision Name               ; ROM                                         ;
+; Top-level Entity Name       ; ROM                                         ;
+; Family                      ; Cyclone V                                   ;
+; Logic utilization (in ALMs) ; N/A until Partition Merge                   ;
+; Total registers             ; N/A until Partition Merge                   ;
+; Total pins                  ; N/A until Partition Merge                   ;
+; Total virtual pins          ; N/A until Partition Merge                   ;
+; Total block memory bits     ; N/A until Partition Merge                   ;
+; Total PLLs                  ; N/A until Partition Merge                   ;
+; Total DLLs                  ; N/A until Partition Merge                   ;
++-----------------------------+---------------------------------------------+
+
+
++---------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Settings                                                                                             ;
++---------------------------------------------------------------------------------+--------------------+--------------------+
+; Option                                                                          ; Setting            ; Default Value      ;
++---------------------------------------------------------------------------------+--------------------+--------------------+
+; Device                                                                          ; 5CGXFC7C7F23C8     ;                    ;
+; Top-level entity name                                                           ; ROM                ; ROM                ;
+; Family name                                                                     ; Cyclone V          ; Cyclone V          ;
+; Use smart compilation                                                           ; Off                ; Off                ;
+; Enable parallel Assembler and Timing Analyzer during compilation                ; On                 ; On                 ;
+; Enable compact report table                                                     ; Off                ; Off                ;
+; Restructure Multiplexers                                                        ; Auto               ; Auto               ;
+; MLAB Add Timing Constraints For Mixed-Port Feed-Through Mode Setting Don't Care ; Off                ; Off                ;
+; Create Debugging Nodes for IP Cores                                             ; Off                ; Off                ;
+; Preserve fewer node names                                                       ; On                 ; On                 ;
+; Intel FPGA IP Evaluation Mode                                                   ; Enable             ; Enable             ;
+; Verilog Version                                                                 ; Verilog_2001       ; Verilog_2001       ;
+; VHDL Version                                                                    ; VHDL_1993          ; VHDL_1993          ;
+; State Machine Processing                                                        ; Auto               ; Auto               ;
+; Safe State Machine                                                              ; Off                ; Off                ;
+; Extract Verilog State Machines                                                  ; On                 ; On                 ;
+; Extract VHDL State Machines                                                     ; On                 ; On                 ;
+; Ignore Verilog initial constructs                                               ; Off                ; Off                ;
+; Iteration limit for constant Verilog loops                                      ; 5000               ; 5000               ;
+; Iteration limit for non-constant Verilog loops                                  ; 250                ; 250                ;
+; Add Pass-Through Logic to Inferred RAMs                                         ; On                 ; On                 ;
+; Infer RAMs from Raw Logic                                                       ; On                 ; On                 ;
+; Parallel Synthesis                                                              ; On                 ; On                 ;
+; DSP Block Balancing                                                             ; Auto               ; Auto               ;
+; NOT Gate Push-Back                                                              ; On                 ; On                 ;
+; Power-Up Don't Care                                                             ; On                 ; On                 ;
+; Remove Redundant Logic Cells                                                    ; Off                ; Off                ;
+; Remove Duplicate Registers                                                      ; On                 ; On                 ;
+; Ignore CARRY Buffers                                                            ; Off                ; Off                ;
+; Ignore CASCADE Buffers                                                          ; Off                ; Off                ;
+; Ignore GLOBAL Buffers                                                           ; Off                ; Off                ;
+; Ignore ROW GLOBAL Buffers                                                       ; Off                ; Off                ;
+; Ignore LCELL Buffers                                                            ; Off                ; Off                ;
+; Ignore SOFT Buffers                                                             ; On                 ; On                 ;
+; Limit AHDL Integers to 32 Bits                                                  ; Off                ; Off                ;
+; Optimization Technique                                                          ; Balanced           ; Balanced           ;
+; Carry Chain Length                                                              ; 70                 ; 70                 ;
+; Auto Carry Chains                                                               ; On                 ; On                 ;
+; Auto Open-Drain Pins                                                            ; On                 ; On                 ;
+; Perform WYSIWYG Primitive Resynthesis                                           ; Off                ; Off                ;
+; Auto ROM Replacement                                                            ; On                 ; On                 ;
+; Auto RAM Replacement                                                            ; On                 ; On                 ;
+; Auto DSP Block Replacement                                                      ; On                 ; On                 ;
+; Auto Shift Register Replacement                                                 ; Auto               ; Auto               ;
+; Allow Shift Register Merging across Hierarchies                                 ; Auto               ; Auto               ;
+; Auto Clock Enable Replacement                                                   ; On                 ; On                 ;
+; Strict RAM Replacement                                                          ; Off                ; Off                ;
+; Allow Synchronous Control Signals                                               ; On                 ; On                 ;
+; Force Use of Synchronous Clear Signals                                          ; Off                ; Off                ;
+; Auto Resource Sharing                                                           ; Off                ; Off                ;
+; Allow Any RAM Size For Recognition                                              ; Off                ; Off                ;
+; Allow Any ROM Size For Recognition                                              ; Off                ; Off                ;
+; Allow Any Shift Register Size For Recognition                                   ; Off                ; Off                ;
+; Use LogicLock Constraints during Resource Balancing                             ; On                 ; On                 ;
+; Ignore translate_off and synthesis_off directives                               ; Off                ; Off                ;
+; Timing-Driven Synthesis                                                         ; On                 ; On                 ;
+; Report Parameter Settings                                                       ; On                 ; On                 ;
+; Report Source Assignments                                                       ; On                 ; On                 ;
+; Report Connectivity Checks                                                      ; On                 ; On                 ;
+; Ignore Maximum Fan-Out Assignments                                              ; Off                ; Off                ;
+; Synchronization Register Chain Length                                           ; 3                  ; 3                  ;
+; Power Optimization During Synthesis                                             ; Normal compilation ; Normal compilation ;
+; HDL message level                                                               ; Level2             ; Level2             ;
+; Suppress Register Optimization Related Messages                                 ; Off                ; Off                ;
+; Number of Removed Registers Reported in Synthesis Report                        ; 5000               ; 5000               ;
+; Number of Swept Nodes Reported in Synthesis Report                              ; 5000               ; 5000               ;
+; Number of Inverted Registers Reported in Synthesis Report                       ; 100                ; 100                ;
+; Clock MUX Protection                                                            ; On                 ; On                 ;
+; Auto Gated Clock Conversion                                                     ; Off                ; Off                ;
+; Block Design Naming                                                             ; Auto               ; Auto               ;
+; SDC constraint protection                                                       ; Off                ; Off                ;
+; Synthesis Effort                                                                ; Auto               ; Auto               ;
+; Shift Register Replacement - Allow Asynchronous Clear Signal                    ; On                 ; On                 ;
+; Pre-Mapping Resynthesis Optimization                                            ; Off                ; Off                ;
+; Analysis & Synthesis Message Level                                              ; Medium             ; Medium             ;
+; Disable Register Merging Across Hierarchies                                     ; Auto               ; Auto               ;
+; Resource Aware Inference For Block RAM                                          ; On                 ; On                 ;
+; Automatic Parallel Synthesis                                                    ; On                 ; On                 ;
+; Partial Reconfiguration Bitstream ID                                            ; Off                ; Off                ;
++---------------------------------------------------------------------------------+--------------------+--------------------+
+
+
++------------------------------------------+
+; Parallel Compilation                     ;
++----------------------------+-------------+
+; Processors                 ; Number      ;
++----------------------------+-------------+
+; Number detected on machine ; 8           ;
+; Maximum allowed            ; 4           ;
+;                            ;             ;
+; Average used               ; 1.00        ;
+; Maximum used               ; 1           ;
+;                            ;             ;
+; Usage by Processor         ; % Time Used ;
+;     Processor 1            ; 100.0%      ;
++----------------------------+-------------+
+
+
++-------------------------------+
+; Analysis & Synthesis Messages ;
++-------------------------------+
+Info: *******************************************************************
+Info: Running Quartus Prime Analysis & Synthesis
+    Info: Version 21.1.0 Build 842 10/21/2021 SJ Lite Edition
+    Info: Processing started: Thu May 12 00:20:46 2022
+Info: Command: quartus_map --read_settings_files=on --write_settings_files=off ROM -c ROM
+Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
+Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
+Info (12021): Found 1 design units, including 1 entities, in source file plane_ROM.v
+    Info (12023): Found entity 1: plane_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/plane_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file chopper_ROM.v
+    Info (12023): Found entity 1: chopper_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/chopper_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file battleship_ROM.v
+    Info (12023): Found entity 1: battleship_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/battleship_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file fuel_ROM.v
+    Info (12023): Found entity 1: fuel_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/fuel_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file scoreboard_ROM.v
+    Info (12023): Found entity 1: scoreboard_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/scoreboard_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file zero_ROM.v
+    Info (12023): Found entity 1: zero_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/zero_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file one_ROM.v
+    Info (12023): Found entity 1: one_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/one_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file two_ROM.v
+    Info (12023): Found entity 1: two_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/two_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file four_ROM.v
+    Info (12023): Found entity 1: four_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/four_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file five_ROM.v
+    Info (12023): Found entity 1: five_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/five_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file six_ROM.v
+    Info (12023): Found entity 1: six_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/six_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file seven_ROM.v
+    Info (12023): Found entity 1: seven_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/seven_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file eight_ROM.v
+    Info (12023): Found entity 1: eight_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/eight_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file nine_ROM.v
+    Info (12023): Found entity 1: nine_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/nine_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file three_ROM.v
+    Info (12023): Found entity 1: three_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/three_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file fuelgauge_ROM.v
+    Info (12023): Found entity 1: fuelgauge_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/fuelgauge_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file indicator_ROM.v
+    Info (12023): Found entity 1: indicator_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/indicator_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file shoot_ROM.v
+    Info (12023): Found entity 1: shoot_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/shoot_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file explosion_ROM.v
+    Info (12023): Found entity 1: explosion_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/explosion_ROM.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file hotairballoon_ROM.v
+    Info (12023): Found entity 1: hotairballoon_ROM File: /homes/user/stud/fall21/jts2176/Downloads/Water-Raid-newMain/Water-Raid-main/hardware/ROM/hotairballoon_ROM.v Line: 40
+Error (12007): Top-level design entity "ROM" is undefined
+Error: Quartus Prime Analysis & Synthesis was unsuccessful. 1 error, 1 warning
+    Error: Peak virtual memory: 548 megabytes
+    Error: Processing ended: Thu May 12 00:21:13 2022
+    Error: Elapsed time: 00:00:27
+    Error: Total CPU time (on all processors): 00:00:17
+
+
