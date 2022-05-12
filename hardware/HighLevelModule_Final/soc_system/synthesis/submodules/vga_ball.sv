@@ -24,9 +24,14 @@
 `include "../ROM/shoot_ROM.v"
 `include "../ROM/explosion_ROM.v"
 `include "../ROM/hotairballoon_ROM.v"
+`include "../ROM/planeleft_ROM.v"
+`include "../ROM/planeright_ROM.v"
+`include "../ROM/battleshipreverse_ROM.v"
+`include "../ROM/helicopterreverse_ROM.v"
 `include "../BoundaryMemory/boundary_mem.sv"
 `include "shoot.v"
 `include "bomb.v"
+`include "hit.v"
 
 
 
@@ -38,7 +43,6 @@ module vga_ball(input logic        clk,
 		input logic [5:0]  address,
 
 
-		//input logic [7:0] volume,
 		input left_chan_ready,
 		input right_chan_ready,
 		output logic [15:0] sample_data_l,
@@ -77,9 +81,11 @@ module vga_ball(input logic        clk,
    assign boundary_4 = boundary_out[9:0];
 
    logic [3:0]	   current_color; //for sprites
+   logic [3:0] 	   current_color_NONSPRITE;
    logic [3:0]	   current_background; //for background
 
    logic [3:0] 	   current_color_LATCHED;
+   logic [3:0] 	   current_color_NONSPRITE_LATCHED;
    logic [3:0]	   current_background_LATCHED;
 
    logic [3:0] 	   sprite1_color;
@@ -266,6 +272,22 @@ module vga_ball(input logic        clk,
    logic [9:0]     hotairballoon_address;
    logic [9:0]	   hotairballoon_address_LATCHED;
 
+   logic [3:0]     planeleft_out;
+   logic [9:0]     planeleft_address;
+   logic [9:0]	   planeleft_address_LATCHED;
+
+   logic [3:0]     planeright_out;
+   logic [9:0]     planeright_address;
+   logic [9:0]	   planeright_address_LATCHED;
+
+   logic [3:0]     battleshipreverse_out;
+   logic [9:0]     battleshipreverse_address;
+   logic [9:0]	   battleshipreverse_address_LATCHED;
+
+   logic [3:0]     helicopterreverse_out;
+   logic [9:0]     helicopterreverse_address;
+   logic [9:0]	   helicopterreverse_address_LATCHED;
+
    logic [3:0]	   scoreboard_out;
    logic [9:0]     scoreboard_address;
    logic [9:0]     scoreboard_address_LATCHED;
@@ -288,6 +310,10 @@ module vga_ball(input logic        clk,
    shoot_ROM 		shoot_ROM(.address(shoot_address_LATCHED), .clock(clk),.q(shoot_out));
    explosion_ROM 	explosion_ROM(.address(explosion_address_LATCHED), .clock(clk),.q(explosion_out));
    hotairballoon_ROM 	hotairballoon_ROM(.address(hotairballoon_address_LATCHED), .clock(clk),.q(hotairballoon_out));
+   planeleft_ROM 	planeleft_ROM(.address(planeleft_address_LATCHED), .clock(clk),.q(planeleft_out));
+   planeright_ROM 	planeright_ROM(.address(planeright_address_LATCHED), .clock(clk),.q(planeright_out));
+   battleshipreverse_ROM 		battleshipreverse_ROM(.address(battleshipreverse_address_LATCHED), .clock(clk),.q(battleshipreverse_out));
+   helicopterreverse_ROM 		helicopterreverse_ROM(.address(helicopterreverse_address_LATCHED), .clock(clk),.q(helicopterreverse_out));
 
 
    logic [3:0]	   zero_out;
@@ -416,7 +442,7 @@ module vga_ball(input logic        clk,
 	if (reset) begin
 	   {VGA_R, VGA_G, VGA_B} <= {8'h00, 8'h00, 8'h00}; //Black
         end 
-        else if(isSprite && current_color_LATCHED != 0 && vcount <= 400) begin
+        else if(isSprite && current_color_LATCHED != 0 && vcount >= 60) begin
 		case(current_color_LATCHED)
 
 			0: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
@@ -437,6 +463,31 @@ module vga_ball(input logic        clk,
 			15: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
 
 		endcase
+	end
+	else if((isScoreboard_LATCHED || isFuelgauge_LATCHED || isIndicator_LATCHED || isDigit1_LATCHED || isDigit2_LATCHED || isDigit3_LATCHED) && current_color_NONSPRITE_LATCHED != 0) begin
+
+		case(current_color_NONSPRITE_LATCHED)
+
+			0: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			1: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'hff, 8'h00}; //Green
+			2: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'h00, 8'hff}; //Blue
+			3: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'h00, 8'h00}; //Red
+			4: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'h00}; //Yellow
+			5: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'hff, 8'hff}; //Cyan
+			6: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'h00, 8'hff}; //Magenta
+			7: {VGA_R, VGA_G, VGA_B} 	<= {8'h80, 8'h80, 8'h80}; //Gray
+			8: {VGA_R, VGA_G, VGA_B} 	<= {8'h00, 8'h00, 8'h00}; //Black
+			9: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'h00}; //White
+			10: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			11: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			12: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			13: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			14: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+			15: {VGA_R, VGA_G, VGA_B} 	<= {8'hff, 8'hff, 8'hff}; //White
+
+		endcase
+
+
 	end
 	else begin
 		case(current_background_LATCHED)
@@ -465,11 +516,16 @@ module vga_ball(input logic        clk,
    always @(posedge clk) begin //latching of some values
 	current_color_LATCHED 		<= current_color;
 	current_background_LATCHED 	<= current_background;
+	current_color_NONSPRITE_LATCHED <= current_color_NONSPRITE;
 	boundary_1_LATCHED 		<= boundary_1;
 	boundary_2_LATCHED 		<= boundary_2;
 	boundary_3_LATCHED 		<= boundary_3;
 	boundary_4_LATCHED 		<= boundary_4;
 	plane_address_LATCHED		<= plane_address;
+	planeleft_address_LATCHED		<= planeleft_address;
+	planeright_address_LATCHED		<= planeright_address;
+	battleshipreverse_address_LATCHED		<= battleshipreverse_address;
+	helicopterreverse_address_LATCHED		<= helicopterreverse_address;
 	shoot_address_LATCHED		<= shoot_address;
 	explosion_address_LATCHED	<= explosion_address;
 	hotairballoon_address_LATCHED	<= hotairballoon_address;
@@ -547,6 +603,10 @@ module vga_ball(input logic        clk,
       eight_address = 10'd0;
       nine_address = 10'd0;
       plane_address = 10'd0;
+      planeleft_address = 10'd0;
+      planeright_address = 10'd0;
+      battleshipreverse_address = 10'd0;
+      helicopterreverse_address = 10'd0;
       explosion_address = 10'd0;
       hotairballoon_address = 10'd0;
       shoot_address = 10'd0;
@@ -614,6 +674,22 @@ module vga_ball(input logic        clk,
 				hotairballoon_address = sprite1_address;
 				sprite1_color = hotairballoon_out; //maybe latch the sprite colors
 			   end
+			7: begin 
+				planeleft_address = sprite1_address;
+				sprite1_color = planeleft_out; //maybe latch the sprite colors
+			   end
+			8: begin 
+				planeright_address = sprite1_address;
+				sprite1_color = planeright_out; //maybe latch the sprite colors
+			   end
+			9: begin 
+				battleshipreverse_address = sprite1_address;
+				sprite1_color = battleshipreverse_out; //maybe latch the sprite colors
+			   end
+			10: begin 
+				helicopterreverse_address = sprite1_address;
+				sprite1_color = helicopterreverse_out; //maybe latch the sprite colors
+			   end
 
 	      endcase
       end
@@ -647,6 +723,22 @@ module vga_ball(input logic        clk,
 			6: begin 
 				hotairballoon_address = sprite2_address;
 				sprite2_color = hotairballoon_out; //maybe latch the sprite colors
+			   end
+			7: begin 
+				planeleft_address = sprite2_address;
+				sprite2_color = planeleft_out; //maybe latch the sprite colors
+			   end
+			8: begin 
+				planeright_address = sprite2_address;
+				sprite2_color = planeright_out; //maybe latch the sprite colors
+			   end
+			9: begin 
+				battleshipreverse_address = sprite2_address;
+				sprite2_color = battleshipreverse_out; //maybe latch the sprite colors
+			   end
+			10: begin 
+				helicopterreverse_address = sprite2_address;
+				sprite2_color = helicopterreverse_out; //maybe latch the sprite colors
 			   end
 
 	      endcase
@@ -682,6 +774,22 @@ module vga_ball(input logic        clk,
 				hotairballoon_address = sprite3_address;
 				sprite3_color = hotairballoon_out; //maybe latch the sprite colors
 			   end
+			7: begin 
+				planeleft_address = sprite3_address;
+				sprite3_color = planeleft_out; //maybe latch the sprite colors
+			   end
+			8: begin 
+				planeright_address = sprite3_address;
+				sprite3_color = planeright_out; //maybe latch the sprite colors
+			   end
+			9: begin 
+				battleshipreverse_address = sprite3_address;
+				sprite3_color = battleshipreverse_out; //maybe latch the sprite colors
+			   end
+			10: begin 
+				helicopterreverse_address = sprite3_address;
+				sprite3_color = helicopterreverse_out; //maybe latch the sprite colors
+			   end
 
 	      endcase
       end
@@ -715,6 +823,22 @@ module vga_ball(input logic        clk,
 			6: begin 
 				hotairballoon_address = sprite4_address;
 				sprite4_color = hotairballoon_out; //maybe latch the sprite colors
+			   end
+			7: begin 
+				planeleft_address = sprite4_address;
+				sprite4_color = planeleft_out; //maybe latch the sprite colors
+			   end
+			8: begin 
+				planeright_address = sprite4_address;
+				sprite4_color = planeright_out; //maybe latch the sprite colors
+			   end
+			9: begin 
+				battleshipreverse_address = sprite4_address;
+				sprite4_color = battleshipreverse_out; //maybe latch the sprite colors
+			   end
+			10: begin 
+				helicopterreverse_address = sprite4_address;
+				sprite4_color = helicopterreverse_out; //maybe latch the sprite colors
 			   end
 
 	      endcase
@@ -750,6 +874,22 @@ module vga_ball(input logic        clk,
 				hotairballoon_address = sprite5_address;
 				sprite5_color = hotairballoon_out; //maybe latch the sprite colors
 			   end
+			7: begin 
+				planeleft_address = sprite5_address;
+				sprite5_color = planeleft_out; //maybe latch the sprite colors
+			   end
+			8: begin 
+				planeright_address = sprite5_address;
+				sprite5_color = planeright_out; //maybe latch the sprite colors
+			   end
+			9: begin 
+				battleshipreverse_address = sprite5_address;
+				sprite5_color = battleshipreverse_out; //maybe latch the sprite colors
+			   end
+			10: begin 
+				helicopterreverse_address = sprite5_address;
+				sprite5_color = helicopterreverse_out; //maybe latch the sprite colors
+			   end
 
 	      endcase
       end
@@ -783,6 +923,22 @@ module vga_ball(input logic        clk,
 			6: begin 
 				hotairballoon_address = sprite6_address;
 				sprite6_color = hotairballoon_out; //maybe latch the sprite colors
+			   end
+			7: begin 
+				planeleft_address = sprite6_address;
+				sprite6_color = planeleft_out; //maybe latch the sprite colors
+			   end
+			8: begin 
+				planeright_address = sprite6_address;
+				sprite6_color = planeright_out; //maybe latch the sprite colors
+			   end
+			9: begin 
+				battleshipreverse_address = sprite6_address;
+				sprite6_color = battleshipreverse_out; //maybe latch the sprite colors
+			   end
+			10: begin 
+				helicopterreverse_address = sprite6_address;
+				sprite6_color = helicopterreverse_out; //maybe latch the sprite colors
 			   end
 
 	      endcase
@@ -818,6 +974,22 @@ module vga_ball(input logic        clk,
 				hotairballoon_address = sprite7_address;
 				sprite7_color = hotairballoon_out; //maybe latch the sprite colors
 			   end
+			7: begin 
+				planeleft_address = sprite7_address;
+				sprite7_color = planeleft_out; //maybe latch the sprite colors
+			   end
+			8: begin 
+				planeright_address = sprite7_address;
+				sprite7_color = planeright_out; //maybe latch the sprite colors
+			   end
+			9: begin 
+				battleshipreverse_address = sprite7_address;
+				sprite7_color = battleshipreverse_out; //maybe latch the sprite colors
+			   end
+			10: begin 
+				helicopterreverse_address = sprite7_address;
+				sprite7_color = helicopterreverse_out; //maybe latch the sprite colors
+			   end
 
 	      endcase
       end
@@ -852,6 +1024,22 @@ module vga_ball(input logic        clk,
 				hotairballoon_address = sprite8_address;
 				sprite8_color = hotairballoon_out; //maybe latch the sprite colors
 			   end
+			7: begin 
+				planeleft_address = sprite8_address;
+				sprite8_color = planeleft_out; //maybe latch the sprite colors
+			   end
+			8: begin 
+				planeright_address = sprite8_address;
+				sprite8_color = planeright_out; //maybe latch the sprite colors
+			   end
+			9: begin 
+				battleshipreverse_address = sprite8_address;
+				sprite8_color = battleshipreverse_out; //maybe latch the sprite colors
+			   end
+			10: begin 
+				helicopterreverse_address = sprite8_address;
+				sprite8_color = helicopterreverse_out; //maybe latch the sprite colors
+			   end
 
 	      endcase
       end
@@ -885,6 +1073,22 @@ module vga_ball(input logic        clk,
 			6: begin 
 				hotairballoon_address = sprite9_address;
 				sprite9_color = hotairballoon_out; //maybe latch the sprite colors
+			   end
+			7: begin 
+				planeleft_address = sprite9_address;
+				sprite9_color = planeleft_out; //maybe latch the sprite colors
+			   end
+			8: begin 
+				planeright_address = sprite9_address;
+				sprite9_color = planeright_out; //maybe latch the sprite colors
+			   end
+			9: begin 
+				battleshipreverse_address = sprite9_address;
+				sprite9_color = battleshipreverse_out; //maybe latch the sprite colors
+			   end
+			10: begin 
+				helicopterreverse_address = sprite9_address;
+				sprite9_color = helicopterreverse_out; //maybe latch the sprite colors
 			   end
 
 	      endcase
@@ -1130,7 +1334,7 @@ module vga_ball(input logic        clk,
 	      end
       end
 
-      if(vcount > 400) begin
+      if(vcount < 60) begin
             current_background = 7; //gray
       end
       else if (boundary_3_LATCHED == 0 && boundary_4_LATCHED == 0) begin // 1 River
@@ -1164,24 +1368,29 @@ module vga_ball(input logic        clk,
 
       //priority encoding of sprites
       if (isScoreboard) begin
-		current_color = scoreboard_out;
+		current_color_NONSPRITE = scoreboard_out;
       end
       else if (isFuelgauge && fuelgauge_out != 0) begin
-		current_color = fuelgauge_out;
+		current_color_NONSPRITE = fuelgauge_out;
       end
       else if (isIndicator && indicator_out != 0) begin
-		current_color = indicator_out;
+		current_color_NONSPRITE = indicator_out;
       end
       else if (isDigit1 && digit1_color_LATCHED != 0) begin
-		current_color = digit1_color_LATCHED;
+		current_color_NONSPRITE = digit1_color_LATCHED;
       end
       else if (isDigit2 && digit2_color_LATCHED != 0) begin
-		current_color = digit2_color_LATCHED;
+		current_color_NONSPRITE = digit2_color_LATCHED;
       end
       else if (isDigit3 && digit3_color_LATCHED != 0) begin
-		current_color = digit3_color_LATCHED;
+		current_color_NONSPRITE = digit3_color_LATCHED;
       end
-      else if (isSprite1 && sprite1_color_LATCHED != 0) begin
+      else begin
+		current_color_NONSPRITE = 0;
+      end
+
+
+      if (isSprite1 && sprite1_color_LATCHED != 0) begin
 		current_color = sprite1_color_LATCHED;
       end
       else if(isSprite2 && sprite2_color_LATCHED != 0) begin
