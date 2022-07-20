@@ -1,7 +1,7 @@
 /*
  * Avalon memory-mapped peripheral that generates VGA
  *
- * Stephen A. Edwards
+ * Tristan Saidi and Jakob Steins
  * Columbia University
  */
 `include "../ROM/plane_ROM.v"
