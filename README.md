@@ -34,3 +34,30 @@ Objects:
 
 1. All names of classes and structs are capitalized and use CamelCase.
 2. All names of variables and functions use CamelCase with non-capitalized first letter.
+
+## Result for this project
+
+Finally we have nearly reproduced the whole game, even including some detailed animation. Here is the demo picuture about our system. 
+
+![demo](./diagrams/demo.jpg)
+
+We have a DE1-SoC board which locates in the bottom right corner to serve for the main processing unit. To control the plane to move left or right, we use the Xbox Controller to do it. The "X" and "B" controls left and right, while "Y" emits the bullets, and "A" start the game. We used hardware to generate the graphical signals and send out using VGA signal.
+
+To view the demo video about how the game actually work, please find the video in the diagram folder named "demo.MOV".
+
+The game logic is, the plane can only move left or right, while the screen is scrolling, meaning that the plane is continuously moving on. As time flies, the plane is consuming fuel, and it should collect some during the fly. The indicator above the screen shows how much fuel is left. Every time we shoot an enemy target, we can get certain scores. The higher the score, the better you have done.
+
+## structure of the project
+
+**GameLogic** folder contains all code related to the game logic and high level driver. Thus, if you can realize the graphic generation in the driver.c file according to the specific hardware and software environment, you can transplant this system to anywhere else you like.
+
+**VideoDriver** folder contains the Linux kernel module for our dedicated hardware. Both the video and audio driver is implemented here.
+
+**XboxDriver** folder contains Linux kernel module for Xbox controller. Actually, this module is derived from another GitHub project called "xpad" developed by paroj. We modified some part to improve the user experience.
+
+**hardware** folder contains all files generated when developing hardware. However, the most important file is the "vga_ball.sv" under the hardware folder. it contains all the video and audio hardware design and implementation. The other folders contains some necessary files for implementing the hardware, like audio files, RAM and ROM.
+
+
+## Thankfulness to all members
+
+Even though we have expressed it many times, but I still want to say it again formally. Thanks for everyone's great effort on this project, so we can produce such an amazing product. I hope everyone of us have learned some precious experience from this project, and have a bright future. -- By Yongmao
