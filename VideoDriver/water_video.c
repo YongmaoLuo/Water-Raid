@@ -1,10 +1,21 @@
-/* * Video and Audio driver for the Water Raid Project
- *
- * A Platform device implemented using the misc subsystem
- *
- * Yongmao Luo
- * Columbia University
- *
+// Video and Audio driver for the Water Raid Project
+// Copyright (C) 2022  Yongmao Luo
+// Based on the VGA_Ball project, Copyright (C) 2021 Stephen A. Edwards
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+/* * 
  * References:
  * Linux source: Documentation/driver-model/platform.txt
  *               drivers/misc/arm-charlcd.c
@@ -326,5 +337,6 @@ module_init(water_video_init);
 module_exit(water_video_exit);
 
 MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Stephen A. Edwards, Columbia University");
 MODULE_AUTHOR("Yongmao Luo, Columbia University");
 MODULE_DESCRIPTION("video driver of Water-Raid Project");

@@ -2,6 +2,22 @@
 // Created by Yongmao Luo on 4/1/22.
 //
 
+// The main file of the game
+// Copyright (C) 2022  Yongmao Luo
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 #include "bullet.h"
 
 #include "game_scenario.h"
@@ -173,14 +189,14 @@ int main() {
                     break;
                 }
 
-//                // if the plane bumped into the fuel tank
+/               // if the plane bumped into the fuel tank
                 airplane.addFuel(videoFd,fuelTankList,spriteIndexList);
-//
-//                // check if the airplane is about to emit a bullet
+
+                // check if the airplane is about to emit a bullet
                 airplane.fire(xboxFd,videoFd,bulletList);
                 //printf("bullet list size: %d\n",bulletList.size());
-//
-//                // reduce fuel
+
+                // reduce fuel
                 if ((clock() - reduceFuelClock) / CLOCKS_PER_SEC >= 1) {
                     counterSurvival++;
                     reduceFuelClock = clock();
@@ -417,7 +433,6 @@ int main() {
                                                            enemyPlane.getIndex());
                                 break;
                             }
-                        printf("size: %d\n",spriteIndexList.size());
                     }
                 }
             }

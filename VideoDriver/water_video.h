@@ -44,6 +44,5 @@ typedef struct {
 #define WATER_VIDEO_WRITE_SCORE _IOR(WATER_VIDEO_MAGIC, 4, water_video_arg_score *)
 #define WATER_VIDEO_INIT _IOR(WATER_VIDEO_MAGIC, 5, water_video_arg_init *)
 #define WATER_AUDIO_PLAY _IOR(WATER_VIDEO_MAGIC, 6, water_audio_arg *)
-//#define WATER_AUDIO_STOP _IOR(WATER_VIDEO_MAGIC, 7, water_audio_arg *)
 
 #endif
